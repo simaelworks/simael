@@ -20,4 +20,9 @@ class Student extends Model
     {
         return $this->belongsTo(Squad::class);
     }
+
+    public function leadingSquads()
+    {
+        return $this->hasMany(Squad::class);
+    }
 }

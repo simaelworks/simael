@@ -10,7 +10,13 @@ class Squad extends Model
     protected $fillable = [
         'name',
         'description',
+        'leader_id',
     ];
+
+    public function leader()
+    {
+        return $this->belongsTo(Student::class, 'leader_id');
+    }
 
     public function users()
     {
