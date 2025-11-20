@@ -34,24 +34,22 @@
                     <div>
                         <h1 class="text-xl font-bold text-gray-900">SIMAEL</h1>
                         <p class="text-xs text-gray-500">
-                            @auth
-                                @if(auth()->user()->role == 'teacher')
-                                    Teacher Dashboard
-                                @elseif(auth()->user()->role == 'student')
-                                    Student Dashboard
-                                @else
-                                    Sistem Manajemen Pintar PKL
-                                @endif
+                            @student
+                                Student Dashboard
                             @else
-                                Sistem Manajemen Pintar PKL
-                            @endauth
+                                @teacher
+                                    Teacher Dashboard
+                                    @else
+                                    Sistem Manajemen Pintar PKL
+                                @endteacher
+                            @endstudent
                         </p>
                     </div>
                 </div>
 
                 <!-- Right Side Navigation -->
                 <div class="flex items-center space-x-4">
-                    @auth
+                    @student
                         <!-- Home Link -->
                         <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +73,7 @@
                         <a href="{{ route('login') }}" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition">
                             <span class="text-sm font-medium">Login</span>
                         </a>
-                    @endauth
+                    @endstudent
                 </div>
             </div>
         </div>
