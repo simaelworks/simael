@@ -68,7 +68,7 @@
               Login
             </button>
           </div>
-          <p class="text-sm text-slate-600 mt-6">Belum punya akun? <a href="{{ route('registerPage') }}" class="text-blue-600 font-semibold hover:underline ml-1">Buat sini</a></p>
+          <p class="text-sm text-slate-600 mt-6">Belum punya akun? <a href="{{ route('registerPage') }}" class="text-blue-600 font-semibold hover:underline ml-1">Buat disini</a></p>
         </form>
 
         <div class="h-full">

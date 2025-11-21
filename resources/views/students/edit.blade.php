@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="p-6 max-w-2xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6">Edit Student</h1>
+    <h1 class="text-3xl font-bold mb-6">Edit Akun Murid</h1>
 
     {{-- Success message --}}
     @if(session('success'))
@@ -47,7 +47,7 @@
 
         {{-- Name Field --}}
         <div>
-            <label for="name" class="block text-sm font-semibold mb-2">Name</label>
+            <label for="name" class="block text-sm font-semibold mb-2">Nama</label>
             <input 
                 type="text" 
                 id="name" 
@@ -61,7 +61,7 @@
 
         {{-- Major Dropdown --}}
         <div>
-            <label for="major" class="block text-sm font-semibold mb-2">Major</label>
+            <label for="major" class="block text-sm font-semibold mb-2">Jurusan</label>
             <select 
                 id="major" 
                 name="major" 
@@ -148,7 +148,7 @@
         {{-- Optional Password Update --}}
         <div>
             <label for="password" class="block text-sm font-semibold mb-2">
-                Password (leave blank to keep current)
+                Password (Biarkan kosong jika tidak ingin mengubah)
             </label>
             <input 
                 type="password" 
@@ -162,7 +162,7 @@
         {{-- Password Confirmation --}}
         <div>
             <label for="password_confirmation" class="block text-sm font-semibold mb-2">
-                Confirm Password
+                Konfirmmasi Password
             </label>
             <input 
                 type="password" 
@@ -190,11 +190,11 @@
         {{-- Buttons --}}
         <div class="flex gap-3 mt-6">
             <button type="submit" class="px-4 py-2 bg-blue-300 hover:bg-blue-400 text-blue-900 font-semibold rounded border-2 border-blue-500 transition">
-                Update Student
+                Perbarui Akun Murid
             </button>
 
             <a href="{{ route('students.index') }}" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold rounded border-2 border-gray-500 transition">
-                Cancel
+                Batal
             </a>
         </div>
     </form>

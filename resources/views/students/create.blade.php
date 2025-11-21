@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="p-6 max-w-2xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6">Create New Student</h1>
+    <h1 class="text-3xl font-bold mb-6">Tammbahkan Akun Murid</h1>
 
     {{-- Success message --}}
     @if(session('success'))
@@ -46,7 +46,7 @@
 
         {{-- Name Field --}}
         <div>
-            <label for="name" class="block text-sm font-semibold mb-2">Namse</label>
+            <label for="name" class="block text-sm font-semibold mb-2">Nama</label>
             <input 
                 type="text" 
                 id="name" 
@@ -60,7 +60,7 @@
 
         {{-- Major Selection --}}
         <div>
-            <label for="major" class="block text-sm font-semibold mb-2">Major</label>
+            <label for="major" class="block text-sm font-semibold mb-2">Jurusan</label>
             <select 
                 id="major" 
                 name="major" 
@@ -159,7 +159,7 @@
 
         {{-- Password Confirmation --}}
         <div>
-            <label for="password_confirmation" class="block text-sm font-semibold mb-2">Confirm Password</label>
+            <label for="password_confirmation" class="block text-sm font-semibold mb-2">Konfirmasi Password</label>
             <input 
                 type="password" 
                 id="password_confirmation" 
@@ -190,14 +190,14 @@
                 type="submit" 
                 class="px-4 py-2 bg-blue-300 hover:bg-blue-400 text-blue-900 font-semibold rounded border-2 border-blue-500 transition"
             >
-                Create Student
+                Buat Akun Murid
             </button>
 
             <a 
                 href="{{ route('students.index') }}" 
                 class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold rounded border-2 border-gray-500 transition"
             >
-                Cancel
+                Batal
             </a>
         </div>
     </form>

@@ -50,13 +50,13 @@
               <input name="password" type="password" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan password" required/>
             </div>
             <div>
-              <label class="text-slate-900 text-sm mb-2 block">Confirm Password</label>
+              <label class="text-slate-900 text-sm mb-2 block">Konfirmasi Password</label>
               <input name="confirm-password" type="password" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan ulang password" required/>
             </div>
             <div class="flex items-center">
               <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 shrink-0 border-gray-300 rounded" required />
               <label for="remember-me" class="ml-3 block text-sm text-slate-600">
-                I accept the <a href="javascript:void(0);" class="text-blue-600 font-semibold hover:underline ml-1">Terms and Conditions</a>
+                Saya menerima <a href="javascript:void(0);" class="text-blue-600 font-semibold hover:underline ml-1">Terms and Conditions</a>
               </label>
             </div>
           </div>
@@ -66,7 +66,7 @@
               Buat
             </button>
           </div>
-          <p class="text-sm text-slate-600 mt-6">Sudah punya akun? <a href="{{ route('loginPage') }}" class="text-blue-600 font-semibold hover:underline ml-1">Login sini</a></p>
+          <p class="text-sm text-slate-600 mt-6">Sudah punya akun? <a href="{{ route('loginPage') }}" class="text-blue-600 font-semibold hover:underline ml-1">Login disini</a></p>
         </form>
 
         <div class="h-full">

@@ -38,7 +38,7 @@
                 <tbody>
                     {{-- ALL MAJORS --}}
                     <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('ALL')" data-major="ALL">
-                        <td class="border border-gray-300 px-3 py-2">ALL MAJOR</td>
+                        <td class="border border-gray-300 px-3 py-2">Semua Jurusan</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
                             {{ count($allStudents) }}
                         </td>
@@ -88,7 +88,7 @@
                 <tbody>
                     {{-- Count verified students --}}
                     <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Approved</td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Akun Ter-konfirmasi</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-approved">
                             {{ $allStudents->where('status', 'verified')->count() }}
                         </td>
@@ -96,7 +96,7 @@
 
                     {{-- Count pending students --}}
                     <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Pending</td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Menunggu konfirmasi akun </td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-pending">
                             {{ $allStudents->where('status', 'pending')->count() }}
                         </td>
@@ -104,7 +104,7 @@
 
                     {{-- Total students --}}
                     <tr class="bg-blue-50">
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Total Students</td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Total Murid</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-total">
                             {{ count($allStudents) }}
                         </td>
@@ -112,7 +112,7 @@
 
                     {{-- Count students with a squad --}}
                     <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">With Squad</td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Dalam Squad</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-with-squad">
                             {{ count($studentsWithSquad) }}
                         </td>
@@ -120,7 +120,7 @@
 
                     {{-- Count students without a squad --}}
                     <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Without Squad</td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Tanpa Squad</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-without-squad">
                             {{ count($studentsWithoutSquad) }}
                         </td>
@@ -128,7 +128,7 @@
 
                     {{-- Number of total squads --}}
                     <tr class="bg-green-50">
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Total Squads</td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Jumlah Squads</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-squads">
                             {{ $totalSquads }}
                         </td>
@@ -167,8 +167,8 @@
                             <tr>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-10">ID</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-16">NISN</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center flex-1">Name</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-16">Major</th>
+                                <th class="border border-gray-300 px-2 py-1 text-center flex-1">Nama</th>
+                                <th class="border border-gray-300 px-2 py-1 text-center w-16">Jurusan</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-20">Squad</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-16">Status</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-20">Actions</th>
@@ -189,14 +189,14 @@
                                     {{-- Actions: view/edit/delete --}}
                                     <td class="border border-gray-300 px-2 py-1 text-center">
                                         <div class="flex gap-1 justify-center">
-                                            <a href="{{ route('students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">View</a>
+                                            <a href="{{ route('students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Lihat</a>
                                             <a href="{{ route('students.edit', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Edit</a>
 
                                             {{-- Delete button --}}
                                             <form method="POST" action="{{ route('students.destroy', $student) }}" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="px-2 py-0.5 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">Del</button>
+                                                <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="px-2 py-0.5 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">Hapus</button>
                                             </form>
                                         </div>
                                     </td>
@@ -241,7 +241,7 @@
                             <tr>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-10">ID</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-16">NISN</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center flex-1">Name</th>
+                                <th class="border border-gray-300 px-2 py-1 text-center flex-1">Nama</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-16">Major</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-20">Squad</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-16">Status</th>
@@ -263,13 +263,13 @@
                                     {{-- Action buttons --}}
                                     <td class="border border-gray-300 px-2 py-1 text-center">
                                         <div class="flex gap-1 justify-center">
-                                            <a href="{{ route('students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">View</a>
+                                            <a href="{{ route('students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Lihat</a>
                                             <a href="{{ route('students.edit', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Edit</a>
 
                                             <form method="POST" action="{{ route('students.destroy', $student) }}" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="px-2 py-0.5 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">Del</button>
+                                                <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="px-2 py-0.5 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">Hapus</button>
                                             </form>
                                         </div>
                                     </td>

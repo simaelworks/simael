@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="p-6 max-w-2xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6">Student Details</h1>
+    <h1 class="text-3xl font-bold mb-6">Info Lengkap Murid</h1>
 
     {{-- Success Message (Shown after update or other success actions) --}}
     @if(session('success'))
@@ -28,13 +28,13 @@
 
         {{-- Student Name --}}
         <div class="flex justify-between border-b border-gray-200 pb-3">
-            <span class="font-semibold text-gray-700">Name:</span>
+            <span class="font-semibold text-gray-700">Nama:</span>
             <span class="text-gray-900">{{ $student->name }}</span>
         </div>
 
         {{-- Major --}}
         <div class="flex justify-between border-b border-gray-200 pb-3">
-            <span class="font-semibold text-gray-700">Major:</span>
+            <span class="font-semibold text-gray-700">Jurusan:</span>
             <span class="text-gray-900">{{ $student->major }}</span>
         </div>
 
@@ -58,13 +58,13 @@
 
         {{-- Created Timestamp --}}
         <div class="flex justify-between border-b border-gray-200 pb-3">
-            <span class="font-semibold text-gray-700">Created:</span>
+            <span class="font-semibold text-gray-700">Akun Dibuat:</span>
             <span class="text-gray-900">{{ $student->created_at->format('Y-m-d H:i:s') }}</span>
         </div>
 
         {{-- Updated Timestamp --}}
         <div class="flex justify-between">
-            <span class="font-semibold text-gray-700">Updated:</span>
+            <span class="font-semibold text-gray-700">Terakhir Di-update:</span>
             <span class="text-gray-900">{{ $student->updated_at->format('Y-m-d H:i:s') }}</span>
         </div>
     </div>
@@ -80,7 +80,7 @@
         {{-- Back to Student Index --}}
         <a href="{{ route('students.index') }}" 
             class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold rounded border-2 border-gray-500 transition">
-            Back to List
+            Kembali ke Daftar Murid
         </a>
     </div>
 </div>
