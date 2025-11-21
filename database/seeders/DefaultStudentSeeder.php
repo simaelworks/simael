@@ -21,7 +21,6 @@ class DefaultStudentSeeder extends Seeder
             'major' => 'PPLG',
             'password' => Hash::make('lutfi123'),
             'status' => 'pending',
-            'squad_id' => 1,
         ]);
         
         Student::create([
@@ -30,7 +29,6 @@ class DefaultStudentSeeder extends Seeder
             'major' => 'PPLG',
             'password' => Hash::make('aufa123'),
             'status' => 'pending',
-            'squad_id' => 1,
         ]);
                 
         Student::create([
@@ -39,8 +37,7 @@ class DefaultStudentSeeder extends Seeder
             'major' => 'PPLG',
             'password' => Hash::make('rofi123'),
             'status' => 'pending',
-            'squad_id' => 1,
-        ]);         
+        ]);
         
         Student::create([
             'name' => 'dika',
@@ -48,7 +45,6 @@ class DefaultStudentSeeder extends Seeder
             'major' => 'PPLG',
             'password' => Hash::make('dika123'),
             'status' => 'pending',
-            'squad_id' => 1,
         ]);
 
 
@@ -58,6 +54,7 @@ class DefaultStudentSeeder extends Seeder
             'major' => 'TJKT',
             'password' => Hash::make('ryan123'),
             'status' => 'verified',
+            'squad_id' => 1,
         ]);
 
         Student::create([
@@ -66,6 +63,7 @@ class DefaultStudentSeeder extends Seeder
             'major' => 'TJKT',
             'password' => Hash::make('dandi123'),
             'status' => 'verified',
+            'squad_id' => 1,
         ]);
 
         Student::create([
@@ -74,6 +72,7 @@ class DefaultStudentSeeder extends Seeder
             'major' => 'TJKT',
             'password' => Hash::make('excel123'),
             'status' => 'verified',
+            'squad_id' => 1,
         ]);
         
         Student::create([
@@ -82,13 +81,16 @@ class DefaultStudentSeeder extends Seeder
             'major' => 'TJKT',
             'password' => Hash::make('pinndut123'),
             'status' => 'verified',
-
-        ]);Student::create([
+            'squad_id' => 1,
+        ]);
+        
+        Student::create([
             'name' => 'kennnet',
             'nisn' => '123456784',
             'major' => 'TJKT',
             'password' => Hash::make('kennet123'),
             'status' => 'verified',
+            'squad_id' => 1,
         ]);
 
         Student::create([
@@ -97,9 +99,8 @@ class DefaultStudentSeeder extends Seeder
             'major' => 'TJKT',
             'password' => Hash::make('adrian123'),
             'status' => 'verified',
+            'squad_id' => 1,
         ]);
-        
-        
     }
 }
 
