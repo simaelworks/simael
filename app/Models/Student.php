@@ -21,6 +21,11 @@ class Student extends Model
         return $this->belongsTo(Squad::class);
     }
 
+    public function invites()
+    {
+        return $this->hasMany(InviteSquad::class);
+    }
+
     public function leadingSquads()
     {
         return $this->hasMany(Squad::class);
