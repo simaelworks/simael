@@ -57,7 +57,7 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nisn' => 'required|integer|unique:students',
+            'nisn' => 'required|integer|digits_between:8,10|unique:students,nisn,',
             'name' => 'required|string|max:255',
             'major' => 'required|in:PPLG,TJKT,DKV,BCF',
             'password' => 'required|string|min:8|confirmed',
