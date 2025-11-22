@@ -3,26 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Student extends Model
+class Student extends Authenticatable
 {
-    //
     protected $fillable = [
         'name',
         'nisn',
         'major',
         'password',
         'status',
-        'squad_id',
     ];
 
-    public function squad()
-    {
-        return $this->belongsTo(Squad::class);
-    }
-
-    public function leadingSquads()
-    {
-        return $this->hasMany(Squad::class);
-    }
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }
