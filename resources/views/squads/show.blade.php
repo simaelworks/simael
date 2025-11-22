@@ -2,8 +2,8 @@
 
 @section('content')
 
-<div class="p-6 max-w-3xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6">{{ $squad->name }}</h1>
+<div class="mt-4 p-4 md:p-6 max-w-full md:max-w-3xl mx-auto">
+    <h1 class="text-2xl md:text-3xl font-bold mb-6 max-w-full overflow-hidden text-ellipsis">{{ $squad->name }}</h1>
 
     {{-- Success message --}}
     @if(session('success'))
@@ -112,7 +112,11 @@
                         @if($squad->leader())
                             <tr class="hover:bg-gray-50 bg-blue-50">
                                 <td class="border border-gray-300 px-3 py-2">Leader</td>
-                                <td class="border border-gray-300 px-3 py-2 font-semibold">{{ $squad->leader()->name }}</td>
+                                <td class="border border-gray-300 px-3 py-2 font-semibold">
+                                    <a href="{{ route('students.show', $squad->leader()) }}" class="text-blue-600 hover:text-blue-800 hover:underline">
+                                        {{ $squad->leader()->name }}
+                                    </a>
+                                </td>
                                 <td class="border border-gray-300 px-3 py-2">{{ $squad->leader()->nisn }}</td>
                                 <td class="border border-gray-300 px-3 py-2">{{ $squad->leader()->major }}</td>
                             </tr>
@@ -122,7 +126,11 @@
                         @forelse($squad->members() as $index => $member)
                             <tr class="hover:bg-gray-50">
                                 <td class="border border-gray-300 px-3 py-2">{{ $index + 1 }}</td>
-                                <td class="border border-gray-300 px-3 py-2">{{ $member->name }}</td>
+                                <td class="border border-gray-300 px-3 py-2">
+                                    <a href="{{ route('students.show', $member) }}" class="text-blue-600 hover:text-blue-800 hover:underline">
+                                        {{ $member->name }}
+                                    </a>
+                                </td>
                                 <td class="border border-gray-300 px-3 py-2">{{ $member->nisn }}</td>
                                 <td class="border border-gray-300 px-3 py-2">{{ $member->major }}</td>
                             </tr>

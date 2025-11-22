@@ -2,8 +2,8 @@
 
 @section('content')
 
-<div class="p-6 max-w-3xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6">Preview Squad</h1>
+<div class="mt-4 p-4 md:p-6 max-w-full md:max-w-3xl mx-auto">
+    <h1 class="text-2xl md:text-3xl font-bold mb-6">Konfirmasi Squad Baru</h1>
 
     {{-- Squad Information Card --}}
     <div class="bg-white border border-gray-300 rounded shadow-md p-6 mb-6">
@@ -74,20 +74,20 @@
         {{-- Members List --}}
         <div class="mb-6">
             <h3 class="text-lg font-semibold mb-3">
-                Daftar Anggota ({{ count($members) + 1 }} orang total)
+                Daftar Anggota ({{ count($memberStudents) + 1 }} orang total)
             </h3>
 
             {{-- Invalid NISNs Warning --}}
-            @if(!empty($invalidNisns))
+            @if(!empty($nisnsInvalid))
                 <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
-                    <strong>NISN tidak valid:</strong> {{ implode(', ', $invalidNisns) }}
+                    <strong>NISN tidak valid:</strong> {{ implode(', ', $nisnsInvalid) }}
                 </div>
             @endif
 
             {{-- Already Used NISNs Warning --}}
-            @if(!empty($usedNisns))
+            @if(!empty($nisnsAlreadyUsed))
                 <div class="mb-4 p-3 bg-orange-100 border border-orange-400 text-orange-700 rounded text-sm">
-                    <strong>⚠️ NISN sudah digunakan di squad lain:</strong> {{ implode(', ', $usedNisns) }}<br>
+                    <strong>⚠️ NISN sudah digunakan di squad lain:</strong> {{ implode(', ', $nisnsAlreadyUsed) }}<br>
                     <small>Siswa tidak dapat bergabung dengan lebih dari satu squad.</small>
                 </div>
             @endif
@@ -113,9 +113,9 @@
                         </tr>
 
                         {{-- Members --}}
-                        @forelse($members as $index => $member)
+                        @forelse($memberStudents as $memberIndex => $member)
                             <tr class="hover:bg-gray-50">
-                                <td class="border border-gray-300 px-3 py-2">{{ $index + 1 }}</td>
+                                <td class="border border-gray-300 px-3 py-2">{{ $memberIndex + 1 }}</td>
                                 <td class="border border-gray-300 px-3 py-2">{{ $member->name }}</td>
                                 <td class="border border-gray-300 px-3 py-2">{{ $member->nisn }}</td>
                                 <td class="border border-gray-300 px-3 py-2">{{ $member->major }}</td>
