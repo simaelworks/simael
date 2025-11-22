@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->bigInteger('leader_nisn');
             $table->text('members_nisn');
+            $table->string('nama_perusahaan')->nullable();
+            $table->text('alamat_perusahaan')->nullable();
             $table->enum('status', ['on-progress', 'diterima', 'pengajuan', 'unknown'])->default('pengajuan');
             $table->timestamps();
 
