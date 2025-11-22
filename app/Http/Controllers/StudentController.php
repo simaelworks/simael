@@ -22,14 +22,10 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $studentsWithSquad = Student::with('squad')->whereNotNull('squad_id')->get();
-        $studentsWithoutSquad = Student::with('squad')->whereNull('squad_id')->get();
-        $allStudents = Student::with('squad')->get();
+        $allStudents = Student::all();
         $totalSquads = Squad::count();
 
         return view('students.index', compact(
-            'studentsWithSquad',
-            'studentsWithoutSquad',
             'allStudents',
             'totalSquads'
         ));
@@ -42,8 +38,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        $squads = Squad::all();
-        return view('students.create', compact('squads'));
+        return view('students.create');
     }
 
     /**
@@ -62,7 +57,6 @@ class StudentController extends Controller
             'major' => 'required|in:PPLG,TJKT,DKV,BCF',
             'password' => 'required|string|min:8|confirmed',
             'status' => 'required|in:pending,verified',
-            'squad_id' => 'nullable|exists:squads,id',
         ]);
 
         // Secure password hashing
@@ -89,8 +83,7 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        $squads = Squad::all();
-        return view('students.edit', compact('student', 'squads'));
+        return view('students.edit', compact('student'));
     }
 
     /**
@@ -109,7 +102,6 @@ class StudentController extends Controller
             'major' => 'required|in:PPLG,TJKT,DKV,BCF',
             'password' => 'nullable|string|min:8|confirmed',
             'status' => 'required|in:pending,verified',
-            'squad_id' => 'nullable|exists:squads,id',
         ]);
 
         // Only update password if provided
