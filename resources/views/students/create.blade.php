@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="p-6 max-w-2xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6">Tammbahkan Akun Murid</h1>
+    <h1 class="text-3xl font-bold mb-6">Tambahkan Akun Murid</h1>
 
     {{-- Success message --}}
     @if(session('success'))
