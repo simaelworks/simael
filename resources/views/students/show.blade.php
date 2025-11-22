@@ -43,10 +43,7 @@
             <span class="font-semibold text-gray-700">Squad:</span>
             <div class="text-right">
                 @php
-                    $squads = \App\Models\Squad::where(function($query) use ($student) {
-                        $query->where('leader_nisn', $student->nisn)
-                              ->orWhereRaw("FIND_IN_SET(?, members_nisn)", [$student->nisn]);
-                    })->get();
+                    $squads = $student->getAssociatedSquads();
                 @endphp
                 @if(count($squads) > 0)
                     <div class="flex gap-2 justify-end flex-wrap">

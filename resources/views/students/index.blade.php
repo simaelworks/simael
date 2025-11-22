@@ -150,10 +150,7 @@
                             {{-- Loop through students with squads --}}
                             @foreach($allStudents as $student)
                                 @php
-                                    $squads = \App\Models\Squad::where(function($query) use ($student) {
-                                        $query->where('leader_nisn', $student->nisn)
-                                              ->orWhereRaw("FIND_IN_SET(?, members_nisn)", [$student->nisn]);
-                                    })->pluck('name')->toArray();
+                                    $squads = $student->getAssociatedSquads()->pluck('name')->toArray();
                                 @endphp
                                 @if(count($squads) > 0)
                                 <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}" data-has-squad="true">
@@ -228,10 +225,7 @@
                             {{-- Loop through students without squads --}}
                             @foreach($allStudents as $student)
                                 @php
-                                    $squads = \App\Models\Squad::where(function($query) use ($student) {
-                                        $query->where('leader_nisn', $student->nisn)
-                                              ->orWhereRaw("FIND_IN_SET(?, members_nisn)", [$student->nisn]);
-                                    })->pluck('name')->toArray();
+                                    $squads = $student->getAssociatedSquads()->pluck('name')->toArray();
                                 @endphp
                                 @if(count($squads) === 0)
                                 <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}" data-has-squad="false">
@@ -289,10 +283,7 @@
         ALL: [
             @foreach($allStudents as $student)
             @php
-                $squads = \App\Models\Squad::where(function($query) use ($student) {
-                    $query->where('leader_nisn', $student->nisn)
-                          ->orWhereRaw("FIND_IN_SET(?, members_nisn)", [$student->nisn]);
-                })->pluck('name')->toArray();
+                $squads = $student->getAssociatedSquads()->pluck('name')->toArray();
             @endphp
             {
                 id: {{ $student->id }},
