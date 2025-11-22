@@ -27,6 +27,80 @@ class Student extends Authenticatable
         'status',
     ];
 
+    // ============ ELOQUENT EVENTS ============
+
+    /**
+     * The "updated" event that is fired after a model is updated.
+     * Saat NISN berubah, otomatis update squad data yang berelasi.
+     */
+    protected static function booted()
+    {
+        static::updated(function (Student $student) {
+            // Check if NISN changed
+            if ($student->isDirty('nisn')) {
+                $oldNisn = $student->getOriginal('nisn');
+                $newNisn = $student->nisn;
+
+                // Update squad dimana student adalah leader
+                $leaderSquads = Squad::where('leader_nisn', $oldNisn)->get();
+                foreach ($leaderSquads as $squad) {
+                    $squad->update(['leader_nisn' => $newNisn]);
+                }
+
+                // Update squad where student are member
+                $memberSquads = Squad::where('members_nisn', 'LIKE', "%$oldNisn%")
+                    ->get();
+                foreach ($memberSquads as $squad) {
+                    // Replace old NISN with new NISN in members_nisn string
+                    $memberNisns = array_map('trim', explode(',', $squad->members_nisn ?? ''));
+                    $memberNisns = array_map(function($nisn) use ($oldNisn, $newNisn) {
+                        return $nisn === $oldNisn ? $newNisn : $nisn;
+                    }, $memberNisns);
+                    $squad->update(['members_nisn' => implode(', ', $memberNisns)]);
+                }
+
+                // --- NEW: Update student's squad_id if their new NISN is in any squad's members_nisn ---
+                $squadWithNewNisn = Squad::whereRaw('FIND_IN_SET(?, members_nisn)', [$newNisn])->first();
+                if ($squadWithNewNisn) {
+                    $student->squad_id = $squadWithNewNisn->id;
+                    $student->saveQuietly(); // avoid recursion
+                } else {
+                    // If not found in any squad, clear squad_id
+                    $student->squad_id = null;
+                    $student->saveQuietly();
+                }
+            }
+        });
+    }
+
+    // ============ NEW ELOQUENT RELATIONSHIPS ============
+
+    /**
+     * Get the squad this student is assigned to (via squad_id)
+     */
+    public function squad()
+    {
+        return $this->belongsTo(Squad::class, 'squad_id');
+    }
+
+    /**
+     * Get squads where this student is the leader
+     */
+    public function leaderOfSquads()
+    {
+        return $this->hasMany(Squad::class, 'leader_id');
+    }
+
+    /**
+     * Get squads where this student is a member
+     */
+    public function memberOfSquads()
+    {
+        return $this->belongsToMany(Squad::class, 'squad_members', 'student_id', 'squad_id');
+    }
+
+    // ============ LEGACY METHODS (for backward compatibility) ============
+
     public function leadingSquads()
     {
         return Squad::where('leader_nisn', $this->nisn)->get();

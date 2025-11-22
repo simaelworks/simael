@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Squad Model
  * 
- * Represents a squad/group with member management.
+ * Represents a squad/group with a leader and members.
  * 
  * @property int $id
  * @property string $name
- * @property bigInteger $leader_id
- * @property bigInteger $leader_nisn (legacy)
- * @property text $members_nisn (legacy)
+ * @property int $leader_id Foreign key to students.id (the squad leader)
  * @property string $nama_perusahaan
  * @property string $alamat_perusahaan
  * @property string $status
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class Squad extends Model
 {
@@ -34,10 +34,12 @@ class Squad extends Model
         'status' => 'string',
     ];
 
-    // ============ NEW ELOQUENT RELATIONSHIPS ============
+    // ============ ELOQUENT RELATIONSHIPS ============
 
     /**
      * Get the student who leads this squad
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function leaderStudent()
     {
@@ -45,70 +47,50 @@ class Squad extends Model
     }
 
     /**
-     * Get all members of this squad
+     * Get all members of this squad (excluding leader)
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function members()
     {
-        return $this->belongsToMany(Student::class, 'squad_members', 'squad_id', 'student_id');
+        return $this->hasMany(Student::class, 'squad_id');
     }
 
     /**
      * Get all members including the leader
+     * 
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function allMembers()
     {
         $leader = $this->leaderStudent;
+        $members = $this->members()->get();
+
         if (!$leader) {
-            return $this->members()->get();
+            return $members;
         }
-        
-        return collect([$leader])->merge($this->members()->get())->unique('id');
+
+        return collect([$leader])->merge($members)->unique('id');
     }
 
     /**
      * Get count of squad members (excluding leader)
+     * 
+     * @return int
      */
     public function memberCount()
     {
         return $this->members()->count();
     }
 
-    // ============ LEGACY METHODS (for backward compatibility) ============
-
-    public function leader()
+    /**
+     * Get total count including leader
+     * 
+     * @return int
+     */
+    public function totalMemberCount()
     {
-        return Student::where('nisn', $this->leader_nisn)->first();
-    }
-
-    public function membersLegacy()
-    {
-        if (empty($this->members_nisn)) {
-            return collect();
-        }
-
-        $nisns = array_map('trim', explode(',', $this->members_nisn));
-        return Student::whereIn('nisn', $nisns)->get();
-    }
-
-    public function memberCountLegacy()
-    {
-        if (empty($this->members_nisn)) {
-            return 0;
-        }
-
-        $nisns = array_map('trim', explode(',', $this->members_nisn));
-        return count(array_filter($nisns));
-    }
-
-    public function allMembersLegacy()
-    {
-        $leader = $this->leader();
-        if (!$leader) {
-            return collect();
-        }
-
-        $members = $this->membersLegacy();
-        return collect([$leader])->merge($members);
+        return $this->memberCount() + ($this->leaderStudent ? 1 : 0);
     }
 }
 
