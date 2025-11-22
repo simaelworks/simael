@@ -6,20 +6,62 @@ use Illuminate\Database\Eloquent\Model;
 
 class Squad extends Model
 {
-    //
     protected $fillable = [
         'name',
-        'description',
-        'leader_id',
+        'leader_nisn',
+        'members_nisn',
+        'status',
     ];
 
+    protected $casts = [
+        'status' => 'string',
+    ];
+
+    /**
+     * Get the leader student by NISN
+     */
     public function leader()
     {
-        return $this->belongsTo(Student::class, 'leader_id');
+        return Student::where('nisn', $this->leader_nisn)->first();
     }
 
-    public function users()
+    /**
+     * Get all member students by parsing members_nisn
+     */
+    public function members()
     {
-        return $this->hasMany(Student::class);
+        if (empty($this->members_nisn)) {
+            return collect();
+        }
+
+        $nisns = array_map('trim', explode(',', $this->members_nisn));
+        return Student::whereIn('nisn', $nisns)->get();
+    }
+
+    /**
+     * Get member count
+     */
+    public function memberCount()
+    {
+        if (empty($this->members_nisn)) {
+            return 0;
+        }
+
+        $nisns = array_map('trim', explode(',', $this->members_nisn));
+        return count(array_filter($nisns));
+    }
+
+    /**
+     * Get leader and members combined
+     */
+    public function allMembers()
+    {
+        $leader = $this->leader();
+        if (!$leader) {
+            return collect();
+        }
+
+        $members = $this->members();
+        return collect([$leader])->merge($members);
     }
 }
