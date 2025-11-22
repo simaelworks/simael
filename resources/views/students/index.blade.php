@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="p-6">
-    <h1 class="text-3xl font-bold mb-6">Siswa/Siswi</h1>
+    <h1 class="text-3xl font-bold mb-6">Siswa/Siswi SMK Media Informatika</h1>
 
     {{-- Success message after CRUD actions --}}
     @if(session('success'))
@@ -36,7 +36,7 @@
 
                 {{-- Filter rows with clickable actions --}}
                 <tbody>
-                    {{-- ALL MAJORS --}}
+                    {{-- ALL MAJORS: Ini adalah fungsi TOTAL MURID berdasarkan filter --}}
                     <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('ALL')" data-major="ALL">
                         <td class="border border-gray-300 px-3 py-2">Semua Jurusan</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
@@ -102,7 +102,7 @@
                         </td>
                     </tr>
 
-                    {{-- Total students --}}
+                    {{-- Total students (Fungsi Total Murid yang diperkuat) --}}
                     <tr class="bg-blue-50">
                         <td class="border border-gray-300 px-3 py-2 font-medium">Total Murid</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-total">
@@ -137,7 +137,7 @@
             </table>
         </div>
 
-        {{-- RIGHT SIDE: Students tables --}}
+        {{-- RIGHT SIDE: Students tables (Tidak ada perubahan di sini) --}}
         <div class="flex-1">
 
             {{-- Table: students with squad --}}
@@ -302,7 +302,8 @@
                 id: {{ $student->id }},
                 major: '{{ $student->major }}',
                 status: '{{ $student->status }}',
-                squad_id: {{ $student->squad_id ?? 'null' }},
+                // Pastikan squad_id null jika tidak ada squad
+                squad_id: {{ $student->squad_id ?? 'null' }}, 
                 hasSquad: {{ $student->squad_id ? 'true' : 'false' }}
             },
             @endforeach
@@ -319,9 +320,11 @@
         const filterRows = document.querySelectorAll('.filter-row');
         filterRows.forEach(row => {
             if (row.getAttribute('data-major') === major) {
+                // Tambahkan kelas untuk menyorot filter yang aktif
                 row.classList.add('bg-blue-400', 'text-white', 'font-bold');
                 row.classList.remove('hover:bg-blue-200', 'text-gray-900');
             } else {
+                // Hapus penyorotan dari filter lain
                 row.classList.remove('bg-blue-400', 'text-white', 'font-bold');
                 row.classList.add('hover:bg-blue-200', 'text-gray-900');
             }
@@ -334,11 +337,11 @@
             row.style.display = shouldShow ? '' : 'none';
         });
 
-        // Always show table wrappers
+        // Selalu tampilkan wrapper tabel (agar tabel tidak menghilang jika filter menghasilkan 0 baris)
         document.getElementById('tableWithSquadWrapper').style.display = '';
         document.getElementById('tableWithoutSquadWrapper').style.display = '';
 
-        // For WITH SQUAD table - check if this major has any students with squad in the DATA
+        // Untuk tabel WITH SQUAD - cek apakah filter ini memiliki siswa dengan squad
         let majorHasWithSquad = false;
         for (let student of studentsData.ALL) {
             if ((major === 'ALL' || student.major === major) && student.hasSquad === true) {
@@ -352,7 +355,7 @@
             withSquadEmpty.style.display = majorHasWithSquad ? 'none' : 'table-row';
         }
 
-        // For WITHOUT SQUAD table - check if this major has any students without squad in the DATA
+        // Untuk tabel WITHOUT SQUAD - cek apakah filter ini memiliki siswa tanpa squad
         let majorHasWithoutSquad = false;
         for (let student of studentsData.ALL) {
             if ((major === 'ALL' || student.major === major) && student.hasSquad === false) {
@@ -380,7 +383,7 @@
         const pending = filteredStudents.filter(s => s.status === 'pending').length;
         const withSquad = filteredStudents.filter(s => s.squad_id !== null).length;
         const withoutSquad = filteredStudents.filter(s => s.squad_id === null).length;
-        const total = filteredStudents.length;
+        const total = filteredStudents.length; // Ini adalah TOTAL MURID yang ter-filter
 
         // Unique squad count
         const uniqueSquads = new Set(
