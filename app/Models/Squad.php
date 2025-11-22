@@ -10,6 +10,8 @@ class Squad extends Model
         'name',
         'leader_nisn',
         'members_nisn',
+        'nama_perusahaan',
+        'alamat_perusahaan',
         'status',
     ];
 
