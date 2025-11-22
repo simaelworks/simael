@@ -4,6 +4,31 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Squad Model
+ * 
+ * Represents a squad/group in the system.
+ * Uses denormalized NISN-based relationship design instead of traditional foreign keys.
+ * 
+ * Squad Composition:
+ * - leader_nisn: NISN of the leader (single student)
+ * - members_nisn: Comma-separated NISNs of squad members
+ * 
+ * Design Notes:
+ * - No foreign key constraint on Student table for flexibility
+ * - Uses NISN instead of ID for easier student identification
+ * - Members stored as CSV string to allow flexible membership
+ * 
+ * @property int $id
+ * @property string $name Squad name (max 20 characters)
+ * @property bigInteger $leader_nisn NISN of squad leader
+ * @property text $members_nisn Comma-separated NISNs of squad members
+ * @property string $nama_perusahaan Company name (nullable)
+ * @property string $alamat_perusahaan Company address (nullable)
+ * @property string $status Squad status (on-progress, diterima, pengajuan, unknown)
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ */
 class Squad extends Model
 {
     protected $fillable = [
@@ -21,6 +46,8 @@ class Squad extends Model
 
     /**
      * Get the leader student by NISN
+     * 
+     * @return Student|null
      */
     public function leader()
     {
@@ -29,6 +56,9 @@ class Squad extends Model
 
     /**
      * Get all member students by parsing members_nisn
+     * Members NISN are stored as comma-separated values
+     * 
+     * @return \Illuminate\Support\Collection
      */
     public function members()
     {
@@ -41,7 +71,9 @@ class Squad extends Model
     }
 
     /**
-     * Get member count
+     * Get count of squad members
+     * 
+     * @return int
      */
     public function memberCount()
     {
@@ -54,7 +86,9 @@ class Squad extends Model
     }
 
     /**
-     * Get leader and members combined
+     * Get leader and members combined as a single collection
+     * 
+     * @return \Illuminate\Support\Collection
      */
     public function allMembers()
     {
@@ -67,3 +101,4 @@ class Squad extends Model
         return collect([$leader])->merge($members);
     }
 }
+
