@@ -16,12 +16,9 @@ class InviteSquadController extends Controller
         return redirect()->route('dashboard');
     }
 
-    // public function (Request $request) {
-    //     InviteSquad::create([
-    //         'squad_id' => $request['squad_id'],
-    //         'student_id' => $request['student_id']
-    //     ]);
+    public function destroy(InviteSquad $invite) {
+        $invite->delete();
 
-    //     return redirect()->route('dashboard');
-    // }
+        return redirect()->route('dashboard');
+    }
 }

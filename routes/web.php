@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InviteSquadController;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\SquadController;
 use Illuminate\Support\Facades\Route;
@@ -22,4 +23,6 @@ Route::resource('students', StudentController::class);
 
 Route::resource('squads', SquadController::class);
 
+
 Route::match(['get', 'post'], '/squads-preview', [SquadController::class, 'preview'])->name('squads.preview');
+Route::resource('invite', InviteSquadController::class);
