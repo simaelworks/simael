@@ -149,17 +149,18 @@
                         <tbody>
                             {{-- Loop through students with squads --}}
                             @foreach($allStudents as $student)
-                                @php
-                                    $squads = $student->getAssociatedSquads()->pluck('name')->toArray();
-                                @endphp
-                                @if(count($squads) > 0)
+                                @if(!is_null($student->squad_id))
                                 <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}" data-has-squad="true">
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->id }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->nisn }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-left pl-4 min-w-max">{{ $student->name }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->major }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">
-                                        <span class="px-2 py-0.5 bg-blue-100 text-blue-800 font-semibold rounded truncate inline-block max-w-xs" title="{{ implode(', ', $squads) }}">{{ implode(', ', $squads) }}</span>
+                                        @if($student->squad_id && $student->squad)
+                                            <span class="px-2 py-0.5 bg-blue-100 text-blue-800 font-semibold rounded truncate inline-block max-w-xs" title="{{ $student->squad->name }}">{{ $student->squad->name }}</span>
+                                        @else
+                                            <span class="text-gray-400 text-xs">-</span>
+                                        @endif
                                     </td>
                                     <td class="border border-gray-300 px-2 py-1 text-center">
                                         @if($student->status === 'verified')
@@ -224,10 +225,7 @@
                         <tbody>
                             {{-- Loop through students without squads --}}
                             @foreach($allStudents as $student)
-                                @php
-                                    $squads = $student->getAssociatedSquads()->pluck('name')->toArray();
-                                @endphp
-                                @if(count($squads) === 0)
+                                @if(is_null($student->squad_id))
                                 <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}" data-has-squad="false">
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->id }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->nisn }}</td>
@@ -282,14 +280,11 @@
     const studentsData = {
         ALL: [
             @foreach($allStudents as $student)
-            @php
-                $squads = $student->getAssociatedSquads()->pluck('name')->toArray();
-            @endphp
             {
                 id: {{ $student->id }},
                 major: '{{ $student->major }}',
                 status: '{{ $student->status }}',
-                hasSquad: {{ count($squads) > 0 ? 'true' : 'false' }}
+                hasSquad: {{ is_null($student->squad_id) ? 'false' : 'true' }}
             },
             @endforeach
         ]
