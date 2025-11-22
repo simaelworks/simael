@@ -17,5 +17,15 @@ class DefaultSquadSeeder extends Seeder
             'name' => 'Squad Dummy',
             'description' => 'Squad boongan buat tes doang',
         ]);
+
+        Squad::create([
+            'name' => 'Squad DKV',
+            'description' => 'Squad untuk jurusan Desain Komunikasi Visual',
+        ]);
+
+        Squad::create([
+            'name' => 'Squad BCF',
+            'description' => 'Squad untuk jurusan Bisnis dan Cyber Forensik',
+        ]);
     }
 }
