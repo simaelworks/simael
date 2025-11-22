@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->foreignId('leader_id')
                 ->nullable()
-                ->constrained('users')
+                ->constrained('students')
                 ->nullOnDelete();
             $table->timestamps();
         });
