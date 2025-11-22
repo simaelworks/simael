@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InviteSquadController;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\SquadController;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +21,5 @@ Route::controller(LoginRegisterController::class)->group(function() {
 Route::resource('students', StudentController::class);
 
 Route::resource('squads', SquadController::class);
+
+Route::resource('invite', InviteSquadController::class);
