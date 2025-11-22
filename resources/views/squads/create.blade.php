@@ -77,6 +77,35 @@
             <p class="text-gray-600 text-xs mt-1">Masukkan NISN anggota yang akan bergabung, pisahkan dengan koma</p>
         </div>
 
+        {{-- Company Name Field --}}
+        <div>
+            <label for="nama_perusahaan" class="block text-sm font-semibold mb-2">Nama Perusahaan</label>
+            <input 
+                type="text" 
+                id="nama_perusahaan" 
+                name="nama_perusahaan" 
+                value="{{ old('nama_perusahaan') }}" 
+                maxlength="100"
+                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                placeholder="Masukkan nama perusahaan (opsional)"
+            >
+            @error('nama_perusahaan')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
+        </div>
+
+        {{-- Company Address Field --}}
+        <div>
+            <label for="alamat_perusahaan" class="block text-sm font-semibold mb-2">Alamat Perusahaan</label>
+            <textarea 
+                id="alamat_perusahaan" 
+                name="alamat_perusahaan" 
+                rows="3"
+                maxlength="255"
+                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                placeholder="Masukkan alamat perusahaan (opsional)"
+            >{{ old('alamat_perusahaan') }}</textarea>
+            @error('alamat_perusahaan')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
+        </div>
+
         {{-- Status Selection --}}
         <div>
             <label for="status" class="block text-sm font-semibold mb-2">Status</label>

@@ -54,6 +54,23 @@
             @endif
         </div>
 
+        {{-- Company Information --}}
+        <div class="mb-6 pb-6 border-b border-gray-300">
+            <h3 class="text-lg font-semibold mb-3">Informasi Perusahaan</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-3 py-2 font-medium text-gray-700 w-40">Nama Perusahaan</td>
+                        <td class="px-3 py-2 break-words max-w-xs">{{ $validated['nama_perusahaan'] ?? '-' }}</td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-3 py-2 font-medium text-gray-700 w-40">Alamat Perusahaan</td>
+                        <td class="px-3 py-2 break-words max-w-2xl whitespace-normal">{{ $validated['alamat_perusahaan'] ?? '-' }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
         {{-- Members List --}}
         <div class="mb-6">
             <h3 class="text-lg font-semibold mb-3">
@@ -64,6 +81,14 @@
             @if(!empty($invalidNisns))
                 <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
                     <strong>NISN tidak valid:</strong> {{ implode(', ', $invalidNisns) }}
+                </div>
+            @endif
+
+            {{-- Already Used NISNs Warning --}}
+            @if(!empty($usedNisns))
+                <div class="mb-4 p-3 bg-orange-100 border border-orange-400 text-orange-700 rounded text-sm">
+                    <strong>⚠️ NISN sudah digunakan di squad lain:</strong> {{ implode(', ', $usedNisns) }}<br>
+                    <small>Siswa tidak dapat bergabung dengan lebih dari satu squad.</small>
                 </div>
             @endif
 
@@ -126,6 +151,8 @@
                 <input type="hidden" name="name" value="{{ $validated['name'] }}">
                 <input type="hidden" name="leader_nisn" value="{{ $validated['leader_nisn'] }}">
                 <input type="hidden" name="members_nisn" value="{{ $validated['members_nisn'] }}">
+                <input type="hidden" name="nama_perusahaan" value="{{ $validated['nama_perusahaan'] ?? '' }}">
+                <input type="hidden" name="alamat_perusahaan" value="{{ $validated['alamat_perusahaan'] ?? '' }}">
                 <input type="hidden" name="status" value="{{ $validated['status'] }}">
                 <button type="submit" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded transition">
                     Buat Squad

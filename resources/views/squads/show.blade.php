@@ -73,6 +73,23 @@
             @endif
         </div>
 
+        {{-- Company Information --}}
+        <div class="mb-6 pb-6 border-b border-gray-300">
+            <h3 class="text-lg font-semibold mb-3">Informasi Perusahaan</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-3 py-2 font-medium text-gray-700 w-40">Nama Perusahaan</td>
+                        <td class="px-3 py-2 break-words max-w-xs">{{ $squad->nama_perusahaan ?? '-' }}</td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-3 py-2 font-medium text-gray-700 w-40">Alamat Perusahaan</td>
+                        <td class="px-3 py-2 break-words max-w-2xl whitespace-normal">{{ $squad->alamat_perusahaan ?? '-' }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
         {{-- Members List --}}
         <div class="mb-6">
             <h3 class="text-lg font-semibold mb-3">
