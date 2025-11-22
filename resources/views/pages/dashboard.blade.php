@@ -75,6 +75,11 @@
                                     <p class="text-sm font-medium">22/11/2025</p>
                                 </div>
                             </div>
+                            <div class="mb-3 text-right">
+                                <button id="openModalAddAnggota" class="px-3 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm cursor-pointer transition">
+                                    Tambah Anggota
+                                </button>
+                            </div>
                             <div class="bg-card rounded-xl p-6 border border-border">
                                 <h4 class="font-semibold mb-4 flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users w-5 h-5 text-primary" aria-hidden="true">
@@ -230,6 +235,56 @@
         closeModalCreateSquad1.addEventListener('click', closeModal);
         closeModalCreateSquad2.addEventListener('click', closeModal);
         if (openModalCreateSquad) openModalCreateSquad.addEventListener('click', openModal);
+    </script>
+
+    <div id="modalAddAnggota2" data-state="closed" class="hidden fixed inset-0 z-20 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" data-aria-hidden="true" aria-hidden="true" style="pointer-events: auto;"></div>
+    <div id="modalAddAnggota1" class="hidden fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg sm:max-w-md" style="pointer-events: auto;">
+        
+        <div class="flex flex-col space-y-1.5 text-center sm:text-left">
+            <h2 id="radix-_r_g_" class="text-lg font-semibold leading-none tracking-tight">Cari Student</h2>
+            <p id="radix-_r_h_" class="text-sm text-muted-foreground">Cari student berdasarkan ID, Nama, Atau NISN</p>
+        </div>
+        <form action="{{ route('squads.store') }}" method="post"> 
+            @csrf
+            <div class="space-y-4 py-4">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="squadName">Search</label>
+                    <input name="name" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-ring" id="squadName" placeholder="Cari ID, NISN, atau Nama" value="" required>
+                </div>
+            </div>
+            
+            {{-- <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
+                <button id="closeModalCreateSquad1" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input shadow-sm hover:bg-red-500 hover:text-white cursor-pointer h-9 px-4 py-2">Batal</button>
+                <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 text-primary-foreground shadow hover:bg-blue-500 hover:text-white cursor-pointer h-9 px-4 py-2 bg-gradient-primary">Buat Squad</button>
+            </div> --}}
+            
+            <button id="closeModalAddAnggota" type="button" class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4" aria-hidden="true">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                </svg>
+                <span class="sr-only">Close</span>
+            </button>
+        </form>
+    </div>
+    <script>
+        const modalAddAnggota1 = document.getElementById('modalAddAnggota1');
+        const modalAddAnggota2 = document.getElementById('modalAddAnggota2');
+        const openModalAddAnggota = document.getElementById('openModalAddAnggota');
+        const closeModalAddAnggota = document.getElementById('closeModalAddAnggota');
+
+        function openModal() {
+            modalAddAnggota1.classList.remove('hidden');
+            modalAddAnggota2.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modalAddAnggota1.classList.add('hidden');
+            modalAddAnggota2.classList.add('hidden');
+        }
+
+        closeModalAddAnggota.addEventListener('click', closeModal);
+        if (openModalAddAnggota) openModalAddAnggota.addEventListener('click', openModal);
     </script>
 </div>
 
