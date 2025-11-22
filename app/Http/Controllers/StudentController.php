@@ -104,7 +104,7 @@ class StudentController extends Controller
     public function update(Request $request, Student $student)
     {
         $validated = $request->validate([
-            'nisn' => 'required|integer|unique:students,nisn,' . $student->id,
+            'nisn' => 'required|integer|digits_between:8,10|unique:students,nisn,' . $student->id,
             'name' => 'required|string|max:255',
             'major' => 'required|in:PPLG,TJKT,DKV,BCF',
             'password' => 'nullable|string|min:8|confirmed',
