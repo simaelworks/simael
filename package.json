@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "npx concurrently \"php artisan serve\" \"vite\""
+        "dev": "npx concurrently \"php artisan serve\" \"vite\"",
+        "dev:mobile": "npx concurrently \"php artisan serve --host=0.0.0.0 --port=8000\" \"vite\""
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
