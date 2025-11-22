@@ -23,62 +23,65 @@
         </div>
     @endif
 
-    {{-- 
-        Edit Form 
-        Sends PUT request to squads.update
-    --}}
+    {{-- Edit Form --}}
     <form method="POST" action="{{ route('squads.update', $squad) }}" class="space-y-4">
         @csrf
         @method('PUT')
 
         {{-- Squad Name Field --}}
         <div>
-            <label for="name" class="block text-sm font-semibold mb-2">Nama Squad (Max 20 huruf)</label>
-            <input 
-                type="text" 
-                id="name" 
-                name="name" 
-                value="{{ old('name', $squad->name) }}" 
-                required
-                minlength="3"
-                maxlength="20"
-                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                placeholder="Masukkan nama squad (3-20 huruf)"
-            >
+            <label for="name" class="block text-sm font-semibold mb-2">Nama Squad (Maksimal 20 Karakter)</label>
+            <div class="flex items-center gap-2">
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    value="{{ old('name', $squad->name) }}" 
+                    required
+                    minlength="3"
+                    maxlength="20"
+                    class="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                    placeholder="Masukkan nama squad (max 20 huruf)"
+                >
+                <span id="name-count" class="text-gray-600 text-sm whitespace-nowrap">0/20</span>
+            </div>
             @error('name')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
         </div>
 
         {{-- Leader NISN Field --}}
         <div>
-            <label for="leader_nisn" class="block text-sm font-semibold mb-2">NISN Leader</label>
+            <label for="leader_nisn" class="block text-sm font-semibold mb-2">NISN Leader (10 Angka)</label>
             <input 
                 type="text" 
                 id="leader_nisn" 
                 name="leader_nisn" 
-                value="{{ old('leader_nisn', $squad->leader_nisn) }}" 
-                required 
+                value="{{ old('leader_nisn', $squad->leaderStudent->nisn ?? '') }}" 
+                required
+                inputmode="numeric"
+                maxlength="10"
+                pattern="[0-9]*"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                placeholder="Masukkan NISN leader"
+                placeholder="Masukkan 10 angka NISN leader"
             >
             @error('leader_nisn')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
-            @if($squad->leader())
-                <p class="text-gray-600 text-xs mt-1">Leader saat ini: <strong>{{ $squad->leader()->name }}</strong></p>
+            @if($squad->leaderStudent)
+                <p class="text-gray-600 text-xs mt-1">Leader saat ini: <strong>{{ $squad->leaderStudent->name }}</strong> (hanya angka, 10 digit)</p>
             @endif
         </div>
 
-        {{-- Members NISN Field (Comma-separated) --}}
+        {{-- Members NISN Field --}}
         <div>
-            <label for="members_nisn" class="block text-sm font-semibold mb-2">NISN Anggota (Pisahkan dengan koma)</label>
+            <label for="members_nisn" class="block text-sm font-semibold mb-2">NISN Anggota (Wajib Ada Minimal 1)</label>
             <textarea 
                 id="members_nisn" 
                 name="members_nisn" 
                 rows="4"
-                required 
+                inputmode="numeric"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                placeholder="Contoh: 1234567890, 1234567891, 1234567892"
-            >{{ old('members_nisn', $squad->members_nisn) }}</textarea>
+                placeholder="Masukkan NISN anggota (hanya angka), pisahkan dengan koma&#10;Contoh: 1234567890, 0987654321, 1122334455"
+            >{{ old('members_nisn', $squad->members_nisn ?? '') }}</textarea>
             @error('members_nisn')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
-            <p class="text-gray-600 text-xs mt-1">Masukkan NISN anggota yang akan bergabung, pisahkan dengan koma</p>
+            <p class="text-gray-600 text-xs mt-1">Pisahkan setiap NISN dengan koma (hanya angka, setiap NISN 10 digit)</p>
         </div>
 
         {{-- Company Name Field --}}
@@ -89,7 +92,7 @@
                 id="nama_perusahaan" 
                 name="nama_perusahaan" 
                 value="{{ old('nama_perusahaan', $squad->nama_perusahaan) }}" 
-                maxlength="100"
+                maxlength="255"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 placeholder="Masukkan nama perusahaan (opsional)"
             >
@@ -139,4 +142,37 @@
     </form>
 </div>
 
+<script>
+    // Character counter for squad name
+    const nameInput = document.getElementById('name');
+    const nameCount = document.getElementById('name-count');
+    
+    if (nameInput) {
+        nameInput.addEventListener('input', function() {
+            nameCount.textContent = this.value.length + '/20';
+        });
+        
+        // Initialize counter on page load
+        nameCount.textContent = nameInput.value.length + '/20';
+    }
+    
+    // Only allow numbers for NISN inputs
+    const leaderNisn = document.getElementById('leader_nisn');
+    const membersNisn = document.getElementById('members_nisn');
+    
+    if (leaderNisn) {
+        leaderNisn.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    }
+    
+    if (membersNisn) {
+        membersNisn.addEventListener('input', function(e) {
+            // Allow only numbers and commas
+            this.value = this.value.replace(/[^0-9,\s]/g, '');
+        });
+    }
+</script>
+
 @endsection
+

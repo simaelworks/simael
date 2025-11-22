@@ -147,8 +147,8 @@
                             <div class="space-y-2 text-sm text-gray-700 mb-4">
                                 <div>
                                     <p class="font-semibold text-gray-600">Leader</p>
-                                    @if($squad->leader())
-                                        <p class="text-gray-800">{{ $squad->leader()->name }}</p>
+                                    @if($squad->leaderStudent)
+                                        <p class="text-gray-800">{{ $squad->leaderStudent->name }}</p>
                                         <p class="text-xs text-gray-500">NISN: {{ $squad->leader_nisn }}</p>
                                     @else
                                         <p class="text-red-500 text-xs">N/A</p>
@@ -157,7 +157,7 @@
 
                                 <div>
                                     <p class="font-semibold text-gray-600">Jumlah Anggota</p>
-                                    <p class="text-gray-800 text-lg font-bold">{{ $squad->memberCount() + 1 }} orang</p>
+                                    <p class="text-gray-800 text-lg font-bold">{{ $squad->totalMemberCount() }} orang</p>
                                 </div>
 
                                 <div>
@@ -206,53 +206,71 @@
         </div>
     </div>
 
-    {{-- JavaScript for filtering --}}
+    {{-- JavaScript for filtering and updating statistics --}}
     <script>
-        function filterStatus(status) {
-            const cards = document.querySelectorAll('.squad-row.card');
-            const emptyRow = document.querySelector('.empty-state-row');
-            const filterRows = document.querySelectorAll('.filter-row');
-            let visibleCount = 0;
+        // Store all squads in a JS object for client-side filtering
+        const squadsData = {
+            ALL: [
+                @foreach($allSquads as $squad)
+                {
+                    id: {{ $squad->id }},
+                    status: '{{ $squad->status }}',
+                    hasCompany: {{ !is_null($squad->nama_perusahaan) ? 'true' : 'false' }}
+                },
+                @endforeach
+            ]
+        };
 
-            // Update active filter styling
+        let currentFilter = 'ALL';
+
+        // Called when user selects a status from filter table
+        function filterStatus(status) {
+            currentFilter = status;
+
+            // Visual highlight on selected filter row
+            const filterRows = document.querySelectorAll('.filter-row');
             filterRows.forEach(row => {
                 if (row.getAttribute('data-status') === status) {
-                    row.classList.add('active-filter', 'bg-blue-300');
+                    row.classList.add('bg-blue-300', 'text-white', 'font-bold');
+                    row.classList.remove('hover:bg-blue-200', 'text-gray-900');
                 } else {
-                    row.classList.remove('active-filter', 'bg-blue-300');
+                    row.classList.remove('bg-blue-300', 'text-white', 'font-bold');
+                    row.classList.add('hover:bg-blue-200', 'text-gray-900');
                 }
             });
 
+            // Show/hide squad cards based on filter
+            const cards = document.querySelectorAll('.squad-row.card');
             cards.forEach(card => {
                 const cardStatus = card.getAttribute('data-status');
-                if (status === 'ALL' || cardStatus === status) {
-                    card.style.display = '';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
+                const shouldShow = (status === 'ALL' || cardStatus === status);
+                card.style.display = shouldShow ? '' : 'none';
             });
 
-            emptyRow.style.display = visibleCount === 0 ? '' : 'none';
-            document.getElementById('stat-filtered').textContent = visibleCount;
-
-            // Update major statistics
-            updateMajorStats(status);
+            // Refresh statistics
+            updateStatistics(status);
         }
 
-        function updateMajorStats(status) {
-            const majors = @json($majors);
-            majors.forEach(major => {
-                let count = 0;
-                document.querySelectorAll('.squad-row.card').forEach(card => {
-                    if (card.style.display !== 'none') {
-                        // Count squads in this major
-                        // For now, we'll show 0 as this is simplified
-                    }
-                });
-                document.querySelector('.stat-major-' + major).textContent = count;
-            });
+        // Recalculate statistics when filter changes
+        function updateStatistics(status) {
+            let filteredSquads = status === 'ALL'
+                ? squadsData.ALL
+                : squadsData.ALL.filter(s => s.status === status);
+
+            const hasCompany = filteredSquads.filter(s => s.hasCompany === true).length;
+            const noCompany = filteredSquads.filter(s => s.hasCompany === false).length;
+            const total = filteredSquads.length;
+
+            // Update DOM
+            document.getElementById('stat-has-company').textContent = hasCompany;
+            document.getElementById('stat-no-company').textContent = noCompany;
+            document.getElementById('stat-total').textContent = total;
         }
+
+        // Load with ALL filter active
+        document.addEventListener('DOMContentLoaded', function() {
+            filterStatus('ALL');
+        });
     </script>
 </div>
 @endsection

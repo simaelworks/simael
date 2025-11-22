@@ -53,19 +53,19 @@
         {{-- Leader Information --}}
         <div class="mb-6 pb-6 border-b border-gray-300">
             <h3 class="text-lg font-semibold mb-3">Leader</h3>
-            @if($squad->leader())
+            @if($squad->leaderStudent)
                 <table class="w-full text-sm">
                     <tr class="hover:bg-gray-50">
                         <td class="px-3 py-2 font-medium text-gray-700 w-32">Nama</td>
-                        <td class="px-3 py-2">{{ $squad->leader()->name }}</td>
+                        <td class="px-3 py-2">{{ $squad->leaderStudent->name }}</td>
                     </tr>
                     <tr class="hover:bg-gray-50">
                         <td class="px-3 py-2 font-medium text-gray-700">NISN</td>
-                        <td class="px-3 py-2">{{ $squad->leader()->nisn }}</td>
+                        <td class="px-3 py-2">{{ $squad->leaderStudent->nisn }}</td>
                     </tr>
                     <tr class="hover:bg-gray-50">
                         <td class="px-3 py-2 font-medium text-gray-700">Jurusan</td>
-                        <td class="px-3 py-2">{{ $squad->leader()->major }}</td>
+                        <td class="px-3 py-2">{{ $squad->leaderStudent->major }}</td>
                     </tr>
                 </table>
             @else
@@ -93,7 +93,7 @@
         {{-- Members List --}}
         <div class="mb-6">
             <h3 class="text-lg font-semibold mb-3">
-                Daftar Anggota ({{ $squad->memberCount() + 1 }} orang total)
+                Daftar Anggota ({{ $squad->totalMemberCount() }} orang total)
             </h3>
 
             {{-- Members Table --}}
@@ -109,31 +109,34 @@
                     </thead>
                     <tbody>
                         {{-- Leader --}}
-                        @if($squad->leader())
+                        @if($squad->leaderStudent)
                             <tr class="hover:bg-gray-50 bg-blue-50">
                                 <td class="border border-gray-300 px-3 py-2">Leader</td>
                                 <td class="border border-gray-300 px-3 py-2 font-semibold">
-                                    <a href="{{ route('students.show', $squad->leader()) }}" class="text-blue-600 hover:text-blue-800 hover:underline">
-                                        {{ $squad->leader()->name }}
+                                    <a href="{{ route('students.show', $squad->leaderStudent) }}" class="text-blue-600 hover:text-blue-800 hover:underline">
+                                        {{ $squad->leaderStudent->name }}
                                     </a>
                                 </td>
-                                <td class="border border-gray-300 px-3 py-2">{{ $squad->leader()->nisn }}</td>
-                                <td class="border border-gray-300 px-3 py-2">{{ $squad->leader()->major }}</td>
+                                <td class="border border-gray-300 px-3 py-2">{{ $squad->leaderStudent->nisn }}</td>
+                                <td class="border border-gray-300 px-3 py-2">{{ $squad->leaderStudent->major }}</td>
                             </tr>
                         @endif
 
                         {{-- Members --}}
-                        @forelse($squad->members() as $index => $member)
-                            <tr class="hover:bg-gray-50">
-                                <td class="border border-gray-300 px-3 py-2">{{ $index + 1 }}</td>
-                                <td class="border border-gray-300 px-3 py-2">
-                                    <a href="{{ route('students.show', $member) }}" class="text-blue-600 hover:text-blue-800 hover:underline">
-                                        {{ $member->name }}
-                                    </a>
-                                </td>
-                                <td class="border border-gray-300 px-3 py-2">{{ $member->nisn }}</td>
-                                <td class="border border-gray-300 px-3 py-2">{{ $member->major }}</td>
-                            </tr>
+                        @php $memberIndex = 1; @endphp
+                        @forelse($squad->members as $member)
+                            @if(!$squad->leaderStudent || $member->id !== $squad->leaderStudent->id)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="border border-gray-300 px-3 py-2">{{ $memberIndex++ }}</td>
+                                    <td class="border border-gray-300 px-3 py-2">
+                                        <a href="{{ route('students.show', $member) }}" class="text-blue-600 hover:text-blue-800 hover:underline">
+                                            {{ $member->name }}
+                                        </a>
+                                    </td>
+                                    <td class="border border-gray-300 px-3 py-2">{{ $member->nisn }}</td>
+                                    <td class="border border-gray-300 px-3 py-2">{{ $member->major }}</td>
+                                </tr>
+                            @endif
                         @empty
                             <tr>
                                 <td colspan="4" class="border border-gray-300 px-3 py-2 text-center text-gray-500">

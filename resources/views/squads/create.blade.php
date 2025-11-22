@@ -23,27 +23,27 @@
         </div>
     @endif
 
-    {{-- 
-        Create Form 
-        Sends POST request to squads.preview
-    --}}
+    {{-- Create Form --}}
     <form method="POST" action="{{ route('squads.preview') }}" class="space-y-4">
         @csrf
 
         {{-- Squad Name Field --}}
         <div>
-            <label for="name" class="block text-sm font-semibold mb-2">Nama Squad (Max 20 huruf)</label>
-            <input 
-                type="text" 
-                id="name" 
-                name="name" 
-                value="{{ old('name') }}" 
-                required
-                minlength="3"
-                maxlength="20"
-                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                placeholder="Masukkan nama squad (3-20 huruf)"
-            >
+            <label for="name" class="block text-sm font-semibold mb-2">Nama Squad</label>
+            <div class="flex items-center gap-2">
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    value="{{ old('name') ?? session('squad_form_data.name') }}" 
+                    required
+                    minlength="3"
+                    maxlength="20"
+                    class="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                    placeholder="Masukkan nama squad (max 20 huruf)"
+                >
+                <span id="name-count" class="text-gray-600 text-sm whitespace-nowrap">0/20</span>
+            </div>
             @error('name')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
         </div>
 
@@ -54,27 +54,29 @@
                 type="text" 
                 id="leader_nisn" 
                 name="leader_nisn" 
-                value="{{ old('leader_nisn') }}" 
-                required 
+                value="{{ old('leader_nisn') ?? session('squad_form_data.leader_nisn') }}" 
+                required
+                inputmode="numeric"
+                maxlength="10"
+                pattern="[0-9]*"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                placeholder="Masukkan NISN leader"
+                placeholder="Masukkan 10 angka NISN leader"
             >
             @error('leader_nisn')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
         </div>
 
-        {{-- Members NISN Field (Comma-separated) --}}
+        {{-- Members NISN Field --}}
         <div>
-            <label for="members_nisn" class="block text-sm font-semibold mb-2">NISN Anggota (Pisahkan dengan koma)</label>
+            <label for="members_nisn" class="block text-sm font-semibold mb-2">NISN Anggota (Wajib Ada Minimal 1)</label>
             <textarea 
                 id="members_nisn" 
                 name="members_nisn" 
                 rows="4"
-                required 
+                inputmode="numeric"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                placeholder="Contoh: 1234567890, 1234567891, 1234567892"
-            >{{ old('members_nisn') }}</textarea>
+                placeholder="Masukkan NISN anggota (hanya angka), pisahkan dengan koma&#10;Contoh: 1234567890, 0987654321, 1122334455"
+            >{{ old('members_nisn') ?? session('squad_form_data.members_nisn') }}</textarea>
             @error('members_nisn')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
-            <p class="text-gray-600 text-xs mt-1">Masukkan NISN anggota yang akan bergabung, pisahkan dengan koma</p>
         </div>
 
         {{-- Company Name Field --}}
@@ -84,8 +86,8 @@
                 type="text" 
                 id="nama_perusahaan" 
                 name="nama_perusahaan" 
-                value="{{ old('nama_perusahaan') }}" 
-                maxlength="100"
+                value="{{ old('nama_perusahaan') ?? session('squad_form_data.nama_perusahaan') }}" 
+                maxlength="255"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 placeholder="Masukkan nama perusahaan (opsional)"
             >
@@ -102,7 +104,7 @@
                 maxlength="255"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 placeholder="Masukkan alamat perusahaan (opsional)"
-            >{{ old('alamat_perusahaan') }}</textarea>
+            >{{ old('alamat_perusahaan') ?? session('squad_form_data.alamat_perusahaan') }}</textarea>
             @error('alamat_perusahaan')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
         </div>
 
@@ -115,10 +117,10 @@
                 required 
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
             >
-                <option value="pengajuan" {{ old('status') == 'pengajuan' ? 'selected' : '' }}>Pengajuan</option>
-                <option value="on-progress" {{ old('status') == 'on-progress' ? 'selected' : '' }}>On Progress</option>
-                <option value="diterima" {{ old('status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
-                <option value="unknown" {{ old('status') == 'unknown' ? 'selected' : '' }}>Unknown</option>
+                <option value="pengajuan" {{ (old('status') ?? session('squad_form_data.status')) == 'pengajuan' ? 'selected' : '' }}>Pengajuan</option>
+                <option value="on-progress" {{ (old('status') ?? session('squad_form_data.status')) == 'on-progress' ? 'selected' : '' }}>On Progress</option>
+                <option value="diterima" {{ (old('status') ?? session('squad_form_data.status')) == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                <option value="unknown" {{ (old('status') ?? session('squad_form_data.status')) == 'unknown' ? 'selected' : '' }}>Unknown</option>
             </select>
             @error('status')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
         </div>
@@ -135,4 +137,37 @@
     </form>
 </div>
 
+<script>
+    // Character counter for squad name
+    const nameInput = document.getElementById('name');
+    const nameCount = document.getElementById('name-count');
+    
+    if (nameInput) {
+        nameInput.addEventListener('input', function() {
+            nameCount.textContent = this.value.length + '/20';
+        });
+        
+        // Initialize counter on page load
+        nameCount.textContent = nameInput.value.length + '/20';
+    }
+    
+    // Only allow numbers for NISN inputs
+    const leaderNisn = document.getElementById('leader_nisn');
+    const membersNisn = document.getElementById('members_nisn');
+    
+    if (leaderNisn) {
+        leaderNisn.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    }
+    
+    if (membersNisn) {
+        membersNisn.addEventListener('input', function(e) {
+            // Allow only numbers and commas
+            this.value = this.value.replace(/[^0-9,\s]/g, '');
+        });
+    }
+</script>
+
 @endsection
+

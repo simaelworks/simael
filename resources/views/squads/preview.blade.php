@@ -52,6 +52,12 @@
             @else
                 <p class="text-red-500 font-semibold">Leader tidak ditemukan</p>
             @endif
+
+            @if($leaderAlreadyInSquad)
+                <div class="mt-3 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+                    <strong>⚠️ Warning:</strong> Leader sudah berada di squad lain!
+                </div>
+            @endif
         </div>
 
         {{-- Company Information --}}
@@ -77,18 +83,13 @@
                 Daftar Anggota ({{ count($memberStudents) + 1 }} orang total)
             </h3>
 
-            {{-- Invalid NISNs Warning --}}
-            @if(!empty($nisnsInvalid))
-                <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
-                    <strong>NISN tidak valid:</strong> {{ implode(', ', $nisnsInvalid) }}
-                </div>
-            @endif
-
-            {{-- Already Used NISNs Warning --}}
-            @if(!empty($nisnsAlreadyUsed))
+            {{-- Members Already In Squad Warning --}}
+            @if(count($membersAlreadyInSquad) > 0)
                 <div class="mb-4 p-3 bg-orange-100 border border-orange-400 text-orange-700 rounded text-sm">
-                    <strong>⚠️ NISN sudah digunakan di squad lain:</strong> {{ implode(', ', $nisnsAlreadyUsed) }}<br>
-                    <small>Siswa tidak dapat bergabung dengan lebih dari satu squad.</small>
+                    <strong>⚠️ Warning:</strong> Beberapa member sudah berada di squad lain:<br>
+                    @foreach($membersAlreadyInSquad as $member)
+                        <span class="inline-block mr-2">{{ $member->name }} ({{ $member->nisn }})</span>
+                    @endforeach
                 </div>
             @endif
 
@@ -135,7 +136,7 @@
 
     {{-- Action Buttons --}}
     <div class="flex justify-between gap-3">
-        <a href="{{ route('squads.create') }}" class="px-4 py-2 text-gray-700 font-semibold border border-gray-300 rounded hover:bg-gray-100 transition">
+        <a href="{{ route('squads.create') }}" class="px-4 py-2 text-gray-700 font-semibold border border-gray-300 rounded hover:bg-gray-100 transition" id="backToEditBtn">
             ← Kembali Edit
         </a>
 
