@@ -141,7 +141,7 @@
         <div class="flex-1">
 
             {{-- Table: students with squad --}}
-            <div class="mb-10">
+            <div class="mb-10" id="tableWithSquadWrapper">
                 <div class="flex justify-center">
 
                     {{-- Main students-with-squad table --}}
@@ -177,7 +177,7 @@
 
                         <tbody>
                             {{-- Loop through students with squads --}}
-                            @forelse($studentsWithSquad as $student)
+                            @foreach($studentsWithSquad as $student)
                                 <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}">
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->id }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->nisn }}</td>
@@ -201,21 +201,21 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @empty
-                                {{-- When no student exists --}}
-                                <tr>
-                                    <td colspan="7" class="border border-gray-300 px-2 py-2 text-center text-xs">
-                                        Belum ada murid yang memiliki squad.
-                                    </td>
-                                </tr>
-                            @endforelse
+                            @endforeach
+                            
+                            {{-- Empty state row - ALWAYS in DOM, shown/hidden by JS --}}
+                            <tr class="empty-state-row" style="display:none;">
+                                <td colspan="7" class="border border-gray-300 px-2 py-2 text-center text-xs">
+                                    Belum ada murid yang memiliki squad.
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
             {{-- Table: students without squad --}}
-            <div>
+            <div id="tableWithoutSquadWrapper">
                 <div class="flex justify-center">
 
                     {{-- Main table for students without squads --}}
@@ -242,7 +242,7 @@
                                 <th class="border border-gray-300 px-2 py-1 text-center w-10">ID</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-16">NISN</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center flex-1">Nama</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-16">Major</th>
+                                <th class="border border-gray-300 px-2 py-1 text-center w-16">Jurusan</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-20">Squad</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-16">Status</th>
                                 <th class="border border-gray-300 px-2 py-1 text-center w-20">Actions</th>
@@ -251,7 +251,7 @@
 
                         <tbody>
                             {{-- Loop through students without squads --}}
-                            @forelse($studentsWithoutSquad as $student)
+                            @foreach($studentsWithoutSquad as $student)
                                 <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}">
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->id }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->nisn }}</td>
@@ -274,14 +274,14 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @empty
-                                {{-- If no data exists --}}
-                                <tr>
-                                    <td colspan="7" class="border border-gray-300 px-2 py-2 text-center text-xs">
-                                        Tidak menemukan siswa tanpa squad.
-                                    </td>
-                                </tr>
-                            @endforelse
+                            @endforeach
+                            
+                            {{-- Empty state row - ALWAYS in DOM, shown/hidden by JS --}}
+                            <tr class="empty-state-row" style="display:none;">
+                                <td colspan="7" class="border border-gray-300 px-2 py-2 text-center text-xs">
+                                    Tidak menemukan murid tanpa squad.
+                                </td>
+                            </tr>
                         </tbody>
 
                     </table>
@@ -302,7 +302,8 @@
                 id: {{ $student->id }},
                 major: '{{ $student->major }}',
                 status: '{{ $student->status }}',
-                squad_id: {{ $student->squad_id ?? 'null' }}
+                squad_id: {{ $student->squad_id ?? 'null' }},
+                hasSquad: {{ $student->squad_id ? 'true' : 'false' }}
             },
             @endforeach
         ]
@@ -318,7 +319,7 @@
         const filterRows = document.querySelectorAll('.filter-row');
         filterRows.forEach(row => {
             if (row.getAttribute('data-major') === major) {
-                row.classList.add('bg-blue-400', 'text-blue', 'font-bold');
+                row.classList.add('bg-blue-400', 'text-white', 'font-bold');
                 row.classList.remove('hover:bg-blue-200', 'text-gray-900');
             } else {
                 row.classList.remove('bg-blue-400', 'text-white', 'font-bold');
@@ -327,10 +328,43 @@
         });
 
         // Show only students matching the selected major
-        const rows = document.querySelectorAll('.student-row');
-        rows.forEach(row => {
-            row.style.display = (major === 'ALL' || row.getAttribute('data-major') === major) ? '' : 'none';
+        const allRows = document.querySelectorAll('.student-row');
+        allRows.forEach(row => {
+            const shouldShow = (major === 'ALL' || row.getAttribute('data-major') === major);
+            row.style.display = shouldShow ? '' : 'none';
         });
+
+        // Always show table wrappers
+        document.getElementById('tableWithSquadWrapper').style.display = '';
+        document.getElementById('tableWithoutSquadWrapper').style.display = '';
+
+        // For WITH SQUAD table - check if this major has any students with squad in the DATA
+        let majorHasWithSquad = false;
+        for (let student of studentsData.ALL) {
+            if ((major === 'ALL' || student.major === major) && student.hasSquad === true) {
+                majorHasWithSquad = true;
+                break;
+            }
+        }
+        
+        const withSquadEmpty = document.querySelector('#tableWithSquad tbody tr.empty-state-row');
+        if (withSquadEmpty) {
+            withSquadEmpty.style.display = majorHasWithSquad ? 'none' : 'table-row';
+        }
+
+        // For WITHOUT SQUAD table - check if this major has any students without squad in the DATA
+        let majorHasWithoutSquad = false;
+        for (let student of studentsData.ALL) {
+            if ((major === 'ALL' || student.major === major) && student.hasSquad === false) {
+                majorHasWithoutSquad = true;
+                break;
+            }
+        }
+        
+        const withoutSquadEmpty = document.querySelector('#tableWithoutSquad tbody tr.empty-state-row');
+        if (withoutSquadEmpty) {
+            withoutSquadEmpty.style.display = majorHasWithoutSquad ? 'none' : 'table-row';
+        }
 
         // Refresh statistics
         updateStatistics(major);
