@@ -246,22 +246,20 @@
             <h2 id="radix-_r_g_" class="text-lg font-semibold leading-none tracking-tight">Cari Student</h2>
             <p id="radix-_r_h_" class="text-sm text-muted-foreground">Cari student berdasarkan ID, Nama, Atau NISN</p>
         </div>
-        <form action="{{ route('squads.store') }}" method="post"> 
-            @csrf
             <div class="space-y-4 py-4">
                 <div class="space-y-2">
                     <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="squadName">Search</label>
                     <input id="searchStudentInput" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-ring" id="squadName" placeholder="Cari ID, NISN, atau Nama" value="" required>
                     <div id="search-result" class="max-h-[50dvh] overflow-auto flex flex-col gap-2">
                         <template data-student-template>
-                            <div class="flex w-full border py-2 px-3 justify-between rounded-lg">
+                            <div class="flex w-full border py-2 px-3 justify-between rounded-lg items-center">
                                 <div>
                                     <div data-student-name class="text-sm"></div>
                                     <div data-student-info class="text-[10px]"></div>
                                 </div>
-                                <button class="px-2 py-1 text-sm border bg-blue-500 text-white hover:bg-blue-600 transition rounded-lg cursor-pointer">
-                                    Undang
-                                </button>
+                                    <button data-button class="px-2 py-1 text-sm border bg-blue-500 text-white hover:bg-blue-600 transition-all rounded-lg cursor-pointer">
+                                        Invite
+                                    </button>
                             </div>
                         </template>
                     </div>
@@ -280,7 +278,6 @@
                 </svg>
                 <span class="sr-only">Close</span>
             </button>
-        </form>
     </div>
     <script>
         const modalAddAnggota1 = document.getElementById('modalAddAnggota1');
@@ -316,23 +313,47 @@
             })
         })
 
+        function inviteStudent(student_id, btn) {
+            console.log('Inviting Student')
+            btn.classList.remove('bg-blue-500')
+            btn.classList.remove('hover:bg-blue-600');
+            btn.classList.remove('cursor-pointer');
+
+            btn.classList.add('bg-green-500');
+            btn.innerHTML = 'Invited';
+            btn.disabled = true;
+        }
+
+        @if ($squad)
         fetch('{{ route('getStudent') }}').then(res => res.json()).then(data => {
             students = data.map(student => {
                 const card = studentSearchCardTemplate.content.cloneNode(true).children[0];
 
                 const name = card.querySelector('[data-student-name]');
                 const info = card.querySelector('[data-student-info]');
+                const btn = card.querySelector('[data-button]');
 
-                // name.textContent = student.name;
                 name.innerHTML = student.name;
                 info.innerHTML = 'ID: ' + student.id + '   |   ' + ' NISN: ' + student.nisn;
-                // card.classList.add('hidden');
+
+                if (student.squad_id) {
+                    btn.disabled = true
+                    btn.innerHTML = 'In Squad'
+
+                    btn.classList.remove('bg-blue-500');
+                    btn.classList.remove('hover:bg-blue-600');
+                    btn.classList.remove('cursor-pointer');
+
+                    btn.classList.add('bg-gray-500');
+                }
+                btn.onclick = () => inviteStudent(student.id, btn)
 
                 searchResultContainer.append(card);
 
                 return { student: student, element: card }
             })
         })
+        @endif
     </script>
 </div>
 
