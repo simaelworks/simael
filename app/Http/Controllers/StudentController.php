@@ -62,7 +62,7 @@ class StudentController extends Controller
             'major' => 'required|in:PPLG,TJKT,DKV,BCF',
             'password' => 'required|string|min:8|confirmed',
             'status' => 'required|in:pending,verified',
-            'squad_id' => 'required|exists:squads,id',
+            'squad_id' => 'nullable|exists:squads,id',
         ]);
 
         // Secure password hashing
@@ -109,7 +109,7 @@ class StudentController extends Controller
             'major' => 'required|in:PPLG,TJKT,DKV,BCF',
             'password' => 'nullable|string|min:8|confirmed',
             'status' => 'required|in:pending,verified',
-            'squad_id' => 'required|exists:squads,id',
+            'squad_id' => 'nullable|exists:squads,id',
         ]);
 
         // Only update password if provided

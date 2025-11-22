@@ -85,7 +85,7 @@
             x-data="{
                 open: false,
                 selected: '{{ old('squad_id', $student->squad_id) }}',
-                label: '{{ $squads->firstWhere("id", old("squad_id", $student->squad_id))->name }}'
+                label: '{{ old('squad_id', $student->squad_id) ? $squads->firstWhere("id", old("squad_id", $student->squad_id))->name : "Select squad (Optional)" }}'
             }" 
             class="relative z-50"
         >
@@ -113,6 +113,17 @@
                        max-h-52 overflow-y-auto overflow-x-hidden z-50"
                 style="display:none"
             >
+                <li 
+                    class="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+                    @click="
+                        selected = '';
+                        label = 'Select squad (Optional)';
+                        open = false;
+                        $refs.real.value = '';
+                    "
+                >
+                    -- None --
+                </li>
                 @foreach ($squads as $squad)
                 <li 
                     class="px-3 py-2 hover:bg-blue-100 cursor-pointer"
@@ -130,6 +141,7 @@
 
             {{-- Hidden submit-friendly select --}}
             <select name="squad_id" x-ref="real" class="hidden">
+                <option value="">-- None --</option>
                 @foreach($squads as $squad)
                     <option 
                         value="{{ $squad->id }}" 
