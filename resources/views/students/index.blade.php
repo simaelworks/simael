@@ -22,7 +22,7 @@
     <div class="flex gap-4">
         
         {{-- LEFT SIDEBAR: Filters + Statistics --}}
-        <div class="sticky top-6 h-fit w-80">
+        <div class="sticky top-20 h-fit w-80 z-40">
 
             {{-- Filter by major --}}
             <table class="border border-gray-300 w-full text-sm">
