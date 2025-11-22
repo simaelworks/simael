@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->integer('nisn');
+            $table->bigInteger('nisn');
             $table->string('name');
             $table->enum('major', ['PPLG', 'TJKT', 'DKV', 'BCF']);
             $table->string('password');
