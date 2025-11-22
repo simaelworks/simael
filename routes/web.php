@@ -17,6 +17,9 @@ Route::controller(LoginRegisterController::class)->group(function() {
 
     Route::post('/logout', 'logout')->name('logout');
 });
+
 Route::resource('students', StudentController::class);
 
 Route::resource('squads', SquadController::class);
+
+Route::match(['get', 'post'], '/squads-preview', [SquadController::class, 'preview'])->name('squads.preview');

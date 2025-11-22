@@ -39,7 +39,7 @@
                     {{--ALL MAJORS: This is the TOTAL STUDENTS function based on the filter --}}
                     <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('ALL')" data-major="ALL">
                         <td class="border border-gray-300 px-3 py-2">Semua Jurusan</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
+                        <td class="border border-blue-300 px-3 py-2 text-center font-semibold">
                             {{ count($allStudents) }}
                         </td>
                     </tr>
