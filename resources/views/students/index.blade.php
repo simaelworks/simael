@@ -280,6 +280,9 @@
     const studentsData = {
         ALL: [
             @foreach($allStudents as $student)
+            @php
+                $squads = $student->getAssociatedSquads()->pluck('name')->toArray();
+            @endphp
             {
                 id: {{ $student->id }},
                 major: '{{ $student->major }}',
