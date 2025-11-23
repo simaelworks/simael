@@ -183,6 +183,7 @@
                     </div>
         @endif
     </main>
+        
     <div id="modal2" data-state="closed" class="hidden fixed inset-0 z-20 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" data-aria-hidden="true" aria-hidden="true" style="pointer-events: auto;"></div>
     <div id="modal1" class="hidden fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg sm:max-w-md" style="pointer-events: auto;">
         
@@ -239,6 +240,7 @@
         if (openModalCreateSquad) openModalCreateSquad.addEventListener('click', openModal);
     </script>
 
+    @if ($squad)
     <div id="modalAddAnggota2" data-state="closed" class="hidden fixed inset-0 z-20 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" data-aria-hidden="true" aria-hidden="true" style="pointer-events: auto;"></div>
     <div id="modalAddAnggota1" class="hidden fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg sm:max-w-md transition" style="pointer-events: auto;">
         
@@ -315,13 +317,28 @@
 
         function inviteStudent(student_id, btn) {
             console.log('Inviting Student')
-            btn.classList.remove('bg-blue-500')
-            btn.classList.remove('hover:bg-blue-600');
-            btn.classList.remove('cursor-pointer');
+            btn.innerHTML = 'Inviting..';
 
-            btn.classList.add('bg-green-500');
-            btn.innerHTML = 'Invited';
-            btn.disabled = true;
+            fetch('{{ route('inviteStudent') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    'squad_id': {{ $squad->id }},
+                    'student_id': student_id
+                })
+            })
+            .then(() => {
+                btn.classList.remove('bg-blue-500')
+                btn.classList.remove('hover:bg-blue-600');
+                btn.classList.remove('cursor-pointer');
+
+                btn.classList.add('bg-green-500');
+                btn.innerHTML = 'Invited';
+                btn.disabled = true;
+            })
         }
 
         @if ($squad)
@@ -355,6 +372,8 @@
         })
         @endif
     </script>
+
+    @endif
 </div>
 
 @endsection
