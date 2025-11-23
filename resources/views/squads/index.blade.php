@@ -147,9 +147,9 @@
                             <div class="space-y-2 text-sm text-gray-700 mb-4">
                                 <div>
                                     <p class="font-semibold text-gray-600">Leader</p>
-                                    @if($squad->leaderStudent)
-                                        <p class="text-gray-800">{{ $squad->leaderStudent->name }}</p>
-                                        <p class="text-xs text-gray-500">NISN: {{ $squad->leader_nisn }}</p>
+                                    @if($squad->leader)
+                                        <p class="text-gray-800">{{ $squad->leader->name }}</p>
+                                        <p class="text-xs text-gray-500">NISN: {{ $squad->leader->nisn }}</p>
                                     @else
                                         <p class="text-red-500 text-xs">N/A</p>
                                     @endif
