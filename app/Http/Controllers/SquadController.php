@@ -13,8 +13,16 @@ class SquadController extends Controller
      */
     public function index()
     {
-        $squads = Squad::withCount('users')->paginate(10);
-        return view('squads.index', compact('squads'));
+        $allSquads = Squad::all();
+
+        // Get all majors from all students
+        $majors = Student::distinct()
+            ->pluck('major')
+            ->filter()
+            ->sort()
+            ->values();
+
+        return view('squads.index', compact('allSquads', 'majors'));
     }
 
     /**
@@ -22,7 +30,80 @@ class SquadController extends Controller
      */
     public function create()
     {
-        return view('squads.create');
+        $availableStudents = Student::all();
+        // Note: Session data 'squad_form_data' is preserved for restoring form values after coming back from preview
+        return view('squads.create', compact('availableStudents'));
+    }
+
+    /**
+     * Show preview of squad before creating
+     */
+    public function preview(Request $request)
+    {
+        // If GET request, try to use old input from session
+        if ($request->isMethod('get') && !$request->hasAny(['name', 'leader_nisn', 'members_nisn', 'status'])) {
+            // Check if we have old input from validation failure
+            if (!$request->old('name')) {
+                return redirect()->route('squads.create');
+            }
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|min:3|max:20|unique:squads,name',
+            'leader_nisn' => 'required|numeric|digits:10|exists:students,nisn',
+            'members_nisn' => 'required|string',
+            'nama_perusahaan' => 'nullable|string|max:100',
+            'alamat_perusahaan' => 'nullable|string|max:255',
+            'status' => 'required|in:on-progress,diterima,pengajuan,unknown',
+        ]);
+
+        // Get leader data
+        $leader = Student::where('nisn', $validated['leader_nisn'])->first();
+
+        // Parse and validate members_nisn
+        $memberNisnsArray = array_map('trim', array_filter(explode(',', $validated['members_nisn'])));
+        
+        // Check if at least one member is provided
+        if (empty($memberNisnsArray)) {
+            return back()->withErrors(['members_nisn' => 'Minimal harus ada satu anggota']);
+        }
+        
+        // Check that all NISNs are exactly 10 digits
+        $invalidNisns = array_filter($memberNisnsArray, function ($nisn) {
+            return !preg_match('/^\d{10}$/', $nisn);
+        });
+        if (!empty($invalidNisns)) {
+            return back()->withErrors(['members_nisn' => 'Semua NISN anggota harus 10 angka: ' . implode(', ', $invalidNisns)]);
+        }
+        
+        $memberStudents = Student::whereIn('nisn', $memberNisnsArray)->get();
+        $nisnsFoundInDb = $memberStudents->pluck('nisn')->toArray();
+        $idsInvalid = array_diff($memberNisnsArray, $nisnsFoundInDb);
+
+        if (!empty($idsInvalid)) {
+            return back()->withErrors(['members_nisn' => 'NISN tidak ditemukan: ' . implode(', ', $idsInvalid)]);
+        }
+
+        // Check if any NISN is already used in other squads BEFORE going to preview
+        $idsForValidation = array_merge([$validated['leader_nisn']], $memberNisnsArray);
+        $idsAlreadyUsed = $this->getUsedIds($idsForValidation);
+
+        if (!empty($idsAlreadyUsed)) {
+            return back()->withErrors(['members_nisn' => 'NISN sudah digunakan di squad lain: ' . implode(', ', $idsAlreadyUsed)]);
+        }
+
+        // TIDAK ada NISN yang terpakai, simpan input ke session untuk restore jika kembali dari preview
+        $request->session()->put('squad_form_data', $validated);
+
+        // Check if leader is already in a squad
+        $leaderAlreadyInSquad = in_array($validated['leader_nisn'], $idsAlreadyUsed);
+
+        // Check which members are already in squads
+        $membersAlreadyInSquad = $memberStudents->filter(function ($student) use ($idsAlreadyUsed) {
+            return in_array($student->nisn, $idsAlreadyUsed);
+        });
+
+        return view('squads.preview', compact('validated', 'leader', 'memberStudents', 'idsInvalid', 'idsAlreadyUsed', 'leaderAlreadyInSquad', 'membersAlreadyInSquad'));
     }
 
     /**
@@ -30,29 +111,76 @@ class SquadController extends Controller
      */
     public function store(Request $request)
     {
-        // Cek apakah student sudah punya squad
-        $student = Student::find(session('student_id'));
+        $validated = $request->validate([
+            'name' => 'required|string|min:3|max:20|unique:squads,name',
+            'leader_nisn' => 'required|numeric|digits:10|exists:students,nisn',
+            'members_nisn' => 'required|string',
+            'nama_perusahaan' => 'nullable|string|max:100',
+            'alamat_perusahaan' => 'nullable|string|max:255',
+            'status' => 'required|in:on-progress,diterima,pengajuan,unknown',
+        ]);
+
+        // Validate member_nisn format and that they are exactly 10 digits
+        $memberNisnsArray = array_map('trim', array_filter(explode(',', $validated['members_nisn'])));
         
-        if ($student->squad_id) {
-            return redirect()->back()->with('error', 'Anda sudah tergabung dalam squad lain!');
+        // Check if at least one member is provided
+        if (empty($memberNisnsArray)) {
+            return back()->withErrors(['members_nisn' => 'Minimal harus ada satu anggota']);
+        }
+        
+        // Check that all NISNs are exactly 10 digits
+        $invalidNisns = array_filter($memberNisnsArray, function ($nisn) {
+            return !preg_match('/^\d{10}$/', $nisn);
+        });
+        if (!empty($invalidNisns)) {
+            return back()->withErrors(['members_nisn' => 'Semua NISN anggota harus 10 angka: ' . implode(', ', $invalidNisns)]);
+        }
+        
+        $memberStudents = Student::whereIn('nisn', $memberNisnsArray)->get();
+        $nisnsFoundInDb = $memberStudents->pluck('nisn')->toArray();
+        $idsInvalid = array_diff($memberNisnsArray, $nisnsFoundInDb);
+
+        if (!empty($idsInvalid)) {
+            return back()->withErrors(['members_nisn' => 'NISN tidak ditemukan: ' . implode(', ', $idsInvalid)]);
         }
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:squads',
-            'description' => 'nullable|string|max:500',
-        ]);
+        // Check if any ID is already used in other squads
+        $idsForValidation = array_merge([$validated['leader_nisn']], $memberNisnsArray);
+        $idsAlreadyUsed = $this->getUsedIds($idsForValidation);
 
-        // Buat squad baru dengan leader adalah student yang membuat
+        if (!empty($idsAlreadyUsed)) {
+            return back()->withErrors(['members_nisn' => 'NISN sudah digunakan di squad lain: ' . implode(', ', $idsAlreadyUsed)]);
+        }
+
+        // Get leader student
+        $leaderStudent = Student::where('nisn', $validated['leader_nisn'])->first();
+
+        // Create squad with both legacy and new relationship data
         $squad = Squad::create([
             'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'leader_id' => $student->id,
+            'leader_id' => $leaderStudent->id,
+            'leader_nisn' => $validated['leader_nisn'],
+            'members_nisn' => !empty($memberNisnsArray) ? implode(', ', $memberNisnsArray) : '',
+            'nama_perusahaan' => $validated['nama_perusahaan'] ?? null,
+            'alamat_perusahaan' => $validated['alamat_perusahaan'] ?? null,
+            'status' => $validated['status'],
         ]);
 
-        // Update student menjadi anggota squad
-        $student->update(['squad_id' => $squad->id]);
+        // Update students' squad_id to assign them to this squad
+        // Assign leader to squad
+        if ($leaderStudent) {
+            $leaderStudent->update(['squad_id' => $squad->id]);
+        }
+        
+        // Assign members to squad
+        if (!empty($memberNisnsArray)) {
+            Student::whereIn('nisn', $memberNisnsArray)->update(['squad_id' => $squad->id]);
+        }
 
-        return redirect()->route('dashboard')->with('success', 'Squad berhasil dibuat!');
+        // Clear session data after successful squad creation
+        session()->forget('squad_form_data');
+
+        return redirect()->route('squads.index')->with('success', 'Squad berhasil dibuat!');
     }
 
     /**
@@ -60,10 +188,7 @@ class SquadController extends Controller
      */
     public function show(Squad $squad)
     {
-        $squad->load('users', 'leader');
-        $isLeader = auth()->user()->id === $squad->leader_id;
-        
-        return view('squads.show', compact('squad', 'isLeader'));
+        return view('squads.show', compact('squad'));
     }
 
     /**
@@ -71,11 +196,6 @@ class SquadController extends Controller
      */
     public function edit(Squad $squad)
     {
-        // Hanya leader yang bisa edit
-        if (auth()->user()->id !== $squad->leader_id) {
-            return redirect()->back()->with('error', 'Hanya leader squad yang bisa mengedit!');
-        }
-
         return view('squads.edit', compact('squad'));
     }
 
@@ -84,19 +204,77 @@ class SquadController extends Controller
      */
     public function update(Request $request, Squad $squad)
     {
-        // Cek apakah user adalah leader
-        if (auth()->user()->id !== $squad->leader_id) {
-            return redirect()->back()->with('error', 'Hanya leader squad yang bisa mengedit!');
-        }
-
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:squads,name,' . $squad->id,
-            'description' => 'nullable|string|max:500',
+            'name' => 'required|string|min:3|max:20|unique:squads,name,' . $squad->id,
+            'leader_nisn' => 'required|numeric|digits:10|exists:students,nisn',
+            'members_nisn' => 'required|string',
+            'nama_perusahaan' => 'nullable|string|max:100',
+            'alamat_perusahaan' => 'nullable|string|max:255',
+            'status' => 'required|in:on-progress,diterima,pengajuan,unknown',
         ]);
 
-        $squad->update($validated);
+        // Validate member_nisn format and that they are exactly 10 digits
+        $memberNisnsArray = array_map('trim', array_filter(explode(',', $validated['members_nisn'])));
+        
+        // Check if at least one member is provided
+        if (empty($memberNisnsArray)) {
+            return back()->withErrors(['members_nisn' => 'Minimal harus ada satu anggota']);
+        }
+        
+        // Check that all NISNs are exactly 10 digits
+        $invalidNisns = array_filter($memberNisnsArray, function ($nisn) {
+            return !preg_match('/^\d{10}$/', $nisn);
+        });
+        if (!empty($invalidNisns)) {
+            return back()->withErrors(['members_nisn' => 'Semua NISN anggota harus 10 angka: ' . implode(', ', $invalidNisns)]);
+        }
+        
+        $memberStudents = Student::whereIn('nisn', $memberNisnsArray)->get();
+        $nisnsFoundInDb = $memberStudents->pluck('nisn')->toArray();
+        $idsInvalid = array_diff($memberNisnsArray, $nisnsFoundInDb);
 
-        return redirect()->route('squads.show', $squad->id)->with('success', 'Squad berhasil diperbarui!');
+        if (!empty($idsInvalid)) {
+            return back()->withErrors(['members_nisn' => 'NISN tidak ditemukan: ' . implode(', ', $idsInvalid)]);
+        }
+
+        // Check if any ID is already used in OTHER squads (exclude current squad)
+        $idsForValidation = array_merge([$validated['leader_nisn']], $memberNisnsArray);
+        $idsAlreadyUsed = $this->getUsedIdsExcept($idsForValidation, $squad->id);
+
+        if (!empty($idsAlreadyUsed)) {
+            return back()->withErrors(['members_nisn' => 'NISN sudah digunakan di squad lain: ' . implode(', ', $idsAlreadyUsed)]);
+        }
+
+        // Get leader student
+        $leaderStudent = Student::where('nisn', $validated['leader_nisn'])->first();
+
+        // Update squad with both legacy and new relationship data
+        $squad->update([
+            'name' => $validated['name'],
+            'leader_id' => $leaderStudent->id,
+            'leader_nisn' => $validated['leader_nisn'],
+            'members_nisn' => !empty($memberNisnsArray) ? implode(', ', $memberNisnsArray) : '',
+            'nama_perusahaan' => $validated['nama_perusahaan'] ?? null,
+            'alamat_perusahaan' => $validated['alamat_perusahaan'] ?? null,
+            'status' => $validated['status'],
+        ]);
+
+        // Update students' squad_id assignments
+        // First, clear squad_id for students who were in this squad but are no longer members
+        Student::where('squad_id', $squad->id)->update(['squad_id' => null]);
+        
+        // Assign leader to squad
+        if ($leaderStudent) {
+            $leaderStudent->update(['squad_id' => $squad->id]);
+        }
+        
+        // Then, assign squad_id to the new members
+        if (!empty($memberNisnsArray)) {
+            Student::whereIn('nisn', $memberNisnsArray)->update(['squad_id' => $squad->id]);
+        }
+
+        // Redirect to students index to reflect changes in student list
+        return redirect()->route('students.index')->with('success', 'Squad berhasil diperbarui! Data murid telah diperbarui.');
     }
 
     /**
@@ -104,123 +282,53 @@ class SquadController extends Controller
      */
     public function destroy(Squad $squad)
     {
-        // Hanya leader yang bisa hapus squad
-        if (auth()->user()->id !== $squad->leader_id) {
-            return redirect()->back()->with('error', 'Hanya leader squad yang bisa menghapus!');
-        }
-
-        // Lepaskan semua anggota dari squad
-        Student::where('squad_id', $squad->id)->update(['squad_id' => null]);
-
         $squad->delete();
-
         return redirect()->route('squads.index')->with('success', 'Squad berhasil dihapus!');
     }
 
     /**
-     * Show squad invitations for student
+     * Get list of NISNs that are already used in other squads
      */
-    public function invitations()
+    private function getUsedIds(array $nisnsToCheck)
     {
-        $student = auth()->user();
-        
-        // Ambil semua squad kecuali yang sudah joined
-        $invitations = Squad::where(function ($query) use ($student) {
-            $query->doesntHave('users')
-                  ->orWhereHas('users', function ($q) use ($student) {
-                      $q->where('students.id', '!=', $student->id);
-                  });
-        })->paginate(10);
+        $nisnsAlreadyUsed = [];
 
-        return view('squads.invitations', compact('invitations'));
+        foreach ($nisnsToCheck as $currentNisn) {
+            // Check in leader_nisn
+            if (Squad::where('leader_nisn', $currentNisn)->exists()) {
+                $nisnsAlreadyUsed[] = $currentNisn;
+                continue;
+            }
+
+            // Check in members_nisn (comma-separated string)
+            if (Squad::where('members_nisn', 'LIKE', "%$currentNisn%")->exists()) {
+                $nisnsAlreadyUsed[] = $currentNisn;
+            }
+        }
+
+        return $nisnsAlreadyUsed;
     }
 
     /**
-     * Student join squad
+     * Get list of NISNs that are already used in OTHER squads (excluding given squad ID)
      */
-    public function join(Squad $squad)
+    private function getUsedIdsExcept(array $nisnsToCheck, $excludeSquadId)
     {
-        $student = auth()->user();
+        $nisnsAlreadyUsed = [];
 
-        // Cek apakah student sudah punya squad
-        if ($student->squad_id) {
-            return redirect()->back()->with('error', 'Anda sudah tergabung dalam squad lain!');
+        foreach ($nisnsToCheck as $currentNisn) {
+            // Check in leader_nisn (exclude current squad)
+            if (Squad::where('leader_nisn', $currentNisn)->where('id', '!=', $excludeSquadId)->exists()) {
+                $nisnsAlreadyUsed[] = $currentNisn;
+                continue;
+            }
+
+            // Check in members_nisn (comma-separated string, exclude current squad)
+            if (Squad::where('members_nisn', 'LIKE', "%$currentNisn%")->where('id', '!=', $excludeSquadId)->exists()) {
+                $nisnsAlreadyUsed[] = $currentNisn;
+            }
         }
 
-        // Join squad
-        $student->update(['squad_id' => $squad->id]);
-
-        return redirect()->route('squads.show', $squad->id)->with('success', 'Berhasil bergabung ke squad!');
-    }
-
-    /**
-     * Leader remove member from squad
-     */
-    public function removeMember(Squad $squad, Student $student)
-    {
-        // Cek apakah user adalah leader
-        if (auth()->user()->id !== $squad->leader_id) {
-            return redirect()->back()->with('error', 'Hanya leader squad yang bisa mengeluarkan anggota!');
-        }
-
-        // Cek apakah student adalah anggota squad
-        if ($student->squad_id !== $squad->id) {
-            return redirect()->back()->with('error', 'Student bukan anggota squad ini!');
-        }
-
-        // Tidak bisa mengeluarkan leader
-        if ($student->id === $squad->leader_id) {
-            return redirect()->back()->with('error', 'Tidak bisa mengeluarkan leader squad!');
-        }
-
-        // Lepaskan student dari squad
-        $student->update(['squad_id' => null]);
-
-        return redirect()->back()->with('success', 'Anggota berhasil dikeluarkan dari squad!');
-    }
-
-    /**
-     * Student leave squad
-     */
-    public function leave(Squad $squad)
-    {
-        $student = auth()->user();
-
-        // Cek apakah student adalah anggota squad
-        if ($student->squad_id !== $squad->id) {
-            return redirect()->back()->with('error', 'Anda bukan anggota squad ini!');
-        }
-
-        // Leader tidak bisa leave, harus delete squad
-        if ($student->id === $squad->leader_id) {
-            return redirect()->back()->with('error', 'Leader tidak bisa meninggalkan squad. Hapus squad jika ingin keluar!');
-        }
-
-        // Lepaskan dari squad
-        $student->update(['squad_id' => null]);
-
-        return redirect()->route('squads.index')->with('success', 'Anda berhasil meninggalkan squad!');
-    }
-
-    /**
-     * Dashboard untuk student
-     */
-    public function dashboard()
-    {
-        $student = auth()->user();
-        
-        if ($student->squad_id) {
-            $squad = $student->squad()->with('leader', 'users')->first();
-            $isLeader = $student->id === $squad->leader_id;
-            
-            return view('squads.dashboard', compact('squad', 'isLeader'));
-        }
-
-        // Jika belum punya squad, tampilkan pilihan
-        $availableSquads = Squad::whereDoesntHave('users', function ($q) use ($student) {
-            $q->where('students.id', $student->id);
-        })->paginate(10);
-
-        return view('squads.dashboard', compact('availableSquads'));
+        return $nisnsAlreadyUsed;
     }
 }

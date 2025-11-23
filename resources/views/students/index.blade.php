@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-6">
-    <h1 class="text-3xl font-bold mb-6">Siswa/Siswi SMK Media Informatika</h1>
+<div class="mt-4 p-4 md:p-6">
+    <h1 class="text-2xl md:text-3xl font-bold mb-6">Siswa/Siswi</h1>
 
     {{-- Success message after CRUD actions --}}
     @if(session('success'))
@@ -19,10 +19,10 @@
     </div>
 
     {{-- Main layout: Sidebar filters + main student tables --}}
-    <div class="flex gap-4">
+    <div class="flex flex-col gap-6 lg:flex-row lg:gap-4">
         
         {{-- LEFT SIDEBAR: Filters + Statistics --}}
-        <div class="sticky top-20 h-fit w-80 z-40">
+        <div class="w-full lg:w-80 lg:shrink-0">
 
             {{-- Filter by major --}}
             <table class="border border-gray-300 w-full text-sm">
@@ -39,7 +39,7 @@
                     {{--ALL MAJORS: This is the TOTAL STUDENTS function based on the filter --}}
                     <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('ALL')" data-major="ALL">
                         <td class="border border-gray-300 px-3 py-2">Semua Jurusan</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
+                        <td class="border border-blue-300 px-3 py-2 text-center font-semibold">
                             {{ count($allStudents) }}
                         </td>
                     </tr>
@@ -102,89 +102,74 @@
                         </td>
                     </tr>
 
-                    {{-- Total students --}}
+                    {{-- Count students with squad --}}
                     <tr class="bg-blue-50">
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Total Murid</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-total">
-                            {{ count($allStudents) }}
-                        </td>
-                    </tr>
-
-                    {{-- Count students with a squad --}}
-                    <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Dalam Squad</td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Murid Memiliki Squad</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-with-squad">
-                            {{ count($studentsWithSquad) }}
+                            0
                         </td>
                     </tr>
 
-                    {{-- Count students without a squad --}}
-                    <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Tanpa Squad</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-without-squad">
-                            {{ count($studentsWithoutSquad) }}
-                        </td>
-                    </tr>
-
-                    {{-- Number of total squads --}}
+                    {{-- Count students without squad --}}
                     <tr class="bg-green-50">
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Jumlah Squads</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-squads">
-                            {{ $totalSquads }}
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Murid Belum Squad</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-without-squad">
+                            0
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        {{-- RIGHT SIDE: Students tables--}}
-        <div class="flex-1">
-
-            {{-- Table: students with squad --}}
-            <div class="mb-10" id="tableWithSquadWrapper">
-                <div class="flex justify-center">
-
-                    {{-- Main students-with-squad table --}}
-                    <table class="border border-gray-300 w-full text-xs table-fixed" id="tableWithSquad">
-                        <colgroup>
-                            <col style="width:8%">
-                            <col style="width:12%">
-                            <col style="width:30%">
-                            <col style="width:12%">
-                            <col style="width:12%">
-                            <col style="width:8%">
-                            <col style="width:18%">
-                        </colgroup>
+        {{-- RIGHT SIDE: Students tables --}}
+        <div class="flex-1 w-full">
+            
+            {{-- Section 1: students with squad --}}
+            <div class="mb-8">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-blue-100 border border-gray-300 px-4 py-2 mb-0">Murid yang sudah memiliki squad</h2>
+                
+                <div id="tableWithSquadWrapper" class="overflow-x-auto border border-gray-300 border-t-0 rounded-b">
+                    <div class="min-w-max">
+                        {{-- Main students-with-squad table --}}
+                        <table id="tableWithSquad" class="border-collapse w-full text-xs">
 
                         <thead class="bg-blue-100">
                             <tr>
-                                <th colspan="7" class="border border-gray-300 px-2 py-2 text-center font-semibold">
-                                    Murid yang telah memiliki squad
-                                </th>
-                            </tr>
-
-                            {{-- Table headings --}}
-                            <tr>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-10">ID</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-16">NISN</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center flex-1">Nama</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-16">Jurusan</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-20">Squad</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-16">Status</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-20">Actions</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">ID</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">NISN</th>
+                                <th class="border border-gray-300 px-2 py-2 text-left whitespace-nowrap">Nama</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">Jurusan</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">Squad</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">Status</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">Dibuat</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">Actions</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             {{-- Loop through students with squads --}}
-                            @foreach($studentsWithSquad as $student)
-                                <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}">
-                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->id }}</td>
-                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->nisn }}</td>
-                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->name }}</td>
-                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->major }}</td>
-                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->squad->name ?? 'N/A' }}</td>
-                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->status }}</td>
+                            @foreach($allStudents as $student)
+                                @if(!is_null($student->squad_id))
+                                <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}" data-has-squad="true">
+                                    <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->id }}</td>
+                                    <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->nisn }}</td>
+                                    <td class="border border-gray-300 px-2 py-1 text-left pl-4 min-w-max">{{ $student->name }}</td>
+                                    <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->major }}</td>
+                                    <td class="border border-gray-300 px-2 py-1 text-center text-xs">
+                                        @if($student->squad_id && $student->squad)
+                                            <span class="px-2 py-0.5 bg-blue-100 text-blue-800 font-semibold rounded truncate inline-block max-w-xs" title="{{ $student->squad->name }}">{{ $student->squad->name }}</span>
+                                        @else
+                                            <span class="text-gray-400 text-xs">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="border border-gray-300 px-2 py-1 text-center">
+                                        @if($student->status === 'verified')
+                                            <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">Verified</span>
+                                        @else
+                                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">Pending</span>
+                                        @endif
+                                    </td>
+                                    <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->created_at->format('d/m/Y') }}</td>
 
                                     {{-- Actions: view/edit/delete --}}
                                     <td class="border border-gray-300 px-2 py-1 text-center">
@@ -201,64 +186,62 @@
                                         </div>
                                     </td>
                                 </tr>
+                                @endif
                             @endforeach
                             
                             {{-- Empty state row - ALWAYS in DOM, shown/hidden by JS --}}
                             <tr class="empty-state-row" style="display:none;">
-                                <td colspan="7" class="border border-gray-300 px-2 py-2 text-center text-xs">
+                                <td colspan="8" class="border border-gray-300 px-2 py-2 text-center text-xs">
                                     Belum ada murid yang memiliki squad.
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
 
-            {{-- Table: students without squad --}}
-            <div id="tableWithoutSquadWrapper">
-                <div class="flex justify-center">
-
-                    {{-- Main table for students without squads --}}
-                    <table class="border border-gray-300 w-full text-xs table-fixed" id="tableWithoutSquad">
-                        <colgroup>
-                            <col style="width:8%">
-                            <col style="width:12%">
-                            <col style="width:30%">
-                            <col style="width:12%">
-                            <col style="width:12%">
-                            <col style="width:8%">
-                            <col style="width:18%">
-                        </colgroup>
-
+            {{-- Section 2: students without squad --}}
+            <div class="mb-8">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-green-100 border border-gray-300 px-4 py-2 mb-0">Murid yang belum memiliki squad</h2>
+                
+                <div id="tableWithoutSquadWrapper" class="overflow-x-auto border border-gray-300 border-t-0 rounded-b">
+                    <div class="min-w-max">
+                        {{-- Main table for students without squads --}}
+                        <table id="tableWithoutSquad" class="border-collapse w-full text-xs">
                         <thead class="bg-blue-100">
                             <tr>
-                                <th colspan="7" class="border border-gray-300 px-2 py-2 text-center font-semibold">
-                                    Murid yang belum memiliki squad
-                                </th>
-                            </tr>
-
-                            {{-- Table header columns --}}
-                            <tr>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-10">ID</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-16">NISN</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center flex-1">Nama</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-16">Jurusan</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-20">Squad</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-16">Status</th>
-                                <th class="border border-gray-300 px-2 py-1 text-center w-20">Actions</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">ID</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">NISN</th>
+                                <th class="border border-gray-300 px-2 py-2 text-left whitespace-nowrap">Nama</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">Jurusan</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">Squad</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">Status</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">Dibuat</th>
+                                <th class="border border-gray-300 px-2 py-2 text-center whitespace-nowrap">Actions</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             {{-- Loop through students without squads --}}
-                            @foreach($studentsWithoutSquad as $student)
-                                <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}">
+                            @foreach($allStudents as $student)
+                                @if(is_null($student->squad_id))
+                                <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}" data-has-squad="false">
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->id }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->nisn }}</td>
-                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->name }}</td>
+                                    <td class="border border-gray-300 px-2 py-1 text-left pl-4">{{ $student->name }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->major }}</td>
-                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->squad->name ?? 'N/A' }}</td>
-                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->status }}</td>
+                                    <td class="border border-gray-300 px-2 py-1 text-center text-xs">
+                                        <span class="text-gray-500">-</span>
+                                    </td>
+                                    <td class="border border-gray-300 px-2 py-1 text-center">
+                                        @if($student->status === 'verified')
+                                            <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">Verified</span>
+                                        @else
+                                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">Pending</span>
+                                        @endif
+                                    </td>
+                                    <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->created_at->format('d/m/Y') }}</td>
 
                                     {{-- Action buttons --}}
                                     <td class="border border-gray-300 px-2 py-1 text-center">
@@ -274,11 +257,12 @@
                                         </div>
                                     </td>
                                 </tr>
+                                @endif
                             @endforeach
                             
                             {{-- Empty state row - ALWAYS in DOM, shown/hidden by JS --}}
                             <tr class="empty-state-row" style="display:none;">
-                                <td colspan="7" class="border border-gray-300 px-2 py-2 text-center text-xs">
+                                <td colspan="8" class="border border-gray-300 px-2 py-2 text-center text-xs">
                                     Tidak menemukan murid tanpa squad.
                                 </td>
                             </tr>
@@ -287,10 +271,8 @@
                     </table>
                 </div>
             </div>
-
         </div>
     </div>
-</div>
 
 {{-- JS for filtering and updating statistics --}}
 <script>
@@ -298,12 +280,14 @@
     const studentsData = {
         ALL: [
             @foreach($allStudents as $student)
+            @php
+                $squads = $student->getAssociatedSquads()->pluck('name')->toArray();
+            @endphp
             {
                 id: {{ $student->id }},
                 major: '{{ $student->major }}',
                 status: '{{ $student->status }}',
-                squad_id: {{ $student->squad_id ?? 'null' }}, 
-                hasSquad: {{ $student->squad_id ? 'true' : 'false' }}
+                hasSquad: {{ is_null($student->squad_id) ? 'false' : 'true' }}
             },
             @endforeach
         ]
@@ -380,22 +364,14 @@
 
         const approved = filteredStudents.filter(s => s.status === 'verified').length;
         const pending = filteredStudents.filter(s => s.status === 'pending').length;
-        const withSquad = filteredStudents.filter(s => s.squad_id !== null).length;
-        const withoutSquad = filteredStudents.filter(s => s.squad_id === null).length;
-        const total = filteredStudents.length;
-
-        // Unique squad count
-        const uniqueSquads = new Set(
-            filteredStudents.filter(s => s.squad_id !== null).map(s => s.squad_id)
-        ).size;
+        const withSquad = filteredStudents.filter(s => s.hasSquad === true).length;
+        const withoutSquad = filteredStudents.filter(s => s.hasSquad === false).length;
 
         // Update DOM
         document.getElementById('stat-approved').textContent = approved;
         document.getElementById('stat-pending').textContent = pending;
-        document.getElementById('stat-total').textContent = total;
         document.getElementById('stat-with-squad').textContent = withSquad;
         document.getElementById('stat-without-squad').textContent = withoutSquad;
-        document.getElementById('stat-squads').textContent = uniqueSquads;
     }
 
     // Load with ALL filter active
