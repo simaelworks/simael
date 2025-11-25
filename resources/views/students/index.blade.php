@@ -62,42 +62,30 @@
                 <thead class="bg-green-100">
                     <tr>
                         <th colspan="2" class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            Statistik
+                            Statistik (Data yang tampil di layar & filter)
                         </th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    {{-- Count verified students --}}
                     <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Akun Ter-konfirmasi</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-approved">
-                            {{ $allStudents->where('status', 'verified')->count() }}
-                        </td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Akun Verified (dengan squad)</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-approved-with-squad"></td>
                     </tr>
-
-                    {{-- Count pending students --}}
                     <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Menunggu konfirmasi akun </td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-pending">
-                            {{ $allStudents->where('status', 'pending')->count() }}
-                        </td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Akun Verified (tanpa squad)</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-approved-without-squad"></td>
                     </tr>
-
-                    {{-- Count students with squad --}}
-                    <tr class="bg-blue-50">
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Murid Memiliki Squad</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-with-squad">
-                            0
-                        </td>
+                    <tr class="bg-green-200">
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Murid Yang Sudahh Memiliki Squad</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-with-squad"></td>
                     </tr>
-
-                    {{-- Count students without squad --}}
-                    <tr class="bg-green-50">
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Murid Belum Squad</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-without-squad">
-                            0
-                        </td>
+                    <tr class="bg-red-200">
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Murid Yang Belum Memiliki Squad</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-without-squad"></td>
+                    </tr>
+                    <tr class="bg-orange-200">
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Menunggu konfirmasi akun</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-pending-without-squad"></td>
                     </tr>
                 </tbody>
             </table>
@@ -125,7 +113,7 @@
             
             {{-- Section 1: students with squad --}}
             <div class="mb-8">
-                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-blue-100 border border-gray-300 px-4 py-2 mb-0">Murid yang sudah memiliki squad</h2>
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-green-300 border border-gray-300 px-4 py-2 mb-0">Murid yang sudah memiliki squad</h2>
                 
                 <div id="tableWithSquadWrapper" class="overflow-x-auto border border-gray-300 border-t-0 rounded-b">
                     <div class="min-w-max">
@@ -211,7 +199,7 @@
 
             {{-- Section 2: students without squad --}}
             <div class="mb-8 mt-8">
-                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-green-100 border border-gray-300 px-4 py-2 mb-0">Murid yang belum memiliki squad</h2>
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-red-200 border border-gray-300 px-4 py-2 mb-0">Murid yang belum memiliki squad</h2>
                 
                 <div id="tableWithoutSquadWrapper" class="overflow-x-auto border border-gray-300 border-t-0 rounded-b">
                     <div class="min-w-max">
@@ -296,20 +284,6 @@
 
 {{-- JS for filtering and updating statistics --}}
 <script>
-    // Store all students in a JS object for client-side filtering
-    const studentsData = {
-        ALL: [
-            @foreach($allStudents as $student)
-            {
-                id: {{ $student->id }},
-                major: '{{ $student->major }}',
-                status: '{{ $student->status }}',
-                hasSquad: {{ is_null($student->squad_id) ? 'false' : 'true' }}
-            },
-            @endforeach
-        ]
-    };
-
     let currentFilter = 'ALL';
 
     // Called when user selects a major from filter table
@@ -320,11 +294,9 @@
         const filterRows = document.querySelectorAll('.filter-row');
         filterRows.forEach(row => {
             if (row.getAttribute('data-major') === major) {
-                // Add a class to highlight the active filter.
                 row.classList.add('bg-blue-400', 'text-white', 'font-bold');
                 row.classList.remove('hover:bg-blue-200', 'text-gray-900');
             } else {
-                // Remove highlighting from other filters
                 row.classList.remove('bg-blue-400', 'text-white', 'font-bold');
                 row.classList.add('hover:bg-blue-200', 'text-gray-900');
             }
@@ -332,38 +304,26 @@
 
         // Show only students matching the selected major
         const allRows = document.querySelectorAll('.student-row');
+        let majorHasWithSquad = false;
+        let majorHasWithoutSquad = false;
         allRows.forEach(row => {
-            const shouldShow = (major === 'ALL' || row.getAttribute('data-major') === major);
+            const rowMajor = row.getAttribute('data-major');
+            const hasSquad = row.getAttribute('data-has-squad') === 'true';
+            const shouldShow = (major === 'ALL' || rowMajor === major);
             row.style.display = shouldShow ? '' : 'none';
+            if (shouldShow && hasSquad) majorHasWithSquad = true;
+            if (shouldShow && !hasSquad) majorHasWithoutSquad = true;
         });
 
-        // Always show the table wrapper (so the table doesn't disappear if the filter returns 0 rows)
+        // Always show the table wrapper
         document.getElementById('tableWithSquadWrapper').style.display = '';
         document.getElementById('tableWithoutSquadWrapper').style.display = '';
 
-        // Check Filter Student Has Squad
-        let majorHasWithSquad = false;
-        for (let student of studentsData.ALL) {
-            if ((major === 'ALL' || student.major === major) && student.hasSquad === true) {
-                majorHasWithSquad = true;
-                break;
-            }
-        }
-        
+        // Empty state rows
         const withSquadEmpty = document.querySelector('#tableWithSquad tbody tr.empty-state-row');
         if (withSquadEmpty) {
             withSquadEmpty.style.display = majorHasWithSquad ? 'none' : 'table-row';
         }
-
-        // Check Filter Student Without Squad
-        let majorHasWithoutSquad = false;
-        for (let student of studentsData.ALL) {
-            if ((major === 'ALL' || student.major === major) && student.hasSquad === false) {
-                majorHasWithoutSquad = true;
-                break;
-            }
-        }
-        
         const withoutSquadEmpty = document.querySelector('#tableWithoutSquad tbody tr.empty-state-row');
         if (withoutSquadEmpty) {
             withoutSquadEmpty.style.display = majorHasWithoutSquad ? 'none' : 'table-row';
@@ -373,22 +333,31 @@
         updateStatistics(major);
     }
 
-    // Recalculate statistics when filter changes
+    // Recalculate statistics using only visible rows (pagination-aware)
     function updateStatistics(major) {
-        let filteredStudents = major === 'ALL'
-            ? studentsData.ALL
-            : studentsData.ALL.filter(s => s.major === major);
+        // Get visible rows for each table
+        const withSquadRows = Array.from(document.querySelectorAll('#tableWithSquad tbody tr.student-row')).filter(row => row.style.display !== 'none');
+        const withoutSquadRows = Array.from(document.querySelectorAll('#tableWithoutSquad tbody tr.student-row')).filter(row => row.style.display !== 'none');
 
-        const approved = filteredStudents.filter(s => s.status === 'verified').length;
-        const pending = filteredStudents.filter(s => s.status === 'pending').length;
-        const withSquad = filteredStudents.filter(s => s.hasSquad === true).length;
-        const withoutSquad = filteredStudents.filter(s => s.hasSquad === false).length;
+        // Helper to count status
+        function countStatus(rows, status) {
+            return rows.filter(row => {
+                const cell = row.querySelector('td:nth-child(6) span');
+                return cell && cell.textContent.trim().toLowerCase() === status;
+            }).length;
+        }
 
-        // Update DOM
-        document.getElementById('stat-approved').textContent = approved;
-        document.getElementById('stat-pending').textContent = pending;
-        document.getElementById('stat-with-squad').textContent = withSquad;
-        document.getElementById('stat-without-squad').textContent = withoutSquad;
+        // Statistics for with squad
+        const approvedWithSquad = countStatus(withSquadRows, 'verified');
+        document.getElementById('stat-approved-with-squad').textContent = approvedWithSquad;
+        document.getElementById('stat-with-squad').textContent = withSquadRows.length;
+
+        // Statistics for without squad
+        const approvedWithoutSquad = countStatus(withoutSquadRows, 'verified');
+        const pendingWithoutSquad = countStatus(withoutSquadRows, 'pending');
+        document.getElementById('stat-approved-without-squad').textContent = approvedWithoutSquad;
+        document.getElementById('stat-pending-without-squad').textContent = pendingWithoutSquad;
+        document.getElementById('stat-without-squad').textContent = withoutSquadRows.length;
     }
 
     // Load with ALL filter active
