@@ -12,6 +12,7 @@ class Squad extends Model
         'description',
         'company_name',
         'company_address',
+        'status',
         'leader_id',
     ];
 
