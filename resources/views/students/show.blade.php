@@ -42,16 +42,11 @@
         <div class="flex justify-between border-b border-gray-200 pb-3">
             <span class="font-semibold text-gray-700">Squad:</span>
             <div class="text-right">
-                @php
-                    $squads = $student->getAssociatedSquads();
-                @endphp
-                @if(count($squads) > 0)
+                @if($student->squad)
                     <div class="flex gap-2 justify-end flex-wrap">
-                        @foreach($squads as $squad)
-                        <a href="{{ route('squads.show', $squad) }}" class="px-3 py-1 bg-blue-200 hover:bg-blue-300 text-blue-900 text-sm font-semibold rounded border border-blue-500 transition">
-                            {{ $squad->name }}
+                        <a href="{{ route('squads.show', $student->squad) }}" class="px-3 py-1 bg-blue-200 hover:bg-blue-300 text-blue-900 text-sm font-semibold rounded border border-blue-500 transition">
+                            {{ $student->squad->name }}
                         </a>
-                        @endforeach
                     </div>
                 @else
                     <span class="text-gray-500">-</span>

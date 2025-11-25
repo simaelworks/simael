@@ -90,7 +90,7 @@
                     <tr class="bg-blue-50">
                         <td class="border border-gray-300 px-3 py-2 font-medium">Total Memiliki Perusahaan</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-has-company">
-                            {{ $allSquads->whereNotNull('nama_perusahaan')->count() }}
+                            {{ $allSquads->whereNotNull('company_name')->count() }}
                         </td>
                     </tr>
 
@@ -98,7 +98,7 @@
                     <tr>
                         <td class="border border-gray-300 px-3 py-2 font-medium">Total Tidak Memiliki Perusahaan</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-no-company">
-                            {{ $allSquads->whereNull('nama_perusahaan')->count() }}
+                            {{ $allSquads->whereNull('company_name')->count() }}
                         </td>
                     </tr>
 
@@ -147,9 +147,9 @@
                             <div class="space-y-2 text-sm text-gray-700 mb-4">
                                 <div>
                                     <p class="font-semibold text-gray-600">Leader</p>
-                                    @if($squad->leaderStudent)
-                                        <p class="text-gray-800">{{ $squad->leaderStudent->name }}</p>
-                                        <p class="text-xs text-gray-500">NISN: {{ $squad->leader_nisn }}</p>
+                                    @if($squad->leader)
+                                        <p class="text-gray-800">{{ $squad->leader->name }}</p>
+                                        <p class="text-xs text-gray-500">NISN: {{ $squad->leader->nisn }}</p>
                                     @else
                                         <p class="text-red-500 text-xs">N/A</p>
                                     @endif
@@ -157,7 +157,7 @@
 
                                 <div>
                                     <p class="font-semibold text-gray-600">Jumlah Anggota</p>
-                                    <p class="text-gray-800 text-lg font-bold">{{ $squad->totalMemberCount() }} orang</p>
+                                    <p class="text-gray-800 text-lg font-bold">{{ count($squad->users) }} orang</p>
                                 </div>
 
                                 <div>
@@ -167,7 +167,7 @@
 
                                 <div>
                                     <p class="font-semibold text-gray-600">Perusahaan</p>
-                                    <p class="text-gray-800 text-sm truncate">{{ $squad->nama_perusahaan ?? 'Tidak Ada' }}</p>
+                                    <p class="text-gray-800 text-sm truncate">{{ $squad->company_name ?? 'Tidak Ada' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -215,7 +215,7 @@
                 {
                     id: {{ $squad->id }},
                     status: '{{ $squad->status }}',
-                    hasCompany: {{ !is_null($squad->nama_perusahaan) ? 'true' : 'false' }}
+                    hasCompany: {{ !is_null($squad->company_name) ? 'true' : 'false' }}
                 },
                 @endforeach
             ]

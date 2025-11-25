@@ -15,7 +15,7 @@ class DefaultInviteSquadSeeder extends Seeder
     {
         //
         InviteSquad::create([
-            'squad_id' => 5,
+            'squad_id' => 3,
             'student_id' => 4
         ]);
     }
