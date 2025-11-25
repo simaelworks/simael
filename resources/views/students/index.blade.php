@@ -11,69 +11,51 @@
         </div>
     @endif
 
-    {{-- Button to create new student --}}
-    <div class="flex justify-end mb-4">
+    <!-- {{-- Top bar: Entries selector and create button --}}
+    <div class="flex flex-row items-center justify-between mb-4">
+        <div class="flex items-center">
+            <form method="GET" class="flex items-center gap-2">
+                <select name="per_page" id="per_page" onchange="this.form.submit()" class="border rounded px-2 py-1 text-sm focus:ring focus:ring-blue-200">
+                    <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
+                    <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
+                </select>
+            </form>
+        </div>
         <a href="{{ route('students.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
             Tambahkan Akun Murid
         </a>
-    </div>
+    </div> -->
 
     {{-- Main layout: Sidebar filters + main student tables --}}
     <div class="flex flex-col gap-6 lg:flex-row lg:gap-4">
+            @php $perPage = isset($perPage) ? $perPage : 10; @endphp
         
         {{-- LEFT SIDEBAR: Filters + Statistics --}}
         <div class="w-full lg:w-80 lg:shrink-0">
-
-            {{-- Filter by major --}}
-            <table class="border border-gray-300 w-full text-sm">
-                <thead class="bg-blue-100">
-                    <tr>
-                        <th colspan="2" class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            Filter Berdasarkan Jurusan
-                        </th>
-                    </tr>
-                </thead>
-
-                {{-- Filter rows with clickable actions --}}
-                <tbody>
-                    {{--ALL MAJORS: This is the TOTAL STUDENTS function based on the filter --}}
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('ALL')" data-major="ALL">
-                        <td class="border border-gray-300 px-3 py-2">Semua Jurusan</td>
-                        <td class="border border-blue-300 px-3 py-2 text-center font-semibold">
-                            {{ count($allStudents) }}
-                        </td>
-                    </tr>
-
-                    {{-- Individual majors --}}
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('PPLG')" data-major="PPLG">
-                        <td class="border border-gray-300 px-3 py-2">PPLG</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allStudents->where('major', 'PPLG')->count() }}
-                        </td>
-                    </tr>
-
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('TJKT')" data-major="TJKT">
-                        <td class="border border-gray-300 px-3 py-2">TJKT</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allStudents->where('major', 'TJKT')->count() }}
-                        </td>
-                    </tr>
-
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('BCF')" data-major="BCF">
-                        <td class="border border-gray-300 px-3 py-2">BCF</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allStudents->where('major', 'BCF')->count() }}
-                        </td>
-                    </tr>
-
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('DKV')" data-major="DKV">
-                        <td class="border border-gray-300 px-3 py-2">DKV</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allStudents->where('major', 'DKV')->count() }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="space-y-1 bg-white border rounded p-3 text-sm mb-4">
+                <p class="font-semibold text-center mb-2">Filter Jurusan</p>
+                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('ALL')" data-major="ALL">
+                    <span>Semua Jurusan</span>
+                    <span class="font-semibold">{{ count($allStudents) }}</span>
+                </button>
+                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('PPLG')" data-major="PPLG">
+                    <span>PPLG</span>
+                    <span class="font-semibold">{{ $allStudents->where('major', 'PPLG')->count() }}</span>
+                </button>
+                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('TJKT')" data-major="TJKT">
+                    <span>TJKT</span>
+                    <span class="font-semibold">{{ $allStudents->where('major', 'TJKT')->count() }}</span>
+                </button>
+                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('BCF')" data-major="BCF">
+                    <span>BCF</span>
+                    <span class="font-semibold">{{ $allStudents->where('major', 'BCF')->count() }}</span>
+                </button>
+                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('DKV')" data-major="DKV">
+                    <span>DKV</span>
+                    <span class="font-semibold">{{ $allStudents->where('major', 'DKV')->count() }}</span>
+                </button>
+            </div>
 
             {{-- Statistics summary (auto updates with filter) --}}
             <table class="border border-gray-300 w-full text-sm mt-4">
@@ -123,6 +105,23 @@
 
         {{-- RIGHT SIDE: Students tables --}}
         <div class="flex-1 w-full">
+            {{-- Entries selector and create button above murid table --}}
+            <div class="flex flex-row items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <form method="GET" class="flex items-center gap-2">
+                        <label for="per_page" class="text-sm font-medium mr-2">Entries per page:</label>
+                        <select name="per_page" id="per_page" onchange="this.form.submit()" class="border rounded px-2 py-1 text-sm focus:ring focus:ring-blue-200">
+                            <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
+                            <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
+                            <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
+                            <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
+                        </select>
+                    </form>
+                </div>
+                <a href="{{ route('students.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    Tambahkan Akun Murid
+                </a>
+            </div>
             
             {{-- Section 1: students with squad --}}
             <div class="mb-8">
@@ -147,9 +146,8 @@
                         </thead>
 
                         <tbody>
-                            {{-- Loop through students with squads --}}
-                            @foreach($allStudents as $student)
-                                @if(!is_null($student->squad_id))
+                            {{-- Loop through paginated students with squads --}}
+                            @foreach($studentsWithSquad as $student)
                                 <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}" data-has-squad="true">
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->id }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->nisn }}</td>
@@ -166,17 +164,26 @@
                                         @if($student->status === 'verified')
                                             <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">Verified</span>
                                         @else
-                                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">Pending</span>
+                                            <form method="POST" action="{{ route('students.update', $student) }}" style="display:inline;">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="nisn" value="{{ $student->nisn }}">
+                                                <input type="hidden" name="name" value="{{ $student->name }}">
+                                                <input type="hidden" name="major" value="{{ $student->major }}">
+                                                <input type="hidden" name="status" value="verified">
+                                                <button type="submit" class="relative group px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
+                                                    <span class="group-hover:hidden">pending</span>
+                                                    <span class="hidden group-hover:inline text-blue-700">approve?</span>
+                                                </button>
+                                            </form>
                                         @endif
                                     </td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->created_at->format('d/m/Y') }}</td>
-
                                     {{-- Actions: view/edit/delete --}}
                                     <td class="border border-gray-300 px-2 py-1 text-center">
                                         <div class="flex gap-1 justify-center">
                                             <a href="{{ route('students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Lihat</a>
                                             <a href="{{ route('students.edit', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Edit</a>
-
                                             {{-- Delete button --}}
                                             <form method="POST" action="{{ route('students.destroy', $student) }}" style="display:inline;">
                                                 @csrf
@@ -186,7 +193,6 @@
                                         </div>
                                     </td>
                                 </tr>
-                                @endif
                             @endforeach
                             
                             {{-- Empty state row - ALWAYS in DOM, shown/hidden by JS --}}
@@ -197,12 +203,14 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="flex justify-end mt-2">
+                        {{ $studentsWithSquad->appends(['per_page' => $perPage])->links('vendor.pagination.tailwind') }}
                     </div>
                 </div>
             </div>
 
             {{-- Section 2: students without squad --}}
-            <div class="mb-8">
+            <div class="mb-8 mt-8">
                 <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-green-100 border border-gray-300 px-4 py-2 mb-0">Murid yang belum memiliki squad</h2>
                 
                 <div id="tableWithoutSquadWrapper" class="overflow-x-auto border border-gray-300 border-t-0 rounded-b">
@@ -223,9 +231,8 @@
                         </thead>
 
                         <tbody>
-                            {{-- Loop through students without squads --}}
-                            @foreach($allStudents as $student)
-                                @if(is_null($student->squad_id))
+                            {{-- Loop through paginated students without squads --}}
+                            @foreach($studentsWithoutSquad as $student)
                                 <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}" data-has-squad="false">
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->id }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->nisn }}</td>
@@ -238,7 +245,18 @@
                                         @if($student->status === 'verified')
                                             <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">Verified</span>
                                         @else
-                                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">Pending</span>
+                                            <form method="POST" action="{{ route('students.update', $student) }}" style="display:inline;">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="nisn" value="{{ $student->nisn }}">
+                                                <input type="hidden" name="name" value="{{ $student->name }}">
+                                                <input type="hidden" name="major" value="{{ $student->major }}">
+                                                <input type="hidden" name="status" value="verified">
+                                                <button type="submit" class="relative group px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
+                                                    <span class="group-hover:hidden">pending</span>
+                                                    <span class="hidden group-hover:inline text-blue-700">approve?</span>
+                                                </button>
+                                            </form>
                                         @endif
                                     </td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->created_at->format('d/m/Y') }}</td>
@@ -257,7 +275,6 @@
                                         </div>
                                     </td>
                                 </tr>
-                                @endif
                             @endforeach
                             
                             {{-- Empty state row - ALWAYS in DOM, shown/hidden by JS --}}
@@ -269,6 +286,9 @@
                         </tbody>
 
                     </table>
+                    <div class="flex justify-end mt-2">
+                        {{ $studentsWithoutSquad->appends(['per_page' => $perPage])->links('vendor.pagination.tailwind') }}
+                    </div>
                 </div>
             </div>
         </div>

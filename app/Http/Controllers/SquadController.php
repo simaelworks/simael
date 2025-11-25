@@ -221,6 +221,18 @@ class SquadController extends Controller
     //     return $nisnsAlreadyUsed;
     // }
 
+    public function kickMember(Student $student)
+    {
+        if (!$student) {
+            return redirect()->route('dashboard')->with('error', 'Student tidak ditemukan!');
+        }
+
+        $student->update([
+            'squad_id' => null
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Berhasil mengeluarkan student dari squad');
+    }
 
     public function leave(Squad $squad)
     {

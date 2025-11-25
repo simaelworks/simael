@@ -15,16 +15,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create a test user only if not exists
+        if (!\App\Models\User::where('email', 'test@example.com')->exists()) {
+            User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]);
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Generate 5 squads
+        $squads = \App\Models\Squad::factory(5)->create();
 
+        // Generate 20 students
+        $students = \App\Models\Student::factory(20)->create();
+
+        // Assign only verified students to squads
+        foreach ($students as $student) {
+            if ($student->status === 'verified') {
+                $student->squad_id = $squads->random()->id;
+                $student->save();
+            }
+        }
+
+        // Optionally call other seeders if needed
         $this->call([
-            DefaultSquadSeeder::class,
-            DefaultStudentSeeder::class,
             DefaultInviteSquadSeeder::class,
         ]);
     }
