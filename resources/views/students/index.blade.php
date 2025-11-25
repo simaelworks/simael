@@ -111,6 +111,7 @@
                     <form method="GET" class="flex items-center gap-2">
                         <label for="per_page" class="text-sm font-medium mr-2">Entries per page:</label>
                         <select name="per_page" id="per_page" onchange="this.form.submit()" class="border rounded px-2 py-1 text-sm focus:ring focus:ring-blue-200">
+                            <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
                             <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
                             <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
                             <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
@@ -203,7 +204,7 @@
                         </tbody>
                     </table>
                     <div class="flex justify-end mt-2">
-                        {{ $studentsWithSquad->links('vendor.pagination.tailwind') }}
+                        {{ $studentsWithSquad->appends(['per_page' => $perPage])->links('vendor.pagination.tailwind') }}
                     </div>
                 </div>
             </div>
@@ -286,7 +287,7 @@
 
                     </table>
                     <div class="flex justify-end mt-2">
-                        {{ $studentsWithoutSquad->links('vendor.pagination.tailwind') }}
+                        {{ $studentsWithoutSquad->appends(['per_page' => $perPage])->links('vendor.pagination.tailwind') }}
                     </div>
                 </div>
             </div>

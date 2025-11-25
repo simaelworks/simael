@@ -28,6 +28,18 @@ class StudentController extends Controller
         $allStudents = Student::all();
         $totalSquads = Squad::count();
 
+        $perPage = request('per_page', session('per_page', 10));
+        session(['per_page' => $perPage]);
+
+        $withSquadPage = request('withSquadPage', session('withSquadPage', 1));
+        $withoutSquadPage = request('withoutSquadPage', session('withoutSquadPage', 1));
+        session(['withSquadPage' => $withSquadPage, 'withoutSquadPage' => $withoutSquadPage]);
+
+        $studentsWithSquad = Student::whereNotNull('squad_id')->paginate($perPage, ['*'], 'withSquadPage', $withSquadPage);
+        $studentsWithoutSquad = Student::whereNull('squad_id')->paginate($perPage, ['*'], 'withoutSquadPage', $withoutSquadPage);
+        $allStudents = Student::all();
+        $totalSquads = Squad::count();
+
         return view('students.index', compact(
             'studentsWithSquad',
             'studentsWithoutSquad',
@@ -161,8 +173,16 @@ class StudentController extends Controller
 
         $student->delete();
 
-        $msg = "Murid dihapus: {$name} (NISN: {$nisn})";
-        return redirect()->route('students.index')->with('success', $msg);
+        $student->delete();
+        // Preserve current page after delete
+        $withSquadPage = session('withSquadPage', 1);
+        $withoutSquadPage = session('withoutSquadPage', 1);
+        $perPage = session('per_page', 10);
+        return redirect()->route('students.index', [
+            'withSquadPage' => $withSquadPage,
+            'withoutSquadPage' => $withoutSquadPage,
+            'per_page' => $perPage
+        ])->with('success', 'Akun murid berhasil dihapus.');
     }
 }
 
