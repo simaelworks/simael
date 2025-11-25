@@ -22,12 +22,18 @@ class StudentController extends Controller
      */
     public function index()
     {
+        $perPage = request('per_page', 10);
+        $studentsWithSquad = Student::whereNotNull('squad_id')->paginate($perPage, ['*'], 'withSquadPage');
+        $studentsWithoutSquad = Student::whereNull('squad_id')->paginate($perPage, ['*'], 'withoutSquadPage');
         $allStudents = Student::all();
         $totalSquads = Squad::count();
 
         return view('students.index', compact(
+            'studentsWithSquad',
+            'studentsWithoutSquad',
             'allStudents',
-            'totalSquads'
+            'totalSquads',
+            'perPage'
         ));
     }
 
