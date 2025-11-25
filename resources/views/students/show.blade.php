@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-6 max-w-2xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6">Info Lengkap Murid</h1>
+<div class="mt-4 p-4 md:p-6 max-w-full md:max-w-2xl mx-auto">
+    <h1 class="text-2xl md:text-3xl font-bold mb-6">Info Lengkap Murid</h1>
 
     {{-- Success Message (Shown after update or other success actions) --}}
     @if(session('success'))
@@ -38,10 +38,20 @@
             <span class="text-gray-900">{{ $student->major }}</span>
         </div>
 
-        {{-- Squad (nullable relationship) --}}
+        {{-- Squad --}}
         <div class="flex justify-between border-b border-gray-200 pb-3">
             <span class="font-semibold text-gray-700">Squad:</span>
-            <span class="text-gray-900">{{ $student->squad->name ?? 'N/A' }}</span>
+            <div class="text-right">
+                @if($student->squad)
+                    <div class="flex gap-2 justify-end flex-wrap">
+                        <a href="{{ route('squads.show', $student->squad) }}" class="px-3 py-1 bg-blue-200 hover:bg-blue-300 text-blue-900 text-sm font-semibold rounded border border-blue-500 transition">
+                            {{ $student->squad->name }}
+                        </a>
+                    </div>
+                @else
+                    <span class="text-gray-500">-</span>
+                @endif
+            </div>
         </div>
 
         {{-- Status Badge --}}

@@ -10,6 +10,9 @@ class Squad extends Model
     protected $fillable = [
         'name',
         'description',
+        'company_name',
+        'company_address',
+        'status',
         'leader_id',
     ];
 

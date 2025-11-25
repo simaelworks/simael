@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InviteSquadController;
 use App\Http\Controllers\LoginRegisterController;
+use App\Http\Controllers\SquadController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
 
@@ -16,8 +18,13 @@ Route::controller(LoginRegisterController::class)->group(function() {
 
     Route::post('/logout', 'logout')->name('logout');
 });
+
 Route::resource('students', StudentController::class);
 
-use App\Http\Controllers\SquadController;
-
 Route::resource('squads', SquadController::class);
+Route::post('/squads/{squad}/leave', [SquadController::class, 'leave'])->name('squads.leave');
+
+Route::match(['get', 'post'], '/squads-preview', [SquadController::class, 'preview'])->name('squads.preview');
+
+Route::post('invite/{invite}/join', [InviteSquadController::class, 'join'])->name('invite.join');
+Route::resource('invite', InviteSquadController::class);

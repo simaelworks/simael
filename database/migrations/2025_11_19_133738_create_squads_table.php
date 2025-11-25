@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
+            $table->string('company_name')->nullable();
+            $table->string('company_address')->nullable();
             $table->foreignId('leader_id')
                 ->nullable()
                 ->constrained('students')
                 ->nullOnDelete();
+            $table->enum('status', ['pengajuan', 'on-progress', 'diterima']);
             $table->timestamps();
         });
     }
