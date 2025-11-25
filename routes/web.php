@@ -22,6 +22,7 @@ Route::controller(LoginRegisterController::class)->group(function() {
 Route::resource('students', StudentController::class);
 
 Route::resource('squads', SquadController::class);
+Route::post('/squads/{squad}/leave', [SquadController::class, 'leave'])->name('squads.leave');
 
 Route::match(['get', 'post'], '/squads-preview', [SquadController::class, 'preview'])->name('squads.preview');
 

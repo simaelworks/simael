@@ -220,4 +220,21 @@ class SquadController extends Controller
 
     //     return $nisnsAlreadyUsed;
     // }
+
+
+    public function leave(Squad $squad)
+    {
+        $student = Student::find(session('student_id'));
+
+        // Hapus squad jika leader keluar dari squad
+        if ($student->id == $squad->leader_id) {
+            $squad->delete();
+        } else {
+            $student->update([
+                'squad_id' => null
+            ]);
+        }
+
+        return redirect()->route('dashboard');
+    }
 }

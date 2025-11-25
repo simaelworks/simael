@@ -85,9 +85,19 @@
                                     <h3 class="text-2xl font-bold text-foreground mb-2">{{ $squad->name }}</h3>
                                     <p class="text-muted-foreground">Leader : {{ $squad->leader->name }}</p>
                                 </div>
-                                <div class="text-right">
-                                    <p class="text-sm text-muted-foreground mb-1">Dibuat pada</p>
-                                    <p class="text-sm font-medium">22/11/2025</p>
+                                <div class="text-right flex flex-col items-end gap-5">
+                                    <form action="{{ route('squads.leave', $squad) }}" method="post">
+                                        @csrf
+                                        <button>
+                                            <svg onclick="confirm('Apakah kamu yakin ingin keluar dari Squad ini?, jika kamu Leader, kamu akan mengeluarkan semua member dari Squad ini.');" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 opacity-50 hover:opacity-100 transition-all cursor-pointer">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                    <div class="text-right">
+                                        <p class="text-sm text-muted-foreground mb-1">Dibuat pada</p>
+                                        <p class="text-sm font-medium">22/11/2025</p>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -172,6 +182,7 @@
                 @foreach ($student->invites as $invite)
                 <div class="rounded-xl text-card-foreground shadow p-5 card-shadow-hover border-0 bg-card">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        @if ($invite->squad)
                         <div class="flex-1">
                             <h4 class="font-semibold text-lg mb-1">{{ $invite->squad->name }}</h4>
                             <div class="flex items-center gap-4 text-sm text-muted-foreground">
@@ -180,7 +191,16 @@
                                 <span>{{ count($invite->squad->users) }} anggota</span>
                             </div>
                         </div>
+                        @else
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-lg mb-1">Squad tidak ada atau telah dihapus :(</h4>
+                            <div class="flex items-center gap-4 text-sm text-muted-foreground">
+                                <span>Leader: -</span>
+                            </div>
+                        </div>
+                        @endif
                         <div class="flex gap-2">
+                            @if ($invite->squad)
                             <form action="{{ route('invite.join', $invite) }}" method="post">
                                 @csrf
                                 <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 text-primary-foreground shadow h-8 rounded-md px-3 text-xs bg-success hover:bg-blue-500 hover:text-white cursor-pointer">
@@ -203,6 +223,20 @@
                                     Tolak
                                 </button>
                             </form>
+                            @else
+                        <form action="{{ route('invite.destroy', $invite) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border shadow-sm hover:text-white hover:bg-red-500 h-8 rounded-md px-3 text-xs border-destructive text-destructive hover:bg-destructive/10 cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-x w-4 h-4 mr-1" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="m15 9-6 6"></path>
+                                        <path d="m9 9 6 6"></path>
+                                    </svg>
+                                    Hapus
+                                </button>
+                            </form>
+                            @endif
                         </div>
                     </div>
                 </div>

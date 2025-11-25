@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Student;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,7 @@ class StudentAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!session('student_id')) {
+        if (!session('student_id') || !Student::find(session('student_id'))) {
             return redirect()->route('login');
         }
 
