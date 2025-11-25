@@ -62,7 +62,7 @@
                 <thead class="bg-green-100">
                     <tr>
                         <th colspan="2" class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            Statistik (Data yang tampil di layar & filter)
+                            Statistik
                         </th>
                     </tr>
                 </thead>
