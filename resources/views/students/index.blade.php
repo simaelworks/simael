@@ -166,7 +166,19 @@
                                         @if($student->status === 'verified')
                                             <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">Verified</span>
                                         @else
-                                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">Pending</span>
+                                                <form method="POST" action="{{ route('students.update', $student) }}" style="display:inline;">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="hidden" name="nisn" value="{{ $student->nisn }}">
+                                                    <input type="hidden" name="name" value="{{ $student->name }}">
+                                                    <input type="hidden" name="major" value="{{ $student->major }}">
+                                                    <input type="hidden" name="status" value="verified">
+                                                    <button type="submit"
+                                                        class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded transition hover:bg-blue-100 hover:text-blue-700 relative"
+                                                        onmouseover="this.innerText='approve?'; this.style.backgroundColor='#dbeafe'; this.style.color='#2563eb';"
+                                                        onmouseout="this.innerText='pending'; this.style.backgroundColor='#fef9c3'; this.style.color='#b45309';"
+                                                    >pending</button>
+                                                </form>
                                         @endif
                                     </td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->created_at->format('d/m/Y') }}</td>
@@ -238,7 +250,19 @@
                                         @if($student->status === 'verified')
                                             <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">Verified</span>
                                         @else
-                                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">Pending</span>
+                                            <form method="POST" action="{{ route('students.update', $student) }}" style="display:inline;">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="nisn" value="{{ $student->nisn }}">
+                                                <input type="hidden" name="name" value="{{ $student->name }}">
+                                                <input type="hidden" name="major" value="{{ $student->major }}">
+                                                <input type="hidden" name="status" value="verified">
+                                                <button type="submit"
+                                                    class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded transition hover:bg-blue-100 hover:text-blue-700 relative"
+                                                    onmouseover="this.innerText='approve?'; this.style.backgroundColor='#dbeafe'; this.style.color='#2563eb';"
+                                                    onmouseout="this.innerText='pending'; this.style.backgroundColor='#fef9c3'; this.style.color='#b45309';"
+                                                >pending</button>
+                                            </form>
                                         @endif
                                     </td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->created_at->format('d/m/Y') }}</td>
