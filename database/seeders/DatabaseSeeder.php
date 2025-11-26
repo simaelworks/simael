@@ -36,11 +36,8 @@ class DatabaseSeeder extends Seeder
                 $student->save();
             }
         }
-
-        // Call all available seeders (combined from both branches)
+        // Optionally call other seeders if needed
         $this->call([
-            DefaultSquadSeeder::class,
-            DefaultStudentSeeder::class,
             DefaultInviteSquadSeeder::class,
         ]);
     }

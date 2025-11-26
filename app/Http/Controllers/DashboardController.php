@@ -19,6 +19,6 @@ class DashboardController extends Controller
             return view('pages.pending', compact('student'));
         }
 
-        return view('pages.dashboard', compact('student', 'squad', 'invite'));
+        return view('pages.dashboard', compact('student', 'squad'));
     }
 }

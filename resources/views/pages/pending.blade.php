@@ -3,22 +3,34 @@
 @section('title', 'Pending')
 
 @section('content')
+<div class="flex fle-col items-center justify-center p-6">
 
-<div class="min-h-screen flex items-center justify-center p-6">
-    <div class="text-center max-w-md">
-        <div class="mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mx-auto text-yellow-500 dark:text-white">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-        </div>
-        <h1 class="text-2xl font-bold text-foreground dark:text-white mb-2">Akun Dalam Proses Verifikasi</h1>
-        <p class="text-muted-foreground dark:text-gray-300 mb-6">Akun kamu sedang pending dulu menunggu verifikasi dari admin. Silakan tunggu beberapa saat.</p>
-        <form method="POST" action="{{ route('logout') }}" class="inline">
-            @csrf
-            <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">Logout</button>
-        </form>
+      <div class="items-center gap-8 max-w-6xl max-lg:max-w-lg w-full">
+        <div class="lg:max-w-md w-full">
+          <h1 class="text-slate-900 text-3xl font-semibold mb-8 dark:text-white">Akun Belum Terverifikasi</h1>
+          <label class="text-slate-900 text-sm mb-2 block dark:text-white">Minta Wali Kelas atau Guru untuk memverifikasi akun kamu</label>
+
+          <div class="mt-6">
+            <button id="copyLinkButton" type="submit" class="py-3 px-6 text-sm text-white tracking-wide bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer">
+              Salin Link Akun
+            </button>
+            <input id="linkToCopy" type="hidden" value="{{ route('students.show', $student) }}">
+          </div>
+      </div>
     </div>
-</div>
+    <script>
+      document.getElementById('copyLinkButton').addEventListener('click', function() {
+        const linkInput = document.getElementById('linkToCopy');
+        const link = linkInput.value;
 
+        navigator.clipboard.writeText(link)
+          .then(() => {
+            alert('Link copied to clipboard!');
+          })
+          .catch(err => {
+            console.error('Failed to copy link: ', err);
+            alert('Failed to copy link. Please try again or copy manually.');
+          });
+      });
+    </script>
 @endsection

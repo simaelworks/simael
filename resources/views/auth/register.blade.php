@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="min-h-screen flex fle-col items-center justify-center p-6">
+<div class="min-h-screen flex flex-col items-center justify-center p-6">
 
     <div class="grid lg:grid-cols-2 items-center gap-8 max-w-6xl max-lg:max-w-lg w-full">
 
@@ -24,6 +24,7 @@
                             class="bg-gray-100 dark:bg-gray-800 w-full text-slate-900 dark:text-white text-sm px-4 py-3
                                    focus:bg-transparent border border-red-500 focus:border-black outline-none transition-all"
                             placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required />
+
                         <div class="alert alert-danger">
                             @foreach ($errors->all() as $error)
                                 <p class="text-sm mt-1 text-red-500">{{ $error }}</p>
@@ -36,6 +37,7 @@
                             class="bg-gray-100 dark:bg-gray-800 w-full text-slate-900 dark:text-white text-sm px-4 py-3
                                    focus:bg-transparent border border-red-500 focus:border-black outline-none transition-all"
                             placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required />
+
                         <p class="text-sm mt-1 text-red-500">{{ session('failed') }}</p>
 
                     @else
@@ -58,6 +60,7 @@
                 {{-- Jurusan --}}
                 <div>
                     <label class="text-slate-900 dark:text-white text-sm mb-2 block">Jurusan</label>
+
                     <select name="major"
                         class="bg-gray-100 dark:bg-gray-800 w-full text-slate-900 dark:text-white text-sm px-4 py-3
                                focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all">
@@ -72,7 +75,9 @@
                 {{-- Password --}}
                 <div>
                     <label class="text-slate-900 dark:text-white text-sm mb-2 block">Password</label>
+
                     <div class="relative">
+
                         <input id="password" name="password" type="password"
                                class="bg-gray-100 dark:bg-gray-800 w-full text-slate-900 dark:text-white text-sm
                                       px-4 py-3 pr-12 focus:bg-transparent border border-gray-100
@@ -100,8 +105,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 
                                          0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 
-                                         0 114.243 4.243M9.878 9.878l4.242 4.242M3 3l3.59 3.59m0 0A9.953 
-                                         9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 
+                                         0 114.243 4.243M9.878 9.878l4.242 4.242M3 3l3.59 3.59m0 
+                                         0A9.953 9.953 0 0112 5c4.478 0 
+                                         8.268 2.943 9.543 7a10.025 
                                          10.025 0 01-4.132 5.411L21 21"></path>
                             </svg>
                         </button>
@@ -111,6 +117,7 @@
                 {{-- Konfirmasi Password --}}
                 <div>
                     <label class="text-slate-900 dark:text-white text-sm mb-2 block">Konfirmasi Password</label>
+
                     <div class="relative">
                         <input id="confirm-password" name="confirm-password" type="password"
                                class="bg-gray-100 dark:bg-gray-800 w-full text-slate-900 dark:text-white text-sm
@@ -142,7 +149,7 @@
                                     d="M13.875 18.825A10.05 10.05 0 0112 
                                        19c-4.478 0-8.268-2.943-9.543-7a9.97 
                                        9.97 0 011.563-3.029m5.858.908a3 3 
-                                       0 114.243 4.243M3 3l3.59 3.59m0 
+                                       0 114.243 4.243M9.878 9.878l4.242 4.242M3 3l3.59 3.59m0 
                                        0A9.953 9.953 0 0112 5c4.478 0 
                                        8.268 2.943 9.543 7a10.025 
                                        10.025 0 01-4.132 5.411L21 21"></path>
@@ -152,13 +159,13 @@
                     </div>
                 </div>
 
-                {{-- Terms & Conditions --}}
+                {{-- Terms --}}
                 <div class="flex items-center">
                     <input id="remember-me" name="remember-me" type="checkbox"
                            class="h-4 w-4 shrink-0 border-gray-300 rounded" required />
                     <label for="remember-me" class="ml-3 block text-sm text-slate-600 dark:text-gray-300">
                         Saya menerima
-                        <a href="javascript:void(0);" class="text-blue-600 font-semibold hover:underline ml-1">
+                        <a href="#" class="text-blue-600 font-semibold hover:underline ml-1">
                             Terms and Conditions
                         </a>
                     </label>
