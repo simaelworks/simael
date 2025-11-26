@@ -35,26 +35,34 @@
         <div class="w-full lg:w-80 lg:shrink-0">
             <div class="space-y-1 bg-white border rounded p-3 text-sm mb-4">
                 <p class="font-semibold text-center mb-2">Filter Jurusan</p>
-                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('ALL')" data-major="ALL">
-                    <span>Semua Jurusan</span>
-                    <span class="font-semibold">{{ count($allStudents) }}</span>
-                </button>
-                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('PPLG')" data-major="PPLG">
-                    <span>PPLG</span>
-                    <span class="font-semibold">{{ $allStudents->where('major', 'PPLG')->count() }}</span>
-                </button>
-                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('TJKT')" data-major="TJKT">
-                    <span>TJKT</span>
-                    <span class="font-semibold">{{ $allStudents->where('major', 'TJKT')->count() }}</span>
-                </button>
-                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('BCF')" data-major="BCF">
-                    <span>BCF</span>
-                    <span class="font-semibold">{{ $allStudents->where('major', 'BCF')->count() }}</span>
-                </button>
-                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('DKV')" data-major="DKV">
-                    <span>DKV</span>
-                    <span class="font-semibold">{{ $allStudents->where('major', 'DKV')->count() }}</span>
-                </button>
+                <form method="GET" action="" class="space-y-1">
+                    <input type="hidden" name="per_page" value="{{ request('per_page', $perPage) }}">
+                    <button type="submit" name="major" value="ALL" class="w-full flex justify-between px-3 py-2 filter-row transition-colors duration-150
+                        {{ $major == 'ALL' ? 'bg-blue-500 text-white font-bold ring-2 ring-blue-300' : 'hover:bg-blue-100 hover:text-blue-900' }}">
+                        <span>Semua Jurusan</span>
+                        <span class="font-semibold">{{ $jurusanCounts['ALL'] ?? 0 }}</span>
+                    </button>
+                    <button type="submit" name="major" value="PPLG" class="w-full flex justify-between px-3 py-2 filter-row transition-colors duration-150
+                        {{ $major == 'PPLG' ? 'bg-blue-500 text-white font-bold ring-2 ring-blue-300' : 'hover:bg-blue-100 hover:text-blue-900' }}">
+                        <span>PPLG</span>
+                        <span class="font-semibold">{{ $jurusanCounts['PPLG'] ?? 0 }}</span>
+                    </button>
+                    <button type="submit" name="major" value="TJKT" class="w-full flex justify-between px-3 py-2 filter-row transition-colors duration-150
+                        {{ $major == 'TJKT' ? 'bg-blue-500 text-white font-bold ring-2 ring-blue-300' : 'hover:bg-blue-100 hover:text-blue-900' }}">
+                        <span>TJKT</span>
+                        <span class="font-semibold">{{ $jurusanCounts['TJKT'] ?? 0 }}</span>
+                    </button>
+                    <button type="submit" name="major" value="BCF" class="w-full flex justify-between px-3 py-2 filter-row transition-colors duration-150
+                        {{ $major == 'BCF' ? 'bg-blue-500 text-white font-bold ring-2 ring-blue-300' : 'hover:bg-blue-100 hover:text-blue-900' }}">
+                        <span>BCF</span>
+                        <span class="font-semibold">{{ $jurusanCounts['BCF'] ?? 0 }}</span>
+                    </button>
+                    <button type="submit" name="major" value="DKV" class="w-full flex justify-between px-3 py-2 filter-row transition-colors duration-150
+                        {{ $major == 'DKV' ? 'bg-blue-500 text-white font-bold ring-2 ring-blue-300' : 'hover:bg-blue-100 hover:text-blue-900' }}">
+                        <span>DKV</span>
+                        <span class="font-semibold">{{ $jurusanCounts['DKV'] ?? 0 }}</span>
+                    </button>
+                </form>
             </div>
 
             {{-- Statistics summary (auto updates with filter) --}}
@@ -192,7 +200,11 @@
                         </tbody>
                     </table>
                     <div class="flex justify-end mt-2">
-                        {{ $studentsWithSquad->appends(['per_page' => $perPage])->links('vendor.pagination.tailwind') }}
+                        {{ $studentsWithSquad->appends([
+                            'per_page' => $perPage,
+                            'major' => request('major', 'ALL'),
+                            'withoutSquadPage' => request('withoutSquadPage', 1)
+                        ])->links('vendor.pagination.tailwind') }}
                     </div>
                 </div>
             </div>
@@ -275,7 +287,11 @@
 
                     </table>
                     <div class="flex justify-end mt-2">
-                        {{ $studentsWithoutSquad->appends(['per_page' => $perPage])->links('vendor.pagination.tailwind') }}
+                        {{ $studentsWithoutSquad->appends([
+                            'per_page' => $perPage,
+                            'major' => request('major', 'ALL'),
+                            'withSquadPage' => request('withSquadPage', 1)
+                        ])->links('vendor.pagination.tailwind') }}
                     </div>
                 </div>
             </div>
@@ -327,6 +343,29 @@
         const withoutSquadEmpty = document.querySelector('#tableWithoutSquad tbody tr.empty-state-row');
         if (withoutSquadEmpty) {
             withoutSquadEmpty.style.display = majorHasWithoutSquad ? 'none' : 'table-row';
+        }
+
+        // Hide pagination if filtered data does not require it
+        const perPage = parseInt(document.getElementById('per_page')?.value || '10');
+        // With Squad
+        const withSquadRows = Array.from(document.querySelectorAll('#tableWithSquad tbody tr.student-row')).filter(row => row.style.display !== 'none');
+        const withSquadPagination = document.querySelector('#tableWithSquadWrapper .pagination, #tableWithSquadWrapper nav');
+        if (withSquadPagination) {
+            if (major !== 'ALL' && withSquadRows.length <= perPage) {
+                withSquadPagination.style.display = 'none';
+            } else {
+                withSquadPagination.style.display = '';
+            }
+        }
+        // Without Squad
+        const withoutSquadRows = Array.from(document.querySelectorAll('#tableWithoutSquad tbody tr.student-row')).filter(row => row.style.display !== 'none');
+        const withoutSquadPagination = document.querySelector('#tableWithoutSquadWrapper .pagination, #tableWithoutSquadWrapper nav');
+        if (withoutSquadPagination) {
+            if (major !== 'ALL' && withoutSquadRows.length <= perPage) {
+                withoutSquadPagination.style.display = 'none';
+            } else {
+                withoutSquadPagination.style.display = '';
+            }
         }
 
         // Refresh statistics
