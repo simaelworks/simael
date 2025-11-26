@@ -57,13 +57,22 @@
         {{-- Status Badge --}}
         <div class="flex justify-between border-b border-gray-200 pb-3">
             <span class="font-semibold text-gray-700">Status:</span>
-
-            {{-- Status badge with color depending on value --}}
-            <span
-                class="px-3 py-1 rounded text-sm font-medium 
-                {{ $student->status === 'verified' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                {{ ucfirst($student->status) }}
-            </span>
+            @if($student->status === 'verified')
+                <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded transition-colors duration-150 hover:bg-green-200">Verified</span>
+            @else
+                <form method="POST" action="{{ route('students.update', $student) }}" style="display:inline;">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="nisn" value="{{ $student->nisn }}">
+                    <input type="hidden" name="name" value="{{ $student->name }}">
+                    <input type="hidden" name="major" value="{{ $student->major }}">
+                    <input type="hidden" name="status" value="verified">
+                    <button type="submit" class="relative group px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded transition-colors duration-150 hover:bg-yellow-200">
+                        <span class="group-hover:hidden">pending</span>
+                        <span class="hidden group-hover:inline text-blue-700">approve?</span>
+                    </button>
+                </form>
+            @endif
         </div>
 
         {{-- Created Timestamp --}}
