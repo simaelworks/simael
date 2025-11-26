@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
         // Optionally call other seeders if needed
         $this->call([
             DefaultInviteSquadSeeder::class,
+            DefaultTeacherSeeder::class,
         ]);
     }
 }
