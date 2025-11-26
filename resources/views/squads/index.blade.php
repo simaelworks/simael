@@ -114,14 +114,14 @@
         </div>
 
         {{-- RIGHT SIDE: Squads cards grid --}}
-        <div class="flex-1 overflow-x-auto lg:overflow-x-visible">
+        <div class="flex-1 overflow-x-auto">
             {{-- Heading --}}
-            <div class="bg-blue-100 border border-gray-300 px-4 py-3 rounded-t-lg">
+            <div class="bg-blue-100 border border-gray-300 px-4 py-3 rounded-t-lg min-w-[768px]">
                 <h2 class="text-lg font-semibold text-gray-800">Daftar Squad</h2>
             </div>
 
             {{-- Cards Grid - responsive columns --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-b-lg min-h-96">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-b-lg min-h-96 min-w-[768px]">
                 {{-- Loop through squads --}}
                 @foreach($allSquads as $squad)
                     <div class="squad-row card bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition hover:border-blue-400 overflow-hidden" data-status="{{ $squad->status }}">
