@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
                 $student->save();
             }
         }
+
         // Optionally call other seeders if needed
         $this->call([
             DefaultInviteSquadSeeder::class,

@@ -19,6 +19,11 @@ class DashboardController extends Controller
             return view('pages.pending', compact('student'));
         }
 
+        // If status is pending, route to pending page
+        if ($student->status == 'pending') {
+            return view('pages.pending', compact('student'));
+        }
+
         return view('pages.dashboard', compact('student', 'squad'));
     }
 }

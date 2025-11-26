@@ -9,17 +9,12 @@
 
         <form class="lg:max-w-md w-full" action="{{ route('login') }}" method="post">
             @csrf
-
             <h1 class="text-slate-900 dark:text-blue-300 text-3xl font-semibold mb-8">
                 Login Murid
             </h1>
-
             <div class="space-y-6">
-
-                {{-- NISN INPUT --}}
                 <div>
                     <label class="text-slate-900 text-sm mb-2 block dark:text-white">NISN</label>
-
                     @if ($errors->any())
                         <input name="nisn" type="number"
                             class="bg-gray-100 dark:bg-gray-800 dark:border-gray-600 w-full text-slate-900 dark:text-white text-sm px-4 py-3 border border-red-500 focus:border-black dark:focus:border-blue-400 outline-none transition-all"
@@ -53,8 +48,6 @@
                         @endif
                     @endif
                 </div>
-
-                {{-- PASSWORD INPUT (VERSI FINAL DIGABUNG) --}}
                 <div>
                     <label class="text-slate-900 text-sm mb-2 block dark:text-white">Password</label>
 

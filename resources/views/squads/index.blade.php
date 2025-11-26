@@ -113,95 +113,99 @@
             </table>
         </div>
 
-        {{-- RIGHT SIDE: Squads cards grid --}}
-        <div class="flex-1 overflow-x-auto lg:overflow-x-visible">
+        {{-- RIGHT SIDE: Squads cards with horizontal scroll --}}
+        <div class="flex-1 min-w-0">
             {{-- Heading --}}
             <div class="bg-blue-100 border border-gray-300 px-4 py-3 rounded-t-lg">
                 <h2 class="text-lg font-semibold text-gray-800">Daftar Squad</h2>
             </div>
 
-            {{-- Cards Grid - responsive columns --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-b-lg min-h-96">
-                {{-- Loop through squads --}}
-                @foreach($allSquads as $squad)
-                    <div class="squad-row card bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition hover:border-blue-400 overflow-hidden" data-status="{{ $squad->status }}">
-                        {{-- Status Badge --}}
-                        <div class="px-4 pt-4 pb-0">
-                            <span class="inline-block px-3 py-1 rounded text-xs font-semibold
-                                @if($squad->status === 'pengajuan') bg-yellow-200 text-yellow-900
-                                @elseif($squad->status === 'on-progress') bg-blue-200 text-blue-900
-                                @elseif($squad->status === 'diterima') bg-green-200 text-green-900
-                                @else bg-gray-200 text-gray-900
-                                @endif
-                            ">
-                                {{ $squad->status }}
-                            </span>
-                        </div>
-
-                        {{-- Card Body --}}
-                        <div class="px-4 py-3">
-                            {{-- Squad Name --}}
-                            <h3 class="text-lg font-bold text-gray-800 mb-2 truncate">{{ $squad->name }}</h3>
-
-                            {{-- Squad Info --}}
-                            <div class="space-y-2 text-sm text-gray-700 mb-4">
-                                <div>
-                                    <p class="font-semibold text-gray-600">Leader</p>
-                                    @if($squad->leader)
-                                        <p class="text-gray-800">{{ $squad->leader->name }}</p>
-                                        <p class="text-xs text-gray-500">NISN: {{ $squad->leader->nisn }}</p>
-                                    @else
-                                        <p class="text-red-500 text-xs">N/A</p>
-                                    @endif
+            {{-- Cards Container with Horizontal Scroll --}}
+            <div class="bg-gray-50 rounded-b-lg border-x border-b border-gray-300 p-4">
+                <div class="overflow-x-auto pb-2">
+                    <div class="flex gap-4 min-h-96">
+                        {{-- Loop through squads --}}
+                        @foreach($allSquads as $squad)
+                            <div class="squad-row card bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition hover:border-blue-400 overflow-hidden flex-shrink-0 w-80" data-status="{{ $squad->status }}">
+                                {{-- Status Badge --}}
+                                <div class="px-4 pt-4 pb-0">
+                                    <span class="inline-block px-3 py-1 rounded text-xs font-semibold
+                                        @if($squad->status === 'pengajuan') bg-yellow-200 text-yellow-900
+                                        @elseif($squad->status === 'on-progress') bg-blue-200 text-blue-900
+                                        @elseif($squad->status === 'diterima') bg-green-200 text-green-900
+                                        @else bg-gray-200 text-gray-900
+                                        @endif
+                                    ">
+                                        {{ $squad->status }}
+                                    </span>
                                 </div>
 
-                                <div>
-                                    <p class="font-semibold text-gray-600">Jumlah Anggota</p>
-                                    <p class="text-gray-800 text-lg font-bold">{{ count($squad->users) }} orang</p>
+                                {{-- Card Body --}}
+                                <div class="px-4 py-3">
+                                    {{-- Squad Name --}}
+                                    <h3 class="text-lg font-bold text-gray-800 mb-2 truncate">{{ $squad->name }}</h3>
+
+                                    {{-- Squad Info --}}
+                                    <div class="space-y-2 text-sm text-gray-700 mb-4">
+                                        <div>
+                                            <p class="font-semibold text-gray-600">Leader</p>
+                                            @if($squad->leader)
+                                                <p class="text-gray-800">{{ $squad->leader->name }}</p>
+                                                <p class="text-xs text-gray-500">NISN: {{ $squad->leader->nisn }}</p>
+                                            @else
+                                                <p class="text-red-500 text-xs">N/A</p>
+                                            @endif
+                                        </div>
+
+                                        <div>
+                                            <p class="font-semibold text-gray-600">Jumlah Anggota</p>
+                                            <p class="text-gray-800 text-lg font-bold">{{ count($squad->users) }} orang</p>
+                                        </div>
+
+                                        <div>
+                                            <p class="font-semibold text-gray-600">Dibuat</p>
+                                            <p class="text-gray-800">{{ $squad->created_at->format('d M Y') }}</p>
+                                        </div>
+
+                                        <div>
+                                            <p class="font-semibold text-gray-600">Perusahaan</p>
+                                            <p class="text-gray-800 text-sm truncate">{{ $squad->company_name ?? 'Tidak Ada' }}</p>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <p class="font-semibold text-gray-600">Dibuat</p>
-                                    <p class="text-gray-800">{{ $squad->created_at->format('d M Y') }}</p>
-                                </div>
-
-                                <div>
-                                    <p class="font-semibold text-gray-600">Perusahaan</p>
-                                    <p class="text-gray-800 text-sm truncate">{{ $squad->company_name ?? 'Tidak Ada' }}</p>
+                                {{-- Card Footer - Actions --}}
+                                <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex gap-2">
+                                    <a href="{{ route('squads.show', $squad) }}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
+                                        Lihat
+                                    </a>
+                                    <a href="{{ route('squads.edit', $squad) }}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
+                                        Edit
+                                    </a>
+                                    <form method="POST" action="{{ route('squads.destroy', $squad) }}" style="display:inline;" class="flex-1">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="w-full px-2 py-2 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">
+                                            Hapus
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
+                        @endforeach
+
+                        {{-- Empty state - ALWAYS in DOM, shown/hidden by JS --}}
+                        <div class="empty-state-row flex items-center justify-center min-h-96 w-full" style="display:none;">
+                            <p class="text-center text-gray-500 text-sm">Belum ada squad yang sesuai dengan filter.</p>
                         </div>
 
-                        {{-- Card Footer - Actions --}}
-                        <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex gap-2">
-                            <a href="{{ route('squads.show', $squad) }}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
-                                Lihat
-                            </a>
-                            <a href="{{ route('squads.edit', $squad) }}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
-                                Edit
-                            </a>
-                            <form method="POST" action="{{ route('squads.destroy', $squad) }}" style="display:inline;" class="flex-1">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="w-full px-2 py-2 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">
-                                    Hapus
-                                </button>
-                            </form>
-                        </div>
+                        {{-- Show if no squads at all --}}
+                        @if(count($allSquads) === 0)
+                            <div class="flex items-center justify-center min-h-96 w-full">
+                                <p class="text-center text-gray-500 text-sm">Belum ada squad. <a href="{{ route('squads.create') }}" class="text-blue-500 font-semibold hover:underline">Buat yang pertama</a></p>
+                            </div>
+                        @endif
                     </div>
-                @endforeach
-
-                {{-- Empty state - ALWAYS in DOM, shown/hidden by JS --}}
-                <div class="col-span-3 empty-state-row flex items-center justify-center min-h-96" style="display:none;">
-                    <p class="text-center text-gray-500 text-sm">Belum ada squad yang sesuai dengan filter.</p>
                 </div>
-
-                {{-- Show if no squads at all --}}
-                @if(count($allSquads) === 0)
-                    <div class="col-span-3 flex items-center justify-center min-h-96">
-                        <p class="text-center text-gray-500 text-sm">Belum ada squad. <a href="{{ route('squads.create') }}" class="text-blue-500 font-semibold hover:underline">Buat yang pertama</a></p>
-                    </div>
-                @endif
             </div>
         </div>
     </div>

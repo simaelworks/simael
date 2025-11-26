@@ -11,69 +11,51 @@
         </div>
     @endif
 
-    {{-- Button to create new student --}}
-    <div class="flex justify-end mb-4">
+    <!-- {{-- Top bar: Entries selector and create button --}}
+    <div class="flex flex-row items-center justify-between mb-4">
+        <div class="flex items-center">
+            <form method="GET" class="flex items-center gap-2">
+                <select name="per_page" id="per_page" onchange="this.form.submit()" class="border rounded px-2 py-1 text-sm focus:ring focus:ring-blue-200">
+                    <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
+                    <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
+                </select>
+            </form>
+        </div>
         <a href="{{ route('students.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
             Tambahkan Akun Murid
         </a>
-    </div>
+    </div> -->
 
     {{-- Main layout: Sidebar filters + main student tables --}}
     <div class="flex flex-col gap-6 lg:flex-row lg:gap-4">
+            @php $perPage = isset($perPage) ? $perPage : 10; @endphp
         
         {{-- LEFT SIDEBAR: Filters + Statistics --}}
         <div class="w-full lg:w-80 lg:shrink-0">
-
-            {{-- Filter by major --}}
-            <table class="border border-gray-300 w-full text-sm">
-                <thead class="bg-blue-100">
-                    <tr>
-                        <th colspan="2" class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            Filter Berdasarkan Jurusan
-                        </th>
-                    </tr>
-                </thead>
-
-                {{-- Filter rows with clickable actions --}}
-                <tbody>
-                    {{--ALL MAJORS: This is the TOTAL STUDENTS function based on the filter --}}
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('ALL')" data-major="ALL">
-                        <td class="border border-gray-300 px-3 py-2">Semua Jurusan</td>
-                        <td class="border border-blue-300 px-3 py-2 text-center font-semibold">
-                            {{ count($allStudents) }}
-                        </td>
-                    </tr>
-
-                    {{-- Individual majors --}}
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('PPLG')" data-major="PPLG">
-                        <td class="border border-gray-300 px-3 py-2">PPLG</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allStudents->where('major', 'PPLG')->count() }}
-                        </td>
-                    </tr>
-
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('TJKT')" data-major="TJKT">
-                        <td class="border border-gray-300 px-3 py-2">TJKT</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allStudents->where('major', 'TJKT')->count() }}
-                        </td>
-                    </tr>
-
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('BCF')" data-major="BCF">
-                        <td class="border border-gray-300 px-3 py-2">BCF</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allStudents->where('major', 'BCF')->count() }}
-                        </td>
-                    </tr>
-
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterMajor('DKV')" data-major="DKV">
-                        <td class="border border-gray-300 px-3 py-2">DKV</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allStudents->where('major', 'DKV')->count() }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="space-y-1 bg-white border rounded p-3 text-sm mb-4">
+                <p class="font-semibold text-center mb-2">Filter Jurusan</p>
+                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('ALL')" data-major="ALL">
+                    <span>Semua Jurusan</span>
+                    <span class="font-semibold">{{ count($allStudents) }}</span>
+                </button>
+                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('PPLG')" data-major="PPLG">
+                    <span>PPLG</span>
+                    <span class="font-semibold">{{ $allStudents->where('major', 'PPLG')->count() }}</span>
+                </button>
+                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('TJKT')" data-major="TJKT">
+                    <span>TJKT</span>
+                    <span class="font-semibold">{{ $allStudents->where('major', 'TJKT')->count() }}</span>
+                </button>
+                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('BCF')" data-major="BCF">
+                    <span>BCF</span>
+                    <span class="font-semibold">{{ $allStudents->where('major', 'BCF')->count() }}</span>
+                </button>
+                <button class="w-full flex justify-between px-3 py-2 hover:bg-blue-50 filter-row" onclick="filterMajor('DKV')" data-major="DKV">
+                    <span>DKV</span>
+                    <span class="font-semibold">{{ $allStudents->where('major', 'DKV')->count() }}</span>
+                </button>
+            </div>
 
             {{-- Statistics summary (auto updates with filter) --}}
             <table class="border border-gray-300 w-full text-sm mt-4">
@@ -84,38 +66,26 @@
                         </th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    {{-- Count verified students --}}
                     <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Akun Ter-konfirmasi</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-approved">
-                            {{ $allStudents->where('status', 'verified')->count() }}
-                        </td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Akun Verified (dengan squad)</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-approved-with-squad"></td>
                     </tr>
-
-                    {{-- Count pending students --}}
                     <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Menunggu konfirmasi akun </td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-pending">
-                            {{ $allStudents->where('status', 'pending')->count() }}
-                        </td>
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Akun Verified (tanpa squad)</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-approved-without-squad"></td>
                     </tr>
-
-                    {{-- Count students with squad --}}
-                    <tr class="bg-blue-50">
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Murid Memiliki Squad</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-with-squad">
-                            0
-                        </td>
+                    <tr class="bg-green-200">
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Murid Yang Sudahh Memiliki Squad</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-with-squad"></td>
                     </tr>
-
-                    {{-- Count students without squad --}}
-                    <tr class="bg-green-50">
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Murid Belum Squad</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-without-squad">
-                            0
-                        </td>
+                    <tr class="bg-red-200">
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Murid Yang Belum Memiliki Squad</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-without-squad"></td>
+                    </tr>
+                    <tr class="bg-orange-200">
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Menunggu konfirmasi akun</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-pending-without-squad"></td>
                     </tr>
                 </tbody>
             </table>
@@ -123,10 +93,27 @@
 
         {{-- RIGHT SIDE: Students tables --}}
         <div class="flex-1 w-full">
+            {{-- Entries selector and create button above murid table --}}
+            <div class="flex flex-row items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <form method="GET" class="flex items-center gap-2">
+                        <label for="per_page" class="text-sm font-medium mr-2">Entries per page:</label>
+                        <select name="per_page" id="per_page" onchange="this.form.submit()" class="border rounded px-2 py-1 text-sm focus:ring focus:ring-blue-200">
+                            <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
+                            <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
+                            <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
+                            <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
+                        </select>
+                    </form>
+                </div>
+                <a href="{{ route('students.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    Tambahkan Akun Murid
+                </a>
+            </div>
             
             {{-- Section 1: students with squad --}}
             <div class="mb-8">
-                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-blue-100 border border-gray-300 px-4 py-2 mb-0">Murid yang sudah memiliki squad</h2>
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-green-300 border border-gray-300 px-4 py-2 mb-0">Murid yang sudah memiliki squad</h2>
                 
                 <div id="tableWithSquadWrapper" class="overflow-x-auto border border-gray-300 border-t-0 rounded-b">
                     <div class="min-w-max">
@@ -147,9 +134,8 @@
                         </thead>
 
                         <tbody>
-                            {{-- Loop through students with squads --}}
-                            @foreach($allStudents as $student)
-                                @if(!is_null($student->squad_id))
+                            {{-- Loop through paginated students with squads --}}
+                            @foreach($studentsWithSquad as $student)
                                 <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}" data-has-squad="true">
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->id }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->nisn }}</td>
@@ -166,17 +152,26 @@
                                         @if($student->status === 'verified')
                                             <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">Verified</span>
                                         @else
-                                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">Pending</span>
+                                            <form method="POST" action="{{ route('students.update', $student) }}" style="display:inline;">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="nisn" value="{{ $student->nisn }}">
+                                                <input type="hidden" name="name" value="{{ $student->name }}">
+                                                <input type="hidden" name="major" value="{{ $student->major }}">
+                                                <input type="hidden" name="status" value="verified">
+                                                <button type="submit" class="relative group px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
+                                                    <span class="group-hover:hidden">pending</span>
+                                                    <span class="hidden group-hover:inline text-blue-700">approve?</span>
+                                                </button>
+                                            </form>
                                         @endif
                                     </td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->created_at->format('d/m/Y') }}</td>
-
                                     {{-- Actions: view/edit/delete --}}
                                     <td class="border border-gray-300 px-2 py-1 text-center">
                                         <div class="flex gap-1 justify-center">
                                             <a href="{{ route('students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Lihat</a>
                                             <a href="{{ route('students.edit', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Edit</a>
-
                                             {{-- Delete button --}}
                                             <form method="POST" action="{{ route('students.destroy', $student) }}" style="display:inline;">
                                                 @csrf
@@ -186,7 +181,6 @@
                                         </div>
                                     </td>
                                 </tr>
-                                @endif
                             @endforeach
                             
                             {{-- Empty state row - ALWAYS in DOM, shown/hidden by JS --}}
@@ -197,13 +191,15 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="flex justify-end mt-2">
+                        {{ $studentsWithSquad->appends(['per_page' => $perPage])->links('vendor.pagination.tailwind') }}
                     </div>
                 </div>
             </div>
 
             {{-- Section 2: students without squad --}}
-            <div class="mb-8">
-                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-green-100 border border-gray-300 px-4 py-2 mb-0">Murid yang belum memiliki squad</h2>
+            <div class="mb-8 mt-8">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-red-200 border border-gray-300 px-4 py-2 mb-0">Murid yang belum memiliki squad</h2>
                 
                 <div id="tableWithoutSquadWrapper" class="overflow-x-auto border border-gray-300 border-t-0 rounded-b">
                     <div class="min-w-max">
@@ -223,9 +219,8 @@
                         </thead>
 
                         <tbody>
-                            {{-- Loop through students without squads --}}
-                            @foreach($allStudents as $student)
-                                @if(is_null($student->squad_id))
+                            {{-- Loop through paginated students without squads --}}
+                            @foreach($studentsWithoutSquad as $student)
                                 <tr class="hover:bg-gray-50 student-row" data-major="{{ $student->major }}" data-has-squad="false">
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->id }}</td>
                                     <td class="border border-gray-300 px-2 py-1 text-center">{{ $student->nisn }}</td>
@@ -238,7 +233,18 @@
                                         @if($student->status === 'verified')
                                             <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">Verified</span>
                                         @else
-                                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">Pending</span>
+                                            <form method="POST" action="{{ route('students.update', $student) }}" style="display:inline;">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="nisn" value="{{ $student->nisn }}">
+                                                <input type="hidden" name="name" value="{{ $student->name }}">
+                                                <input type="hidden" name="major" value="{{ $student->major }}">
+                                                <input type="hidden" name="status" value="verified">
+                                                <button type="submit" class="relative group px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
+                                                    <span class="group-hover:hidden">pending</span>
+                                                    <span class="hidden group-hover:inline text-blue-700">approve?</span>
+                                                </button>
+                                            </form>
                                         @endif
                                     </td>
                                     <td class="border border-gray-300 px-2 py-1 text-center text-xs">{{ $student->created_at->format('d/m/Y') }}</td>
@@ -257,7 +263,6 @@
                                         </div>
                                     </td>
                                 </tr>
-                                @endif
                             @endforeach
                             
                             {{-- Empty state row - ALWAYS in DOM, shown/hidden by JS --}}
@@ -269,6 +274,9 @@
                         </tbody>
 
                     </table>
+                    <div class="flex justify-end mt-2">
+                        {{ $studentsWithoutSquad->appends(['per_page' => $perPage])->links('vendor.pagination.tailwind') }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -276,20 +284,6 @@
 
 {{-- JS for filtering and updating statistics --}}
 <script>
-    // Store all students in a JS object for client-side filtering
-    const studentsData = {
-        ALL: [
-            @foreach($allStudents as $student)
-            {
-                id: {{ $student->id }},
-                major: '{{ $student->major }}',
-                status: '{{ $student->status }}',
-                hasSquad: {{ is_null($student->squad_id) ? 'false' : 'true' }}
-            },
-            @endforeach
-        ]
-    };
-
     let currentFilter = 'ALL';
 
     // Called when user selects a major from filter table
@@ -300,11 +294,9 @@
         const filterRows = document.querySelectorAll('.filter-row');
         filterRows.forEach(row => {
             if (row.getAttribute('data-major') === major) {
-                // Add a class to highlight the active filter.
                 row.classList.add('bg-blue-400', 'text-white', 'font-bold');
                 row.classList.remove('hover:bg-blue-200', 'text-gray-900');
             } else {
-                // Remove highlighting from other filters
                 row.classList.remove('bg-blue-400', 'text-white', 'font-bold');
                 row.classList.add('hover:bg-blue-200', 'text-gray-900');
             }
@@ -312,38 +304,26 @@
 
         // Show only students matching the selected major
         const allRows = document.querySelectorAll('.student-row');
+        let majorHasWithSquad = false;
+        let majorHasWithoutSquad = false;
         allRows.forEach(row => {
-            const shouldShow = (major === 'ALL' || row.getAttribute('data-major') === major);
+            const rowMajor = row.getAttribute('data-major');
+            const hasSquad = row.getAttribute('data-has-squad') === 'true';
+            const shouldShow = (major === 'ALL' || rowMajor === major);
             row.style.display = shouldShow ? '' : 'none';
+            if (shouldShow && hasSquad) majorHasWithSquad = true;
+            if (shouldShow && !hasSquad) majorHasWithoutSquad = true;
         });
 
-        // Always show the table wrapper (so the table doesn't disappear if the filter returns 0 rows)
+        // Always show the table wrapper
         document.getElementById('tableWithSquadWrapper').style.display = '';
         document.getElementById('tableWithoutSquadWrapper').style.display = '';
 
-        // Check Filter Student Has Squad
-        let majorHasWithSquad = false;
-        for (let student of studentsData.ALL) {
-            if ((major === 'ALL' || student.major === major) && student.hasSquad === true) {
-                majorHasWithSquad = true;
-                break;
-            }
-        }
-        
+        // Empty state rows
         const withSquadEmpty = document.querySelector('#tableWithSquad tbody tr.empty-state-row');
         if (withSquadEmpty) {
             withSquadEmpty.style.display = majorHasWithSquad ? 'none' : 'table-row';
         }
-
-        // Check Filter Student Without Squad
-        let majorHasWithoutSquad = false;
-        for (let student of studentsData.ALL) {
-            if ((major === 'ALL' || student.major === major) && student.hasSquad === false) {
-                majorHasWithoutSquad = true;
-                break;
-            }
-        }
-        
         const withoutSquadEmpty = document.querySelector('#tableWithoutSquad tbody tr.empty-state-row');
         if (withoutSquadEmpty) {
             withoutSquadEmpty.style.display = majorHasWithoutSquad ? 'none' : 'table-row';
@@ -353,22 +333,31 @@
         updateStatistics(major);
     }
 
-    // Recalculate statistics when filter changes
+    // Recalculate statistics using only visible rows (pagination-aware)
     function updateStatistics(major) {
-        let filteredStudents = major === 'ALL'
-            ? studentsData.ALL
-            : studentsData.ALL.filter(s => s.major === major);
+        // Get visible rows for each table
+        const withSquadRows = Array.from(document.querySelectorAll('#tableWithSquad tbody tr.student-row')).filter(row => row.style.display !== 'none');
+        const withoutSquadRows = Array.from(document.querySelectorAll('#tableWithoutSquad tbody tr.student-row')).filter(row => row.style.display !== 'none');
 
-        const approved = filteredStudents.filter(s => s.status === 'verified').length;
-        const pending = filteredStudents.filter(s => s.status === 'pending').length;
-        const withSquad = filteredStudents.filter(s => s.hasSquad === true).length;
-        const withoutSquad = filteredStudents.filter(s => s.hasSquad === false).length;
+        // Helper to count status
+        function countStatus(rows, status) {
+            return rows.filter(row => {
+                const cell = row.querySelector('td:nth-child(6) span');
+                return cell && cell.textContent.trim().toLowerCase() === status;
+            }).length;
+        }
 
-        // Update DOM
-        document.getElementById('stat-approved').textContent = approved;
-        document.getElementById('stat-pending').textContent = pending;
-        document.getElementById('stat-with-squad').textContent = withSquad;
-        document.getElementById('stat-without-squad').textContent = withoutSquad;
+        // Statistics for with squad
+        const approvedWithSquad = countStatus(withSquadRows, 'verified');
+        document.getElementById('stat-approved-with-squad').textContent = approvedWithSquad;
+        document.getElementById('stat-with-squad').textContent = withSquadRows.length;
+
+        // Statistics for without squad
+        const approvedWithoutSquad = countStatus(withoutSquadRows, 'verified');
+        const pendingWithoutSquad = countStatus(withoutSquadRows, 'pending');
+        document.getElementById('stat-approved-without-squad').textContent = approvedWithoutSquad;
+        document.getElementById('stat-pending-without-squad').textContent = pendingWithoutSquad;
+        document.getElementById('stat-without-squad').textContent = withoutSquadRows.length;
     }
 
     // Load with ALL filter active
