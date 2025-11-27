@@ -13,14 +13,11 @@ class DefaultTeacherSeeder extends Seeder
 	 */
 	public function run(): void
 	{
-		DB::table('teachers')->updateOrInsert(
-			['nik' => '1234567890123456'],
-			[
-				'name' => 'Demo Teacher',
-				'password' => Hash::make('password123'),
-				'created_at' => now(),
-				'updated_at' => now(),
-			]
-		);
+		\App\Models\Teacher::factory()->count(5)->create();
+		\App\Models\Teacher::create([
+			'name' => 'pak wowo',
+			'nik' => '1234567890123456',
+			'password' => bcrypt('1234567890123456'),
+		]);
 	}
 }
