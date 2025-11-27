@@ -50,7 +50,7 @@ class StudentController extends Controller
         $studentsWithoutSquad = $studentsWithoutSquadQuery->paginate($perPage, ['*'], 'withoutSquadPage', $withoutSquadPage);
         $totalSquads = Squad::count();
 
-        return view('students.index', compact(
+        return view('teacher.students.index', compact(
             'studentsWithSquad',
             'studentsWithoutSquad',
             'jurusanCounts',
@@ -67,7 +67,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        return view('students.create');
+        return view('teacher.students.create');
     }
 
     /**
@@ -94,7 +94,7 @@ class StudentController extends Controller
         $student = Student::create($validated);
 
         $msg = "Murid baru ditambahkan: {$student->name} (NISN: {$student->nisn})";
-        return redirect()->route('students.index')->with('success', $msg);
+        return redirect()->route('teacher.students.index')->with('success', $msg);
     }
 
     /**
@@ -102,7 +102,7 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        return view('students.show', compact('student'));
+        return view('teacher.students.show', compact('student'));
     }
 
     /**
@@ -112,7 +112,7 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        return view('students.edit', compact('student'));
+        return view('teacher.students.edit', compact('student'));
     }
 
     /**
@@ -168,7 +168,7 @@ class StudentController extends Controller
             $msg = "Data murid diperbarui: {$student->name}";
         }
 
-        return redirect()->route('students.index')->with('success', $msg);
+        return redirect()->route('teacher.students.index')->with('success', $msg);
     }
 
     /**

@@ -22,7 +22,7 @@ class SquadController extends Controller
             ->sort()
             ->values();
 
-        return view('squads.index', compact('allSquads', 'majors'));
+        return view('teacher.squads.index', compact('allSquads', 'majors'));
     }
 
     /**
@@ -32,7 +32,7 @@ class SquadController extends Controller
     {
         $availableStudents = Student::all();
         // Note: Session data 'squad_form_data' is preserved for restoring form values after coming back from preview
-        return view('squads.create', compact('availableStudents'));
+        return view('teacher.squads.create', compact('availableStudents'));
     }
 
     /**
@@ -101,7 +101,7 @@ class SquadController extends Controller
         //     return in_array($student->nisn, $idsAlreadyUsed);
         // });
 
-        return view('squads.preview', compact('validated', 'leader', 'memberStudents', 'idsInvalid', 'idsAlreadyUsed', 'leaderAlreadyInSquad', 'membersAlreadyInSquad'));
+        return view('teacher.squads.preview', compact('validated', 'leader', 'memberStudents', 'idsInvalid', 'idsAlreadyUsed', 'leaderAlreadyInSquad', 'membersAlreadyInSquad'));
     }
 
     /**
@@ -132,7 +132,7 @@ class SquadController extends Controller
      */
     public function show(Squad $squad)
     {
-        return view('squads.show', compact('squad'));
+        return view('teacher.squads.show', compact('squad'));
     }
 
     /**
@@ -140,7 +140,7 @@ class SquadController extends Controller
      */
     public function edit(Squad $squad)
     {
-        return view('squads.edit', compact('squad'));
+        return view('teacher.squads.edit', compact('squad'));
     }
 
     /**
@@ -172,7 +172,7 @@ class SquadController extends Controller
     public function destroy(Squad $squad)
     {
         $squad->delete();
-        return redirect()->route('squads.index')->with('success', 'Squad berhasil dihapus!');
+        return redirect()->route('teacher.squads.index')->with('success', 'Squad berhasil dihapus!');
     }
 
     /**
