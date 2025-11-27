@@ -10,7 +10,7 @@ Route::prefix('teacher')->name('teacher.')->group(function () {
     });
     Route::middleware('teacher.auth')->group(function () {
         Route::get('/dashboard', function () {
-            return redirect()->route('teacher.students.index');
+            return view('teacher.dashboard');
         })->name('dashboard');
         Route::post('/logout', [TeacherAuthController::class, 'logout'])->name('logout');
 
