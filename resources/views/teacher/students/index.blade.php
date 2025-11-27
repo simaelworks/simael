@@ -180,14 +180,12 @@
                                         <div class="flex gap-1 justify-center">
                                             <a href="{{ route('teacher.students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Lihat</a>
                                             <a href="{{ route('teacher.students.edit', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Edit</a>
-                                            <td class="border border-gray-300 px-2 py-1 text-center">
                                             <form method="POST" action="{{ route('teacher.students.destroy', $student) }}" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="px-2 py-0.5 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">Hapus</button>
                                             </form>
                                         </div>
-                                    </td>
                                 </tr>
                             @endforeach
                             
