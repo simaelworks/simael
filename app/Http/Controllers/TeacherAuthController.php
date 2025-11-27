@@ -25,7 +25,7 @@ class TeacherAuthController extends Controller
         if ($teacher && Hash::check($credentials['password'], $teacher->password)) {
             Auth::guard('teacher')->login($teacher);
             $request->session()->regenerate();
-            return redirect()->route('teacher.students.index');
+            return redirect()->route('teacher.dashboard');
         }
 
         return back()->withErrors([
