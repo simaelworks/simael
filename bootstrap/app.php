@@ -11,6 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         web: [
             __DIR__.'/../routes/web.php',
             __DIR__.'/../routes/api.php',
+            __DIR__.'/../routes/teacher.php',
         ],
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'guest' => GuestMiddleware::class,
             'student.auth' => StudentAuthMiddleware::class,
+            'teacher.auth' => \App\Http\Middleware\TeacherAuthMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
