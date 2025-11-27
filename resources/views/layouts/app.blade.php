@@ -52,17 +52,34 @@
 
                 <!-- Right Side Navigation -->
                 <div class="flex items-center space-x-4">
-                    @student
-                        <!-- Home Link -->
+                    @if(auth()->guard('student')->check())
+                        <!-- Home Link for Student -->
                         <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                             </svg>
                             <span class="text-sm font-medium hidden sm:inline">Home</span>
                         </a>
-
-                        <!-- Logout Link -->
+                        <!-- Logout Link for Student -->
                         <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                                <span class="text-sm font-medium hidden sm:inline">Logout</span>
+                            </button>
+                        </form>
+                    @elseif(auth()->guard('teacher')->check())
+                        <!-- Home Link for Teacher -->
+                        <a href="{{ route('teacher.dashboard') }}" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                            <span class="text-sm font-medium hidden sm:inline">Home</span>
+                        </a>
+                        <!-- Logout Link for Teacher -->
+                        <form method="POST" action="{{ route('teacher.logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +93,7 @@
                         <a href="{{ route('login') }}" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition">
                             <span class="text-sm font-medium">Login</span>
                         </a>
-                    @endstudent
+                    @endif
                 </div>
             </div>
         </div>
