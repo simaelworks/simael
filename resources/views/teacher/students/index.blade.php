@@ -22,7 +22,7 @@
                 </select>
             </form>
         </div>
-        <a href="{{ route('students.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <a href="{{ route('teacher.students.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
             Tambahkan Akun Murid
         </a>
     </div> -->
@@ -114,7 +114,7 @@
                         </select>
                     </form>
                 </div>
-                <a href="{{ route('students.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <a href="{{ route('teacher.students.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
                     Tambahkan Akun Murid
                 </a>
             </div>
@@ -160,7 +160,7 @@
                                         @if($student->status === 'verified')
                                             <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded transition-colors duration-150 hover:bg-green-200">Verified</span>
                                         @else
-                                            <form method="POST" action="{{ route('students.update', $student) }}" style="display:inline;">
+                                            <form method="POST" action="{{ route('teacher.students.update', $student) }}" style="display:inline;">
                                                 @csrf
                                                 @method('PUT')
                                                 <input type="hidden" name="nisn" value="{{ $student->nisn }}">
@@ -178,10 +178,10 @@
                                     {{-- Actions: view/edit/delete --}}
                                     <td class="border border-gray-300 px-2 py-1 text-center">
                                         <div class="flex gap-1 justify-center">
-                                            <a href="{{ route('students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Lihat</a>
-                                            <a href="{{ route('students.edit', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Edit</a>
-                                            {{-- Delete button --}}
-                                            <form method="POST" action="{{ route('students.destroy', $student) }}" style="display:inline;">
+                                            <a href="{{ route('teacher.students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Lihat</a>
+                                            <a href="{{ route('teacher.students.edit', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Edit</a>
+                                            <td class="border border-gray-300 px-2 py-1 text-center">
+                                            <form method="POST" action="{{ route('teacher.students.destroy', $student) }}" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="px-2 py-0.5 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">Hapus</button>
@@ -245,7 +245,7 @@
                                         @if($student->status === 'verified')
                                             <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded transition-colors duration-150 hover:bg-green-200">Verified</span>
                                         @else
-                                            <form method="POST" action="{{ route('students.update', $student) }}" style="display:inline;">
+                                            <form method="POST" action="{{ route('teacher.students.update', $student) }}" style="display:inline;">
                                                 @csrf
                                                 @method('PUT')
                                                 <input type="hidden" name="nisn" value="{{ $student->nisn }}">
@@ -264,10 +264,10 @@
                                     {{-- Action buttons --}}
                                     <td class="border border-gray-300 px-2 py-1 text-center">
                                         <div class="flex gap-1 justify-center">
-                                            <a href="{{ route('students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Lihat</a>
-                                            <a href="{{ route('students.edit', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Edit</a>
+                                            <a href="{{ route('teacher.students.show', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Lihat</a>
+                                            <a href="{{ route('teacher.students.edit', $student) }}" class="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">Edit</a>
 
-                                            <form method="POST" action="{{ route('students.destroy', $student) }}" style="display:inline;">
+                                            <form method="POST" action="{{ route('teacher.students.destroy', $student) }}" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="px-2 py-0.5 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">Hapus</button>

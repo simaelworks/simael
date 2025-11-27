@@ -136,18 +136,18 @@
 
     {{-- Action Buttons --}}
     <div class="flex justify-between gap-3">
-        <a href="{{ route('squads.create') }}" class="px-4 py-2 text-gray-700 font-semibold border border-gray-300 rounded hover:bg-gray-100 transition" id="backToEditBtn">
+        <a href="{{ route('teacher.squads.create') }}" class="px-4 py-2 text-gray-700 font-semibold border border-gray-300 rounded hover:bg-gray-100 transition" id="backToEditBtn">
             ← Kembali Edit
         </a>
 
         <div class="flex gap-3">
             {{-- Cancel Button --}}
-            <a href="{{ route('squads.index') }}" class="px-4 py-2 text-gray-700 font-semibold border border-gray-300 rounded hover:bg-gray-100 transition">
+            <a href="{{ route('teacher.squads.index') }}" class="px-4 py-2 text-gray-700 font-semibold border border-gray-300 rounded hover:bg-gray-100 transition">
                 Batal
             </a>
 
             {{-- Confirm Create Button --}}
-            <form method="POST" action="{{ route('squads.store') }}" style="display:inline;">
+            <form method="POST" action="{{ route('teacher.squads.store') }}" style="display:inline;">
                 @csrf
                 <input type="hidden" name="name" value="{{ $validated['name'] }}">
                 <input type="hidden" name="leader_nisn" value="{{ $validated['leader_nisn'] }}">

@@ -27,7 +27,7 @@
         Create Form 
         Sends POST request to students.store
     --}}
-    <form method="POST" action="{{ route('students.store') }}" class="space-y-4">
+    <form method="POST" action="{{ route('teacher.students.store') }}" class="space-y-4">
         @csrf
 
         {{-- NISN Field --}}
@@ -128,7 +128,7 @@
             </button>
 
             <a 
-                href="{{ route('students.index') }}" 
+                href="{{ route('teacher.students.index') }}"
                 class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold rounded border-2 border-gray-500 transition"
             >
                 Batal

@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="mt-4 p-4 md:p-6 max-w-full md:max-w-2xl mx-auto">
-    <h1 class="text-2xl md:text-3xl font-bold mb-6">Edit Squad</h1>
+    <h1 class="text-2xl md:text-3xl font-bold mb-6">Buat Squad Baru</h1>
 
     {{-- Success message --}}
     @if(session('success'))
@@ -23,20 +23,19 @@
         </div>
     @endif
 
-    {{-- Edit Form --}}
-    <form method="POST" action="{{ route('squads.update', $squad) }}" class="space-y-4">
+    {{-- Create Form --}}
+    <form method="POST" action="{{ route('teacher.squads.preview') }}" class="space-y-4">
         @csrf
-        @method('PUT')
 
         {{-- Squad Name Field --}}
         <div>
-            <label for="name" class="block text-sm font-semibold mb-2">Nama Squad (Maksimal 20 Karakter)</label>
+            <label for="name" class="block text-sm font-semibold mb-2">Nama Squad</label>
             <div class="flex items-center gap-2">
                 <input 
                     type="text" 
                     id="name" 
                     name="name" 
-                    value="{{ old('name', $squad->name) }}" 
+                    value="{{ old('name') ?? session('squad_form_data.name') }}" 
                     required
                     minlength="3"
                     maxlength="20"
@@ -50,12 +49,12 @@
 
         {{-- Leader NISN Field --}}
         <div>
-            <label for="leader_nisn" class="block text-sm font-semibold mb-2">NISN Leader (10 Angka)</label>
+            <label for="leader_nisn" class="block text-sm font-semibold mb-2">NISN Leader</label>
             <input 
                 type="text" 
                 id="leader_nisn" 
                 name="leader_nisn" 
-                value="{{ old('leader_nisn', $squad->leaderStudent->nisn ?? '') }}" 
+                value="{{ old('leader_nisn') ?? session('squad_form_data.leader_nisn') }}" 
                 required
                 inputmode="numeric"
                 maxlength="10"
@@ -64,9 +63,6 @@
                 placeholder="Masukkan 10 angka NISN leader"
             >
             @error('leader_nisn')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
-            @if($squad->leaderStudent)
-                <p class="text-gray-600 text-xs mt-1">Leader saat ini: <strong>{{ $squad->leaderStudent->name }}</strong> (hanya angka, 10 digit)</p>
-            @endif
         </div>
 
         {{-- Members NISN Field --}}
@@ -79,9 +75,8 @@
                 inputmode="numeric"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 placeholder="Masukkan NISN anggota (hanya angka), pisahkan dengan koma&#10;Contoh: 1234567890, 0987654321, 1122334455"
-            >{{ old('members_nisn', $squad->members_nisn ?? '') }}</textarea>
+            >{{ old('members_nisn') ?? session('squad_form_data.members_nisn') }}</textarea>
             @error('members_nisn')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
-            <p class="text-gray-600 text-xs mt-1">Pisahkan setiap NISN dengan koma (hanya angka, setiap NISN 10 digit)</p>
         </div>
 
         {{-- Company Name Field --}}
@@ -91,7 +86,7 @@
                 type="text" 
                 id="nama_perusahaan" 
                 name="nama_perusahaan" 
-                value="{{ old('nama_perusahaan', $squad->nama_perusahaan) }}" 
+                value="{{ old('nama_perusahaan') ?? session('squad_form_data.nama_perusahaan') }}" 
                 maxlength="255"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 placeholder="Masukkan nama perusahaan (opsional)"
@@ -109,7 +104,7 @@
                 maxlength="255"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 placeholder="Masukkan alamat perusahaan (opsional)"
-            >{{ old('alamat_perusahaan', $squad->alamat_perusahaan) }}</textarea>
+            >{{ old('alamat_perusahaan') ?? session('squad_form_data.alamat_perusahaan') }}</textarea>
             @error('alamat_perusahaan')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
         </div>
 
@@ -122,21 +117,21 @@
                 required 
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
             >
-                <option value="pengajuan" {{ old('status', $squad->status) == 'pengajuan' ? 'selected' : '' }}>Pengajuan</option>
-                <option value="on-progress" {{ old('status', $squad->status) == 'on-progress' ? 'selected' : '' }}>On Progress</option>
-                <option value="diterima" {{ old('status', $squad->status) == 'diterima' ? 'selected' : '' }}>Diterima</option>
-                <option value="unknown" {{ old('status', $squad->status) == 'unknown' ? 'selected' : '' }}>Unknown</option>
+                <option value="pengajuan" {{ (old('status') ?? session('squad_form_data.status')) == 'pengajuan' ? 'selected' : '' }}>Pengajuan</option>
+                <option value="on-progress" {{ (old('status') ?? session('squad_form_data.status')) == 'on-progress' ? 'selected' : '' }}>On Progress</option>
+                <option value="diterima" {{ (old('status') ?? session('squad_form_data.status')) == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                <option value="unknown" {{ (old('status') ?? session('squad_form_data.status')) == 'unknown' ? 'selected' : '' }}>Unknown</option>
             </select>
             @error('status')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
         </div>
 
         {{-- Form Buttons --}}
         <div class="flex justify-end gap-3 pt-4">
-            <a href="{{ route('squads.index') }}" class="px-4 py-2 text-gray-700 font-semibold border border-gray-300 rounded hover:bg-gray-100 transition">
+            <a href="{{ route('teacher.squads.index') }}" class="px-4 py-2 text-gray-700 font-semibold border border-gray-300 rounded hover:bg-gray-100 transition">
                 Batal
             </a>
             <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded transition">
-                Simpan Perubahan
+                Lanjut ke Preview
             </button>
         </div>
     </form>

@@ -152,18 +152,18 @@
 
     {{-- Action Buttons --}}
     <div class="flex justify-between gap-3">
-        <a href="{{ route('squads.index') }}" class="px-4 py-2 text-gray-700 font-semibold border border-gray-300 rounded hover:bg-gray-100 transition">
+        <a href="{{ route('teacher.squads.index') }}" class="px-4 py-2 text-gray-700 font-semibold border border-gray-300 rounded hover:bg-gray-100 transition">
             ← Kembali
         </a>
 
         <div class="flex gap-3">
             {{-- Edit Button --}}
-            <a href="{{ route('squads.edit', $squad) }}" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded transition">
+            <a href="{{ route('teacher.squads.edit', $squad) }}" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded transition">
                 Edit
             </a>
 
             {{-- Delete Button --}}
-            <form method="POST" action="{{ route('squads.destroy', $squad) }}" style="display:inline;">
+            <form method="POST" action="{{ route('teacher.squads.destroy', $squad) }}" style="display:inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" onclick="return confirm('Yakin untuk menghapus squad ini?');" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded transition">

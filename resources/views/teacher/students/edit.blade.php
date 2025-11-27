@@ -27,7 +27,7 @@
         Update Form
         Sends PUT request to students.update route.
     --}}
-    <form method="POST" action="{{ route('students.update', $student) }}" class="space-y-4">
+    <form method="POST" action="{{ route('teacher.students.update', $student) }}" class="space-y-4">
         @csrf
         @method('PUT')
 
@@ -124,7 +124,7 @@
                 Perbarui Akun Murid
             </button>
 
-            <a href="{{ route('students.index') }}" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold rounded border-2 border-gray-500 transition">
+            <a href="{{ route('teacher.students.index') }}" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold rounded border-2 border-gray-500 transition">
                 Batal
             </a>
         </div>

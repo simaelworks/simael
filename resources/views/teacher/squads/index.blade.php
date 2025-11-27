@@ -13,7 +13,7 @@
 
     {{-- Button to create new squad --}}
     <div class="flex justify-end mb-4">
-        <a href="{{ route('squads.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <a href="{{ route('teacher.squads.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
             Buat Squad Baru
         </a>
     </div>
@@ -25,7 +25,7 @@
         <div class="w-full lg:w-80 lg:shrink-0">
 
             {{-- Filter by status --}}
-            <table class="border border-gray-300 w-full text-sm">
+                    <a href="{{ route('teacher.squads.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
                 <thead class="bg-blue-100">
                     <tr>
                         <th colspan="2" class="border border-gray-300 px-3 py-2 text-center font-semibold">
@@ -95,13 +95,12 @@
                     </tr>
 
                     {{-- Total squads without company --}}
-                    <tr>
-                        <td class="border border-gray-300 px-3 py-2 font-medium">Total Tidak Memiliki Perusahaan</td>
+                    <tr class="bg-red-50">
+                        <td class="border border-gray-300 px-3 py-2 font-medium">Total Tanpa Perusahaan</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-no-company">
                             {{ $allSquads->whereNull('company_name')->count() }}
                         </td>
                     </tr>
-
                     {{-- Total squads --}}
                     <tr class="bg-green-50">
                         <td class="border border-gray-300 px-3 py-2 font-medium">Jumlah Squad</td>
@@ -176,13 +175,13 @@
 
                                 {{-- Card Footer - Actions --}}
                                 <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex gap-2">
-                                    <a href="{{ route('squads.show', $squad) }}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
+                                    <a href="{{ route('teacher.squads.show', $squad) }}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
                                         Lihat
                                     </a>
-                                    <a href="{{ route('squads.edit', $squad) }}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
+                                    <a href="{{ route('teacher.squads.edit', $squad) }}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
                                         Edit
                                     </a>
-                                    <form method="POST" action="{{ route('squads.destroy', $squad) }}" style="display:inline;" class="flex-1">
+                                    <form method="POST" action="{{ route('teacher.squads.destroy', $squad) }}" style="display:inline;" class="flex-1">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="w-full px-2 py-2 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">
@@ -201,7 +200,7 @@
                         {{-- Show if no squads at all --}}
                         @if(count($allSquads) === 0)
                             <div class="flex items-center justify-center min-h-96 w-full">
-                                <p class="text-center text-gray-500 text-sm">Belum ada squad. <a href="{{ route('squads.create') }}" class="text-blue-500 font-semibold hover:underline">Buat yang pertama</a></p>
+                                <p class="text-center text-gray-500 text-sm">Belum ada squad. <a href="{{ route('teacher.squads.create') }}" class="text-blue-500 font-semibold hover:underline">Buat yang pertama</a></p>
                             </div>
                         @endif
                     </div>

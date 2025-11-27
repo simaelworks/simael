@@ -91,13 +91,13 @@
     {{-- Action Buttons --}}
     <div class="flex gap-3 mt-6">
         {{-- Edit Button --}}
-        <a href="{{ route('students.edit', $student) }}" 
+        <a href="{{ route('teacher.students.edit', $student) }}"
             class="px-4 py-2 bg-blue-300 hover:bg-blue-400 text-blue-900 font-semibold rounded border-2 border-blue-500 transition">
             Edit
         </a>
 
         {{-- Back to Student Index --}}
-        <a href="{{ route('students.index') }}" 
+        <a href="{{ route('teacher.students.index') }}"
             class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold rounded border-2 border-gray-500 transition">
             Kembali ke Daftar Murid
         </a>
