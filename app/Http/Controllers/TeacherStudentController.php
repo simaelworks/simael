@@ -9,12 +9,6 @@ class TeacherStudentController extends Controller
 {
     public function index()
     {
-        $perPage = request('per_page', 10);
-        $studentsWithSquad = Student::whereNotNull('squad_id')->paginate($perPage, ['*'], 'withSquadPage');
-        $studentsWithoutSquad = Student::whereNull('squad_id')->paginate($perPage, ['*'], 'withoutSquadPage');
-        $allStudents = Student::all();
-        $totalSquads = \App\Models\Squad::count();
-
         $perPage = request('per_page', session('per_page', 10));
         session(['per_page' => $perPage]);
 
@@ -22,17 +16,29 @@ class TeacherStudentController extends Controller
         $withoutSquadPage = request('withoutSquadPage', session('withoutSquadPage', 1));
         session(['withSquadPage' => $withSquadPage, 'withoutSquadPage' => $withoutSquadPage]);
 
+        $major = request('major', 'ALL');
         $studentsWithSquad = Student::whereNotNull('squad_id')->paginate($perPage, ['*'], 'withSquadPage', $withSquadPage);
         $studentsWithoutSquad = Student::whereNull('squad_id')->paginate($perPage, ['*'], 'withoutSquadPage', $withoutSquadPage);
         $allStudents = Student::all();
         $totalSquads = \App\Models\Squad::count();
+
+        // Jurusan counts
+        $jurusanCounts = [
+            'ALL' => $allStudents->count(),
+            'PPLG' => $allStudents->where('major', 'PPLG')->count(),
+            'TJKT' => $allStudents->where('major', 'TJKT')->count(),
+            'BCF' => $allStudents->where('major', 'BCF')->count(),
+            'DKV' => $allStudents->where('major', 'DKV')->count(),
+        ];
 
         return view('teacher.students.index', compact(
             'studentsWithSquad',
             'studentsWithoutSquad',
             'allStudents',
             'totalSquads',
-            'perPage'
+            'perPage',
+            'major',
+            'jurusanCounts'
         ));
     }
 
