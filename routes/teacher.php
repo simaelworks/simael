@@ -2,16 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TeacherAuthController;
+use App\Http\Controllers\TeacherDashboardController;
 
 Route::prefix('teacher')->name('teacher.')->group(function () {
-    Route::middleware('guest:teacher')->group(function () {
+    Route::middleware('teacher.guest')->group(function () {
         Route::get('/login', [TeacherAuthController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [TeacherAuthController::class, 'login']);
     });
     Route::middleware('teacher.auth')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('teacher.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [TeacherAuthController::class, 'logout'])->name('logout');
 
         // Teacher students and squads resource routes

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\GuestMiddleware;
+use App\Http\Middleware\GuestTeacherMiddleware;
 use App\Http\Middleware\StudentAuthMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->alias([
             'guest' => GuestMiddleware::class,
+            'teacher.guest' => GuestTeacherMiddleware::class,
             'student.auth' => StudentAuthMiddleware::class,
             'teacher.auth' => \App\Http\Middleware\TeacherAuthMiddleware::class,
         ]);

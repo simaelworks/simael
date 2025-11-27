@@ -2,17 +2,18 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Teacher;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class TeacherAuthMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('teacher')->check()) {
+        if (!session('teacher_id') || !Teacher::find(session('teacher_id'))) {
             return redirect()->route('teacher.login');
         }
+
         return $next($request);
     }
 }

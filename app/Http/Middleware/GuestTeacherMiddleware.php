@@ -2,12 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Student;
+use App\Models\Teacher;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class GuestMiddleware
+class GuestTeacherMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,9 +16,9 @@ class GuestMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (session('student_id') && Student::find(session('student_id')))
+        if (session('teacher_id') && Teacher::find(session('teacher_id')))
         {
-            return redirect()->route('dashboard');
+            return redirect()->route('teacher.dashboard');
         }
 
         return $next($request);
