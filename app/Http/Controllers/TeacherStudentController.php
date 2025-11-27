@@ -17,18 +17,23 @@ class TeacherStudentController extends Controller
         session(['withSquadPage' => $withSquadPage, 'withoutSquadPage' => $withoutSquadPage]);
 
         $major = request('major', 'ALL');
-        $studentsWithSquad = Student::whereNotNull('squad_id')->paginate($perPage, ['*'], 'withSquadPage', $withSquadPage);
-        $studentsWithoutSquad = Student::whereNull('squad_id')->paginate($perPage, ['*'], 'withoutSquadPage', $withoutSquadPage);
-        $allStudents = Student::all();
+        $studentQuery = Student::query();
+        if ($major !== 'ALL') {
+            $studentQuery->where('major', $major);
+        }
+        $studentsWithSquad = (clone $studentQuery)->whereNotNull('squad_id')->paginate($perPage, ['*'], 'withSquadPage', $withSquadPage);
+        $studentsWithoutSquad = (clone $studentQuery)->whereNull('squad_id')->paginate($perPage, ['*'], 'withoutSquadPage', $withoutSquadPage);
+        $allStudents = $studentQuery->get();
         $totalSquads = \App\Models\Squad::count();
 
-        // Jurusan counts
+        // Jurusan counts (always from all students, not filtered)
+        $allJurusanStudents = Student::all();
         $jurusanCounts = [
-            'ALL' => $allStudents->count(),
-            'PPLG' => $allStudents->where('major', 'PPLG')->count(),
-            'TJKT' => $allStudents->where('major', 'TJKT')->count(),
-            'BCF' => $allStudents->where('major', 'BCF')->count(),
-            'DKV' => $allStudents->where('major', 'DKV')->count(),
+            'ALL' => $allJurusanStudents->count(),
+            'PPLG' => $allJurusanStudents->where('major', 'PPLG')->count(),
+            'TJKT' => $allJurusanStudents->where('major', 'TJKT')->count(),
+            'BCF' => $allJurusanStudents->where('major', 'BCF')->count(),
+            'DKV' => $allJurusanStudents->where('major', 'DKV')->count(),
         ];
 
         return view('teacher.students.index', compact(
