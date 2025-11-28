@@ -5,7 +5,8 @@
     "scripts": {
         "build": "vite build",
         "dev": "npx concurrently \"php artisan serve\" \"vite\"",
-        "dev:mobile": "npx concurrently \"php artisan serve --host=0.0.0.0 --port=8000\" \"vite\""
+        "dev:mobile": "npx concurrently \"php artisan serve --host=0.0.0.0 --port=8000\" \"npm run vite:mobile\"",
+        "vite:mobile": "vite --host 0.0.0.0"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
