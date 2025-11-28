@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class LoginRegisterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('guest', ['only' => 'loginPage', 'registerPage', 'login', 'register']);
+        $this->middleware('guest:student', ['only' => 'loginPage', 'registerPage', 'login', 'register']);
         $this->middleware('student.auth', ['only' => 'logout']);
     }
     //
@@ -58,28 +59,26 @@ class LoginRegisterController extends Controller
 
     public function login(Request $request)
     {
-        $validatedData = $request->validate([
+        $credentials = $request->validate([
             'nisn' => 'required|integer',
             'password' => 'required|string'
         ]);
+        $remember = $request->filled('remember-key');
 
-        $student = Student::where('nisn', $validatedData['nisn'])->first();
-
-        if (!$student) {
-            return back()->with('failed', 'NISN atau Kata sandi salah!');
+        if (!Auth::guard('student')->attempt($credentials, $remember)) {
+            return back()->with('failed', 'NSIN atau Password salah');
         }
 
-        if (!Hash::check($validatedData['password'], $student['password'])) {
-            return back()->with('failed', 'NISN atau Kata sandi salah!');
-        }
-
-        session(['student_id' => $student['id']]);
+        // session(['student_id' => $student['id']]);
+        $request->session()->regenerate();
         return redirect()->route('dashboard');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        session()->forget('student_id');
+        Auth::guard('student')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('loginPage');
     }
