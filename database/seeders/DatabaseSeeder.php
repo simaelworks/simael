@@ -23,26 +23,12 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Generate 5 squads
-        $squads = \App\Models\Squad::factory(5)->create();
-
-        // Generate 20 students
-        $students = \App\Models\Student::factory(20)->create();
-
-        // Assign only verified students to squads
-        foreach ($students as $student) {
-            if ($student->status === 'verified') {
-                $student->squad_id = $squads->random()->id;
-                $student->save();
-            }
-        }
-
         // Optionally call other seeders if needed
         $this->call([
+            DefaultSquadSeeder::class,
+            DefaultStudentSeeder::class,
             DefaultInviteSquadSeeder::class,
             DefaultTeacherSeeder::class,
-            DefaultSquadSeeder::class,
-            
         ]);
     }
 }

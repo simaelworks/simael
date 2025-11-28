@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Squad;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DefaultSquadSeeder extends Seeder
@@ -13,6 +12,9 @@ class DefaultSquadSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create 10 squad
+        Squad::factory()->count(10)->create();
+
         Squad::create([
             'name' => 'Squad Dummy',
             'description' => 'Squad boongan buat tes doang',
