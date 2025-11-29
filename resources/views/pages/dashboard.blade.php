@@ -146,7 +146,7 @@
                                     @foreach ($squad->users as $member)
                                     <div class="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-smooth">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-semibold">{{ $student->id }}</div>
+                                            <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-semibold">{{ $member->id }}</div>
                                             <div>
                                                 <p class="font-medium">{{ $member->name }}</p>
                                                 @if ($squad->leader_id == $member->id)
