@@ -37,6 +37,8 @@
                 <p class="font-semibold text-center mb-2">Filter Jurusan</p>
                 <form method="GET" action="" class="space-y-1">
                     <input type="hidden" name="per_page" value="{{ request('per_page', $perPage) }}">
+                    <input type="hidden" name="withSquadPage" value="1">
+                    <input type="hidden" name="withoutSquadPage" value="1">
                     <button type="submit" name="major" value="ALL" class="w-full flex justify-between px-3 py-2 filter-row transition-colors duration-150
                         {{ $major == 'ALL' ? 'bg-blue-500 text-white font-bold ring-2 ring-blue-300' : 'hover:bg-blue-100 hover:text-blue-900' }}">
                         <span>Semua Jurusan</span>
@@ -198,7 +200,7 @@
                         </tbody>
                     </table>
                     <div class="flex justify-end mt-2">
-                        {{ $studentsWithSquad->appends([
+                        {{ $studentsWithSquad->onEachSide(1)->appends([
                             'per_page' => $perPage,
                             'major' => request('major', 'ALL'),
                             'withoutSquadPage' => request('withoutSquadPage', 1)
@@ -285,7 +287,7 @@
 
                     </table>
                     <div class="flex justify-end mt-2">
-                        {{ $studentsWithoutSquad->appends([
+                        {{ $studentsWithoutSquad->onEachSide(1)->appends([
                             'per_page' => $perPage,
                             'major' => request('major', 'ALL'),
                             'withSquadPage' => request('withSquadPage', 1)
