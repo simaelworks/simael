@@ -34,7 +34,7 @@
             </div>
             <div>
               <label class="text-slate-900 text-sm mb-2 block">NISN</label>
-              <input name="nisn" type="number" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan NISN"  value="{{ old('nisn') }}" required/>
+              <input name="nisn" type="text" inputmode="numeric" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan NISN (10 digit)"  value="{{ old('nisn') }}" required/>
             </div>
             <div>
               <label class="text-slate-900 text-sm mb-2 block">Jurusan</label>

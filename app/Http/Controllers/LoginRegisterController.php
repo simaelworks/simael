@@ -30,7 +30,7 @@ class LoginRegisterController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string',
-            'nisn' => 'required|integer',
+            'nisn' => 'required|string|digits:10',
             'major' => 'required|string',
             'password' => 'required|string',
             'confirm-password' => 'required|string',
@@ -60,7 +60,7 @@ class LoginRegisterController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'nisn' => 'required|integer',
+            'nisn' => 'required|string|digits:10',
             'password' => 'required|string'
         ]);
         $remember = $request->filled('remember-key');

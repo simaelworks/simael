@@ -31,7 +31,7 @@
             <div>
               <label class="text-slate-900 text-sm mb-2 block">NISN</label>
                 @if ($errors->any())
-                    <input name="nisn" type="number" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder=" Masukkan NISN"  value="{{ old('nisn') }}" required/>
+                    <input name="nisn" type="text" inputmode="numeric" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder=" Masukkan NISN (10 digit)"  value="{{ old('nisn') }}" required/>
                     <div class="alert alert-danger">
                         @foreach ($errors->all() as $error)
                             <p class="text-sm mt-1 text-red-500">{{ $error }}</p>
@@ -40,11 +40,11 @@
                 @else
                     @if (session()->has('failed'))
 
-                        <input name="nisn" type="number" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder=" Masukkan NISN"  value="{{ old('nisn') }}" required/>
+                        <input name="nisn" type="text" inputmode="numeric" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder=" Masukkan NISN (10 digit)"  value="{{ old('nisn') }}" required/>
                         <p class="text-sm mt-1 text-red-500">{{ session('failed') }}</p>
 
                     @else
-                        <input name="nisn" type="number" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-grey-100 focus:border-black outline-none transition-all" placeholder=" Masukkan NISN"  value="{{ old('nisn') }}" required/>
+                        <input name="nisn" type="text" inputmode="numeric" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-grey-100 focus:border-black outline-none transition-all" placeholder=" Masukkan NISN (10 digit)"  value="{{ old('nisn') }}" required/>
                         @if (session()->has('success'))
                         <p class="text-sm mt-1 text-green-400">{{ session('success') }}</p>
                         @endif
