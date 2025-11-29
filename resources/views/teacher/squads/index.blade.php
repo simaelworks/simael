@@ -68,13 +68,13 @@
                             {{ $allSquads->whereNull('company_name')->count() }}
                         </td>
                     </tr>
-                    {{-- Total squads --}}
+                    <!-- {{-- Total squads --}}
                     <tr class="bg-green-50">
                         <td class="border border-gray-300 px-3 py-2 font-medium">Jumlah Squad</td>
                         <td class="border border-gray-300 px-3 py-2 text-center font-semibold" id="stat-total">
                             {{ count($allSquads) }}
                         </td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
         </div>
@@ -267,7 +267,8 @@
 
     // Toggle container collapse/expand
     function toggleContainer(headerElement) {
-        const container = headerElement.closest('.status-container');
+        // Find either status-container or major-container
+        const container = headerElement.closest('.status-container') || headerElement.closest('.major-container');
         const content = container.querySelector('.container-content');
         const icon = headerElement.querySelector('.collapse-icon');
         
@@ -394,6 +395,7 @@
             // Show status containers, hide major containers
             majorContainersWrapper.style.display = 'none';
             
+            const allCards = [];
             statusContainers.forEach(container => {
                 const cards = container.querySelectorAll('.squad-row.card');
                 const emptyMsg = container.querySelector('.empty-state-msg');
@@ -402,6 +404,7 @@
                 cards.forEach(card => {
                     card.style.display = '';
                     visibleCards++;
+                    allCards.push(card);
                 });
                 
                 if (visibleCards === 0) {
@@ -410,6 +413,22 @@
                 } else {
                     container.style.display = 'block';
                     if (emptyMsg) emptyMsg.style.display = 'none';
+                }
+            });
+            
+            // Re-observe cards for lazy loading
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && entry.target.hasAttribute('data-needs-action-render')) {
+                        renderActionButtons(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '50px' });
+            
+            allCards.forEach(card => {
+                if (card.hasAttribute('data-needs-action-render')) {
+                    observer.observe(card);
                 }
             });
         } else {
@@ -458,6 +477,7 @@
             });
             
             // Add grouped cards to major containers
+            const clonedCards = [];
             Object.keys(groupedByMajor).forEach(major => {
                 const majorContainer = majorContainersWrapper.querySelector(`.major-container[data-major="${major}"]`);
                 const grid = majorContainer.querySelector('.squad-grid');
@@ -465,7 +485,9 @@
                 
                 if (groupedByMajor[major].length > 0) {
                     groupedByMajor[major].forEach(card => {
-                        grid.appendChild(card.cloneNode(true));
+                        const clonedCard = card.cloneNode(true);
+                        grid.appendChild(clonedCard);
+                        clonedCards.push(clonedCard);
                     });
                     majorContainer.style.display = 'block';
                     if (emptyMsg) emptyMsg.style.display = 'none';
@@ -473,6 +495,22 @@
                 } else {
                     majorContainer.style.display = 'none';
                     if (emptyMsg) emptyMsg.style.display = 'block';
+                }
+            });
+            
+            // Re-observe cloned cards for lazy loading
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && entry.target.hasAttribute('data-needs-action-render')) {
+                        renderActionButtons(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '50px' });
+            
+            clonedCards.forEach(card => {
+                if (card.hasAttribute('data-needs-action-render')) {
+                    observer.observe(card);
                 }
             });
         }
@@ -489,15 +527,22 @@
 
         const allCards = document.querySelectorAll('.squad-row.card');
         allCards.forEach(card => {
-            const shouldCount = (status === 'ALL' || card.getAttribute('data-status') === status) && card.style.display !== 'none';
+            // Only count cards from status containers (not cloned from major containers)
+            const isInStatusContainer = card.closest('.status-container') !== null;
+            const isInMajorContainer = card.closest('.major-container') !== null;
             
-            if (shouldCount) {
-                totalCards++;
-                const companyText = card.querySelector('.squad-company').textContent.trim();
-                if (companyText !== 'Tidak Ada') {
-                    hasCompany++;
-                } else {
-                    noCompany++;
+            // Only count from status containers, not from major containers
+            if (!isInMajorContainer) {
+                const shouldCount = (status === 'ALL' || card.getAttribute('data-status') === status) && card.style.display !== 'none';
+                
+                if (shouldCount) {
+                    totalCards++;
+                    const companyText = card.querySelector('.squad-company').textContent.trim();
+                    if (companyText !== 'Tidak Ada') {
+                        hasCompany++;
+                    } else {
+                        noCompany++;
+                    }
                 }
             }
         });
