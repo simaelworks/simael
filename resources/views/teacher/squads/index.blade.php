@@ -286,18 +286,17 @@
     function populateCards() {
         console.log('populateCards called');
         const template = document.getElementById('squadCardTemplate');
-        console.log('Template found:', template);
         
         allSquadsData.forEach((squad, index) => {
-            console.log(`Processing squad ${index}:`, squad);
             const cardClone = template.content.cloneNode(true);
             const cardElement = cardClone.querySelector('.squad-row');
             
             // Set status
             cardElement.setAttribute('data-status', squad.status);
+            cardElement.setAttribute('data-squad-id', squad.id);
             
-            // Set status badge with appropriate color
-            const statusBadge = cardClone.querySelector('.status-badge');
+            // Set status badge with appropriate color (do this immediately, not lazy)
+            const statusBadge = cardElement.querySelector('.status-badge');
             statusBadge.textContent = squad.status.charAt(0).toUpperCase() + squad.status.slice(1);
             
             if (squad.status === 'pengajuan') {
@@ -310,35 +309,18 @@
                 statusBadge.className = 'inline-block px-3 py-1 rounded text-xs font-semibold bg-gray-200 text-gray-900';
             }
             
-            // Set squad info
-            cardClone.querySelector('.squad-name').textContent = squad.name;
-            cardClone.querySelector('.squad-leader').textContent = squad.leader ? squad.leader.name : 'N/A';
-            cardClone.querySelector('.squad-leader-nisn').textContent = squad.leader ? 'NISN: ' + squad.leader.nisn : '';
-            cardClone.querySelector('.squad-members').textContent = squad.users.length + ' orang';
-            cardClone.querySelector('.squad-company').textContent = squad.company_name ? squad.company_name : 'Tidak Ada';
-            cardClone.querySelector('.squad-date').textContent = new Date(squad.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+            // Set squad info immediately (not lazy)
+            cardElement.querySelector('.squad-name').textContent = squad.name;
+            cardElement.querySelector('.squad-leader').textContent = squad.leader ? squad.leader.name : 'N/A';
+            cardElement.querySelector('.squad-leader-nisn').textContent = squad.leader ? 'NISN: ' + squad.leader.nisn : '';
+            cardElement.querySelector('.squad-members').textContent = squad.users.length + ' orang';
+            cardElement.querySelector('.squad-company').textContent = squad.company_name ? squad.company_name : 'Tidak Ada';
+            cardElement.querySelector('.squad-date').textContent = new Date(squad.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
             
-            // Set action buttons
-            const actionButtons = cardClone.querySelector('.action-buttons');
-            const showUrl = "{{ route('teacher.squads.show', ['squad' => ':squadId']) }}".replace(':squadId', squad.id);
-            const editUrl = "{{ route('teacher.squads.edit', ['squad' => ':squadId']) }}".replace(':squadId', squad.id);
-            const destroyUrl = "{{ route('teacher.squads.destroy', ['squad' => ':squadId']) }}".replace(':squadId', squad.id);
-            
-            actionButtons.innerHTML = `
-                <a href="${showUrl}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
-                    Lihat
-                </a>
-                <a href="${editUrl}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
-                    Edit
-                </a>
-                <form method="POST" action="${destroyUrl}" style="display:inline;" class="flex-1">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="w-full px-2 py-2 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">
-                        Hapus
-                    </button>
-                </form>
-            `;
+            // Set action buttons (lazy load this part)
+            const actionButtons = cardElement.querySelector('.action-buttons');
+            actionButtons.innerHTML = `<div class="text-xs text-gray-500">Loading...</div>`;
+            cardElement.setAttribute('data-needs-action-render', 'true');
             
             // Determine target container
             let targetStatus = squad.status;
@@ -347,15 +329,58 @@
             }
             
             const targetContainer = document.querySelector(`.status-container[data-status="${targetStatus}"] .squad-grid`);
-            console.log(`Looking for container with data-status="${targetStatus}"`, targetContainer);
             if (targetContainer) {
                 targetContainer.appendChild(cardClone);
-                console.log(`Added squad "${squad.name}" to ${targetStatus} container`);
             }
         });
 
         // Update visibility and statistics
         filterStatus(currentFilter);
+        
+        // Now set up lazy loading for action buttons
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.target.hasAttribute('data-needs-action-render')) {
+                    renderActionButtons(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '50px' });
+        
+        document.querySelectorAll('[data-needs-action-render]').forEach(card => {
+            observer.observe(card);
+        });
+    }
+
+    // Render action buttons (lazy loaded)
+    function renderActionButtons(cardElement) {
+        const squadId = cardElement.getAttribute('data-squad-id');
+        const squad = allSquadsData.find(s => s.id == squadId);
+        
+        if (!squad) return;
+        
+        const actionButtons = cardElement.querySelector('.action-buttons');
+        const showUrl = "{{ route('teacher.squads.show', ['squad' => ':squadId']) }}".replace(':squadId', squad.id);
+        const editUrl = "{{ route('teacher.squads.edit', ['squad' => ':squadId']) }}".replace(':squadId', squad.id);
+        const destroyUrl = "{{ route('teacher.squads.destroy', ['squad' => ':squadId']) }}".replace(':squadId', squad.id);
+        
+        actionButtons.innerHTML = `
+            <a href="${showUrl}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
+                Lihat
+            </a>
+            <a href="${editUrl}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
+                Edit
+            </a>
+            <form method="POST" action="${destroyUrl}" style="display:inline;" class="flex-1">
+                @csrf
+                @method('DELETE')
+                <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="w-full px-2 py-2 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">
+                    Hapus
+                </button>
+            </form>
+        `;
+        
+        cardElement.removeAttribute('data-needs-action-render');
     }
 
     // Called when user selects a status from filter table
