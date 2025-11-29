@@ -44,10 +44,10 @@
                     </p>
 
                     <div class="mt-6 flex items-center space-x-4">
-                        <a href="" class="px-6 py-3 bg-yellow-300 text-gray-900 font-semibold rounded-lg shadow hover:bg-gray-200 transition">
+                        <a href="{{ route('login') }}" class="px-6 py-3 bg-yellow-300 text-gray-900 font-semibold rounded-lg shadow hover:bg-gray-200 transition">
                             Login Untuk Murid
                         </a>
-                        <a href="" class="px-6 py-3 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg shadow hover:bg-yellow-300 hover:text-gray-900 transition">
+                        <a href="{{ route('teacher.login') }}" class="px-6 py-3 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg shadow hover:bg-yellow-300 hover:text-gray-900 transition">
                             Login Untuk Guru
                         </a>
                     </div>
@@ -129,7 +129,7 @@
                         <h3 class="text-xl font-semibold mt-2">Lutfi</h3>
                         <p class="text-gray-600">Frontend Developer</p>
 
-                        <a href="https://github.com/ry726" target="_blank" class="mt-2 inline-flex items-center text-black-600 hover:underline">
+                        <a href="https://github.com/ReizeJS" target="_blank" class="mt-2 inline-flex items-center text-black-600 hover:underline">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
                                     d="M12 0C5.37 0 0 5.37 0 12c0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577
@@ -203,7 +203,7 @@
                         <h3 class="text-xl font-semibold mt-2">Abi</h3>
                         <p class="text-gray-600">Backend Developer</p>
 
-                        <a href="https://github.com/ry726" target="_blank" class="mt-2 inline-flex items-center text-black-600 hover:underline">
+                        <a href="https://github.com/Kuredew" target="_blank" class="mt-2 inline-flex items-center text-black-600 hover:underline">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
                                     d="M12 0C5.37 0 0 5.37 0 12c0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577
@@ -240,7 +240,7 @@
                         <h3 class="text-xl font-semibold mt-2">Aufa</h3>
                         <p class="text-gray-600">Frontend Developer</p>
 
-                        <a href="https://github.com/ry726" target="_blank" class="mt-2 inline-flex items-center text-black-600 hover:underline">
+                        <a href="https://github.com/hehehdev" target="_blank" class="mt-2 inline-flex items-center text-black-600 hover:underline">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
                                     d="M12 0C5.37 0 0 5.37 0 12c0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577
@@ -277,7 +277,7 @@
                         <h3 class="text-xl font-semibold mt-2">Kenneth</h3>
                         <p class="text-gray-600">UI/UX Designer</p>
 
-                        <a href="https://github.com/ry726" target="_blank" class="mt-2 inline-flex items-center text-black-600 hover:underline">
+                        <a href="https://github.com/Caxerion" target="_blank" class="mt-2 inline-flex items-center text-black-600 hover:underline">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
                                     d="M12 0C5.37 0 0 5.37 0 12c0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577
