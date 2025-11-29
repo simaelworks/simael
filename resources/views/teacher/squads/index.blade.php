@@ -11,70 +11,37 @@
         </div>
     @endif
 
-    {{-- Button to create new squad --}}
-    <div class="flex justify-end mb-4">
-        <a href="{{ route('teacher.squads.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
-            Buat Squad Baru
-        </a>
-    </div>
-
     {{-- Main layout: Sidebar filters + main squad tables --}}
     <div class="flex flex-col gap-6 lg:flex-row lg:gap-4">
         
         {{-- LEFT SIDEBAR: Filters + Statistics --}}
-        <div class="w-full lg:w-80 lg:shrink-0">
-
+        <div class="w-full lg:w-80 lg:shrink-0 lg:sticky lg:top-20 lg:h-fit">
             {{-- Filter by status --}}
-                    <a href="{{ route('teacher.squads.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
-                <thead class="bg-blue-100">
-                    <tr>
-                        <th colspan="2" class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            Filter Berdasarkan Status
-                        </th>
-                    </tr>
-                </thead>
-
-                {{-- Filter rows with clickable actions --}}
-                <tbody>
-                    {{-- ALL STATUSES --}}
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row active-filter bg-blue-300" onclick="filterStatus('ALL')" data-status="ALL">
-                        <td class="border border-gray-300 px-3 py-2">Semua Status</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ count($allSquads) }}
-                        </td>
-                    </tr>
-
-                    {{-- Individual statuses --}}
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterStatus('pengajuan')" data-status="pengajuan">
-                        <td class="border border-gray-300 px-3 py-2">Pengajuan</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allSquads->where('status', 'pengajuan')->count() }}
-                        </td>
-                    </tr>
-
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterStatus('on-progress')" data-status="on-progress">
-                        <td class="border border-gray-300 px-3 py-2">On Progress</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allSquads->where('status', 'on-progress')->count() }}
-                        </td>
-                    </tr>
-
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterStatus('diterima')" data-status="diterima">
-                        <td class="border border-gray-300 px-3 py-2">Diterima</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allSquads->where('status', 'diterima')->count() }}
-                        </td>
-                    </tr>
-
-                    <tr class="hover:bg-blue-200 cursor-pointer transition filter-row" onclick="filterStatus('unknown')" data-status="unknown">
-                        <td class="border border-gray-300 px-3 py-2">Unknown</td>
-                        <td class="border border-gray-300 px-3 py-2 text-center font-semibold">
-                            {{ $allSquads->where('status', 'unknown')->count() }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
+            <div class="space-y-1 bg-white border rounded p-3 text-sm mb-4">
+                <p class="font-semibold text-center mb-2">Filter Berdasarkan Status</p>
+                <form method="GET" action="" class="space-y-1">
+                    <button type="submit" name="status" value="ALL" class="w-full flex justify-between px-3 py-2 filter-row transition-colors duration-150
+                        {{ request('status', 'ALL') == 'ALL' ? 'bg-blue-500 text-white font-bold ring-2 ring-blue-300' : 'hover:bg-blue-100 hover:text-blue-900' }}">
+                        <span>Semua Status</span>
+                        <span class="font-semibold">{{ count($allSquads) }}</span>
+                    </button>
+                    <button type="submit" name="status" value="pengajuan" class="w-full flex justify-between px-3 py-2 filter-row transition-colors duration-150
+                        {{ request('status', 'ALL') == 'pengajuan' ? 'bg-blue-500 text-white font-bold ring-2 ring-blue-300' : 'hover:bg-blue-100 hover:text-blue-900' }}">
+                        <span>Pengajuan</span>
+                        <span class="font-semibold">{{ $allSquads->where('status', 'pengajuan')->count() }}</span>
+                    </button>
+                    <button type="submit" name="status" value="on-progress" class="w-full flex justify-between px-3 py-2 filter-row transition-colors duration-150
+                        {{ request('status', 'ALL') == 'on-progress' ? 'bg-blue-500 text-white font-bold ring-2 ring-blue-300' : 'hover:bg-blue-100 hover:text-blue-900' }}">
+                        <span>On Progress</span>
+                        <span class="font-semibold">{{ $allSquads->where('status', 'on-progress')->count() }}</span>
+                    </button>
+                    <button type="submit" name="status" value="diterima" class="w-full flex justify-between px-3 py-2 filter-row transition-colors duration-150
+                        {{ request('status', 'ALL') == 'diterima' ? 'bg-blue-500 text-white font-bold ring-2 ring-blue-300' : 'hover:bg-blue-100 hover:text-blue-900' }}">
+                        <span>Diterima</span>
+                        <span class="font-semibold">{{ $allSquads->where('status', 'diterima')->count() }}</span>
+                    </button>
+                </form>
+            </div>
             {{-- Statistics summary (auto updates with filter) --}}
             <table class="border border-gray-300 w-full text-sm mt-4">
                 <thead class="bg-green-100">
@@ -112,168 +79,414 @@
             </table>
         </div>
 
-        {{-- RIGHT SIDE: Squads cards with horizontal scroll --}}
-        <div class="flex-1 min-w-0">
-            {{-- Heading --}}
-            <div class="bg-blue-100 border border-gray-300 px-4 py-3 rounded-t-lg">
-                <h2 class="text-lg font-semibold text-gray-800">Daftar Squad</h2>
+        {{-- RIGHT SIDE: Squads cards grouped by status --}}
+        <div class="flex-1 w-full overflow-hidden">
+            {{-- Top bar: Create button --}}
+            <div class="flex flex-row items-center justify-end mb-4">
+                <a href="{{ route('teacher.squads.create') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 bg-opacity-30 hover:bg-blue-200 text-blue-900 font-semibold rounded border-2 border-blue-500 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    Buat Squad Baru
+                </a>
+            </div>
+            
+            {{-- Status Container: Pengajuan --}}
+            <div class="status-container mb-6" data-status="pengajuan">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-yellow-200 border border-gray-300 px-4 py-2 mb-0 rounded-t-lg cursor-pointer hover:bg-yellow-300 transition select-none container-header" onclick="toggleContainer(this)">
+                    Pengajuan <span class="collapse-icon float-right">▲</span>
+                </h2>
+                <div class="bg-white border border-gray-300 border-t-0 rounded-b-lg p-4 container-content">
+                    <div class="flex gap-4 overflow-x-auto pb-2 squad-grid">
+                        <!-- Cards will be populated here by JS -->
+                    </div>
+                    <div class="empty-state-msg text-center text-gray-500 text-sm py-8" style="display:none;">
+                        Belum ada squad dengan status ini.
+                    </div>
+                </div>
             </div>
 
-            {{-- Cards Container with Horizontal Scroll --}}
-            <div class="bg-gray-50 rounded-b-lg border-x border-b border-gray-300 p-4">
-                <div class="overflow-x-auto pb-2">
-                    <div class="flex gap-4 min-h-96">
-                        {{-- Loop through squads --}}
-                        @foreach($allSquads as $squad)
-                            <div class="squad-row card bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition hover:border-blue-400 overflow-hidden flex-shrink-0 w-80" data-status="{{ $squad->status }}">
-                                {{-- Status Badge --}}
-                                <div class="px-4 pt-4 pb-0">
-                                    <span class="inline-block px-3 py-1 rounded text-xs font-semibold
-                                        @if($squad->status === 'pengajuan') bg-yellow-200 text-yellow-900
-                                        @elseif($squad->status === 'on-progress') bg-blue-200 text-blue-900
-                                        @elseif($squad->status === 'diterima') bg-green-200 text-green-900
-                                        @else bg-gray-200 text-gray-900
-                                        @endif
-                                    ">
-                                        {{ $squad->status }}
-                                    </span>
-                                </div>
+            {{-- Status Container: On Progress --}}
+            <div class="status-container mb-6" data-status="on-progress">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-blue-200 border border-gray-300 px-4 py-2 mb-0 rounded-t-lg cursor-pointer hover:bg-blue-300 transition select-none container-header" onclick="toggleContainer(this)">
+                    On Progress <span class="collapse-icon float-right">▲</span>
+                </h2>
+                <div class="bg-white border border-gray-300 border-t-0 rounded-b-lg p-4 container-content">
+                    <div class="flex gap-4 overflow-x-auto pb-2 squad-grid">
+                        <!-- Cards will be populated here by JS -->
+                    </div>
+                    <div class="empty-state-msg text-center text-gray-500 text-sm py-8" style="display:none;">
+                        Belum ada squad dengan status ini.
+                    </div>
+                </div>
+            </div>
 
-                                {{-- Card Body --}}
-                                <div class="px-4 py-3">
-                                    {{-- Squad Name --}}
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2 truncate">{{ $squad->name }}</h3>
+            {{-- Status Container: Diterima --}}
+            <div class="status-container mb-6" data-status="diterima">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-green-200 border border-gray-300 px-4 py-2 mb-0 rounded-t-lg cursor-pointer hover:bg-green-300 transition select-none container-header" onclick="toggleContainer(this)">
+                    Diterima <span class="collapse-icon float-right">▲</span>
+                </h2>
+                <div class="bg-white border border-gray-300 border-t-0 rounded-b-lg p-4 container-content">
+                    <div class="flex gap-4 overflow-x-auto pb-2 squad-grid">
+                        <!-- Cards will be populated here by JS -->
+                    </div>
+                    <div class="empty-state-msg text-center text-gray-500 text-sm py-8" style="display:none;">
+                        Belum ada squad dengan status ini.
+                    </div>
+                </div>
+            </div>
 
-                                    {{-- Squad Info --}}
-                                    <div class="space-y-2 text-sm text-gray-700 mb-4">
-                                        <div>
-                                            <p class="font-semibold text-gray-600">Leader</p>
-                                            @if($squad->leader)
-                                                <p class="text-gray-800">{{ $squad->leader->name }}</p>
-                                                <p class="text-xs text-gray-500">NISN: {{ $squad->leader->nisn }}</p>
-                                            @else
-                                                <p class="text-red-500 text-xs">N/A</p>
-                                            @endif
-                                        </div>
+            {{-- Status Container: Others --}}
+            <div class="status-container mb-6" data-status="other">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-gray-200 border border-gray-300 px-4 py-2 mb-0 rounded-t-lg cursor-pointer hover:bg-gray-300 transition select-none container-header" onclick="toggleContainer(this)">
+                    Lainnya <span class="collapse-icon float-right">▲</span>
+                </h2>
+                <div class="bg-white border border-gray-300 border-t-0 rounded-b-lg p-4 container-content">
+                    <div class="flex gap-4 overflow-x-auto pb-2 squad-grid">
+                        <!-- Cards will be populated here by JS -->
+                    </div>
+                    <div class="empty-state-msg text-center text-gray-500 text-sm py-8" style="display:none;">
+                        Belum ada squad dengan status ini.
+                    </div>
+                </div>
+            </div>
 
-                                        <div>
-                                            <p class="font-semibold text-gray-600">Jumlah Anggota</p>
-                                            <p class="text-gray-800 text-lg font-bold">{{ count($squad->users) }} orang</p>
-                                        </div>
-
-                                        <div>
-                                            <p class="font-semibold text-gray-600">Dibuat</p>
-                                            <p class="text-gray-800">{{ $squad->created_at->format('d M Y') }}</p>
-                                        </div>
-
-                                        <div>
-                                            <p class="font-semibold text-gray-600">Perusahaan</p>
-                                            <p class="text-gray-800 text-sm truncate">{{ $squad->company_name ?? 'Tidak Ada' }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Card Footer - Actions --}}
-                                <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex gap-2">
-                                    <a href="{{ route('teacher.squads.show', $squad) }}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
-                                        Lihat
-                                    </a>
-                                    <a href="{{ route('teacher.squads.edit', $squad) }}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
-                                        Edit
-                                    </a>
-                                    <form method="POST" action="{{ route('teacher.squads.destroy', $squad) }}" style="display:inline;" class="flex-1">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="w-full px-2 py-2 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        @endforeach
-
-                        {{-- Empty state - ALWAYS in DOM, shown/hidden by JS --}}
-                        <div class="empty-state-row flex items-center justify-center min-h-96 w-full" style="display:none;">
-                            <p class="text-center text-gray-500 text-sm">Belum ada squad yang sesuai dengan filter.</p>
+            {{-- Major Containers (shown when specific status is filtered) --}}
+            <div id="major-containers-wrapper" style="display:none;">
+                {{-- PPLG Container --}}
+                <div class="major-container mb-6" data-major="pplg">
+                    <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-blue-200 border border-gray-300 px-4 py-2 mb-0 rounded-t-lg cursor-pointer hover:bg-blue-300 transition select-none container-header" onclick="toggleContainer(this)">
+                        PPLG <span class="collapse-icon float-right">▲</span>
+                    </h2>
+                    <div class="bg-white border border-gray-300 border-t-0 rounded-b-lg p-4 container-content">
+                        <div class="flex gap-4 overflow-x-auto pb-2 squad-grid">
+                            <!-- Cards will be populated here by JS -->
                         </div>
+                        <div class="empty-state-msg text-center text-gray-500 text-sm py-8" style="display:none;">
+                            Belum ada squad untuk jurusan ini.
+                        </div>
+                    </div>
+                </div>
 
-                        {{-- Show if no squads at all --}}
-                        @if(count($allSquads) === 0)
-                            <div class="flex items-center justify-center min-h-96 w-full">
-                                <p class="text-center text-gray-500 text-sm">Belum ada squad. <a href="{{ route('teacher.squads.create') }}" class="text-blue-500 font-semibold hover:underline">Buat yang pertama</a></p>
-                            </div>
-                        @endif
+                {{-- TJKT Container --}}
+                <div class="major-container mb-6" data-major="tjkt">
+                    <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-green-200 border border-gray-300 px-4 py-2 mb-0 rounded-t-lg cursor-pointer hover:bg-green-300 transition select-none container-header" onclick="toggleContainer(this)">
+                        TJKT <span class="collapse-icon float-right">▲</span>
+                    </h2>
+                    <div class="bg-white border border-gray-300 border-t-0 rounded-b-lg p-4 container-content">
+                        <div class="flex gap-4 overflow-x-auto pb-2 squad-grid">
+                            <!-- Cards will be populated here by JS -->
+                        </div>
+                        <div class="empty-state-msg text-center text-gray-500 text-sm py-8" style="display:none;">
+                            Belum ada squad untuk jurusan ini.
+                        </div>
+                    </div>
+                </div>
+
+                {{-- DKV Container --}}
+                <div class="major-container mb-6" data-major="dkv">
+                    <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-purple-200 border border-gray-300 px-4 py-2 mb-0 rounded-t-lg cursor-pointer hover:bg-purple-300 transition select-none container-header" onclick="toggleContainer(this)">
+                        DKV <span class="collapse-icon float-right">▲</span>
+                    </h2>
+                    <div class="bg-white border border-gray-300 border-t-0 rounded-b-lg p-4 container-content">
+                        <div class="flex gap-4 overflow-x-auto pb-2 squad-grid">
+                            <!-- Cards will be populated here by JS -->
+                        </div>
+                        <div class="empty-state-msg text-center text-gray-500 text-sm py-8" style="display:none;">
+                            Belum ada squad untuk jurusan ini.
+                        </div>
+                    </div>
+                </div>
+
+                {{-- BCF Container --}}
+                <div class="major-container mb-6" data-major="bcf">
+                    <h2 class="text-lg md:text-xl font-semibold text-gray-800 bg-pink-200 border border-gray-300 px-4 py-2 mb-0 rounded-t-lg cursor-pointer hover:bg-pink-300 transition select-none container-header" onclick="toggleContainer(this)">
+                        BCF <span class="collapse-icon float-right">▲</span>
+                    </h2>
+                    <div class="bg-white border border-gray-300 border-t-0 rounded-b-lg p-4 container-content">
+                        <div class="flex gap-4 overflow-x-auto pb-2 squad-grid">
+                            <!-- Cards will be populated here by JS -->
+                        </div>
+                        <div class="empty-state-msg text-center text-gray-500 text-sm py-8" style="display:none;">
+                            Belum ada squad untuk jurusan ini.
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- Hidden template for squad cards --}}
+        <template id="squadCardTemplate">
+            <div class="squad-row card bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition hover:border-blue-400 overflow-hidden flex-shrink-0 w-80" data-status="">
+                {{-- Status Badge --}}
+                <div class="px-4 pt-4 pb-0">
+                    <span class="inline-block px-3 py-1 rounded text-xs font-semibold status-badge">
+                    </span>
+                </div>
+
+                {{-- Card Body --}}
+                <div class="px-4 py-3">
+                    {{-- Squad Name --}}
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 truncate squad-name"></h3>
+
+                    {{-- Squad Info --}}
+                    <div class="space-y-2 text-sm text-gray-700 mb-4">
+                        <div>
+                            <p class="font-semibold text-gray-600">Leader</p>
+                            <p class="text-gray-800 squad-leader"></p>
+                            <p class="text-xs text-gray-500 squad-leader-nisn"></p>
+                        </div>
+
+                        <div>
+                            <p class="font-semibold text-gray-600">Jumlah Anggota</p>
+                            <p class="text-gray-800 text-lg font-bold squad-members"></p>
+                        </div>
+
+                        <div>
+                            <p class="font-semibold text-gray-600">Perusahaan</p>
+                            <p class="text-gray-800 text-sm truncate squad-company"></p>
+                        </div>
+
+                        <div>
+                            <p class="font-semibold text-gray-600">Dibuat</p>
+                            <p class="text-gray-800 squad-date"></p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Card Footer - Actions --}}
+                <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex gap-2 action-buttons">
+                </div>
+            </div>
+        </template>
     </div>
 
-    {{-- JavaScript for filtering and updating statistics --}}
-    <script>
-        // Store all squads in a JS object for client-side filtering
-        const squadsData = {
-            ALL: [
-                @foreach($allSquads as $squad)
-                {
-                    id: {{ $squad->id }},
-                    status: '{{ $squad->status }}',
-                    hasCompany: {{ !is_null($squad->company_name) ? 'true' : 'false' }}
-                },
-                @endforeach
-            ]
-        };
+{{-- JS for filtering and updating statistics --}}
+<script>
+    let currentFilter = '{{ request("status", "ALL") }}';
+    const allSquadsData = @json($allSquads);
 
-        let currentFilter = 'ALL';
+    console.log('All squads data:', allSquadsData);
 
-        // Called when user selects a status from filter table
-        function filterStatus(status) {
-            currentFilter = status;
+    // Toggle container collapse/expand
+    function toggleContainer(headerElement) {
+        const container = headerElement.closest('.status-container');
+        const content = container.querySelector('.container-content');
+        const icon = headerElement.querySelector('.collapse-icon');
+        
+        container.classList.toggle('collapsed');
+        
+        if (container.classList.contains('collapsed')) {
+            content.style.display = 'none';
+            icon.textContent = '▼';
+        } else {
+            content.style.display = 'block';
+            icon.textContent = '▲';
+        }
+    }
 
-            // Visual highlight on selected filter row
-            const filterRows = document.querySelectorAll('.filter-row');
-            filterRows.forEach(row => {
-                if (row.getAttribute('data-status') === status) {
-                    row.classList.add('bg-blue-300', 'text-white', 'font-bold');
-                    row.classList.remove('hover:bg-blue-200', 'text-gray-900');
+    // Populate cards into status containers on page load
+    function populateCards() {
+        console.log('populateCards called');
+        const template = document.getElementById('squadCardTemplate');
+        console.log('Template found:', template);
+        
+        allSquadsData.forEach((squad, index) => {
+            console.log(`Processing squad ${index}:`, squad);
+            const cardClone = template.content.cloneNode(true);
+            const cardElement = cardClone.querySelector('.squad-row');
+            
+            // Set status
+            cardElement.setAttribute('data-status', squad.status);
+            
+            // Set status badge with appropriate color
+            const statusBadge = cardClone.querySelector('.status-badge');
+            statusBadge.textContent = squad.status.charAt(0).toUpperCase() + squad.status.slice(1);
+            
+            if (squad.status === 'pengajuan') {
+                statusBadge.className = 'inline-block px-3 py-1 rounded text-xs font-semibold bg-yellow-200 text-yellow-900';
+            } else if (squad.status === 'on-progress') {
+                statusBadge.className = 'inline-block px-3 py-1 rounded text-xs font-semibold bg-blue-200 text-blue-900';
+            } else if (squad.status === 'diterima') {
+                statusBadge.className = 'inline-block px-3 py-1 rounded text-xs font-semibold bg-green-200 text-green-900';
+            } else {
+                statusBadge.className = 'inline-block px-3 py-1 rounded text-xs font-semibold bg-gray-200 text-gray-900';
+            }
+            
+            // Set squad info
+            cardClone.querySelector('.squad-name').textContent = squad.name;
+            cardClone.querySelector('.squad-leader').textContent = squad.leader ? squad.leader.name : 'N/A';
+            cardClone.querySelector('.squad-leader-nisn').textContent = squad.leader ? 'NISN: ' + squad.leader.nisn : '';
+            cardClone.querySelector('.squad-members').textContent = squad.users.length + ' orang';
+            cardClone.querySelector('.squad-company').textContent = squad.company_name ? squad.company_name : 'Tidak Ada';
+            cardClone.querySelector('.squad-date').textContent = new Date(squad.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+            
+            // Set action buttons
+            const actionButtons = cardClone.querySelector('.action-buttons');
+            const showUrl = "{{ route('teacher.squads.show', ['squad' => ':squadId']) }}".replace(':squadId', squad.id);
+            const editUrl = "{{ route('teacher.squads.edit', ['squad' => ':squadId']) }}".replace(':squadId', squad.id);
+            const destroyUrl = "{{ route('teacher.squads.destroy', ['squad' => ':squadId']) }}".replace(':squadId', squad.id);
+            
+            actionButtons.innerHTML = `
+                <a href="${showUrl}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
+                    Lihat
+                </a>
+                <a href="${editUrl}" class="flex-1 text-center px-2 py-2 bg-blue-200 hover:bg-blue-300 text-blue-900 text-xs font-medium rounded border border-blue-500 transition">
+                    Edit
+                </a>
+                <form method="POST" action="${destroyUrl}" style="display:inline;" class="flex-1">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" onclick="return confirm('Yakin untuk menghapus?');" class="w-full px-2 py-2 bg-red-200 hover:bg-red-300 text-red-900 text-xs font-medium rounded border border-red-500 transition">
+                        Hapus
+                    </button>
+                </form>
+            `;
+            
+            // Determine target container
+            let targetStatus = squad.status;
+            if (squad.status !== 'pengajuan' && squad.status !== 'on-progress' && squad.status !== 'diterima') {
+                targetStatus = 'other';
+            }
+            
+            const targetContainer = document.querySelector(`.status-container[data-status="${targetStatus}"] .squad-grid`);
+            console.log(`Looking for container with data-status="${targetStatus}"`, targetContainer);
+            if (targetContainer) {
+                targetContainer.appendChild(cardClone);
+                console.log(`Added squad "${squad.name}" to ${targetStatus} container`);
+            }
+        });
+
+        // Update visibility and statistics
+        filterStatus(currentFilter);
+    }
+
+    // Called when user selects a status from filter table
+    function filterStatus(status) {
+        currentFilter = status;
+
+        const statusContainers = document.querySelectorAll('.status-container');
+        const majorContainersWrapper = document.getElementById('major-containers-wrapper');
+
+        if (status === 'ALL') {
+            // Show status containers, hide major containers
+            majorContainersWrapper.style.display = 'none';
+            
+            statusContainers.forEach(container => {
+                const cards = container.querySelectorAll('.squad-row.card');
+                const emptyMsg = container.querySelector('.empty-state-msg');
+                
+                let visibleCards = 0;
+                cards.forEach(card => {
+                    card.style.display = '';
+                    visibleCards++;
+                });
+                
+                if (visibleCards === 0) {
+                    container.style.display = 'none';
+                    if (emptyMsg) emptyMsg.style.display = 'block';
                 } else {
-                    row.classList.remove('bg-blue-300', 'text-white', 'font-bold');
-                    row.classList.add('hover:bg-blue-200', 'text-gray-900');
+                    container.style.display = 'block';
+                    if (emptyMsg) emptyMsg.style.display = 'none';
                 }
             });
-
-            // Show/hide squad cards based on filter
-            const cards = document.querySelectorAll('.squad-row.card');
-            cards.forEach(card => {
-                const cardStatus = card.getAttribute('data-status');
-                const shouldShow = (status === 'ALL' || cardStatus === status);
-                card.style.display = shouldShow ? '' : 'none';
+        } else {
+            // Show major containers, hide status containers
+            majorContainersWrapper.style.display = 'block';
+            statusContainers.forEach(c => c.style.display = 'none');
+            
+            // Clear major containers
+            const majorContainers = majorContainersWrapper.querySelectorAll('.major-container');
+            majorContainers.forEach(mc => {
+                const grid = mc.querySelector('.squad-grid');
+                grid.innerHTML = '';
             });
-
-            // Refresh statistics
-            updateStatistics(status);
+            
+            // Collect all cards with matching status from all status containers
+            const matchingCards = [];
+            statusContainers.forEach(container => {
+                const cards = container.querySelectorAll('.squad-row.card');
+                cards.forEach(card => {
+                    if (card.getAttribute('data-status') === status) {
+                        matchingCards.push(card);
+                    }
+                });
+            });
+            
+            console.log(`Found ${matchingCards.length} cards with status ${status}`);
+            
+            // Group matching cards by major and add to major containers
+            const groupedByMajor = {
+                pplg: [],
+                tjkt: [],
+                dkv: [],
+                bcf: []
+            };
+            
+            matchingCards.forEach(card => {
+                const leaderName = card.querySelector('.squad-leader').textContent.trim();
+                const squad = allSquadsData.find(s => s.leader && s.leader.name === leaderName);
+                
+                if (squad && squad.leader) {
+                    const major = squad.leader.major.toLowerCase();
+                    if (groupedByMajor[major]) {
+                        groupedByMajor[major].push(card);
+                    }
+                }
+            });
+            
+            // Add grouped cards to major containers
+            Object.keys(groupedByMajor).forEach(major => {
+                const majorContainer = majorContainersWrapper.querySelector(`.major-container[data-major="${major}"]`);
+                const grid = majorContainer.querySelector('.squad-grid');
+                const emptyMsg = majorContainer.querySelector('.empty-state-msg');
+                
+                if (groupedByMajor[major].length > 0) {
+                    groupedByMajor[major].forEach(card => {
+                        grid.appendChild(card.cloneNode(true));
+                    });
+                    majorContainer.style.display = 'block';
+                    if (emptyMsg) emptyMsg.style.display = 'none';
+                    console.log(`Added ${groupedByMajor[major].length} cards to ${major}`);
+                } else {
+                    majorContainer.style.display = 'none';
+                    if (emptyMsg) emptyMsg.style.display = 'block';
+                }
+            });
         }
 
-        // Recalculate statistics when filter changes
-        function updateStatistics(status) {
-            let filteredSquads = status === 'ALL'
-                ? squadsData.ALL
-                : squadsData.ALL.filter(s => s.status === status);
+        // Refresh statistics
+        updateStatistics(status);
+    }
 
-            const hasCompany = filteredSquads.filter(s => s.hasCompany === true).length;
-            const noCompany = filteredSquads.filter(s => s.hasCompany === false).length;
-            const total = filteredSquads.length;
+    // Recalculate statistics using only visible cards
+    function updateStatistics(status) {
+        let totalCards = 0;
+        let hasCompany = 0;
+        let noCompany = 0;
 
-            // Update DOM
-            document.getElementById('stat-has-company').textContent = hasCompany;
-            document.getElementById('stat-no-company').textContent = noCompany;
-            document.getElementById('stat-total').textContent = total;
-        }
-
-        // Load with ALL filter active
-        document.addEventListener('DOMContentLoaded', function() {
-            filterStatus('ALL');
+        const allCards = document.querySelectorAll('.squad-row.card');
+        allCards.forEach(card => {
+            const shouldCount = (status === 'ALL' || card.getAttribute('data-status') === status) && card.style.display !== 'none';
+            
+            if (shouldCount) {
+                totalCards++;
+                const companyText = card.querySelector('.squad-company').textContent.trim();
+                if (companyText !== 'Tidak Ada') {
+                    hasCompany++;
+                } else {
+                    noCompany++;
+                }
+            }
         });
-    </script>
+
+        // Update DOM
+        document.getElementById('stat-has-company').textContent = hasCompany;
+        document.getElementById('stat-no-company').textContent = noCompany;
+        document.getElementById('stat-total').textContent = totalCards;
+    }
+
+    // Load with current filter active
+    document.addEventListener('DOMContentLoaded', function() {
+        populateCards();
+    });
+</script>
 </div>
 @endsection

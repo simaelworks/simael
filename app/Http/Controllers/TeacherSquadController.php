@@ -10,7 +10,7 @@ class TeacherSquadController extends Controller
     public function index()
     {
         $squads = Squad::paginate(10);
-        $allSquads = Squad::all();
+        $allSquads = Squad::with(['leader', 'users'])->get();
         return view('teacher.squads.index', compact('squads', 'allSquads'));
     }
 
