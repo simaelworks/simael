@@ -32,7 +32,7 @@
             @php $perPage = isset($perPage) ? $perPage : 10; @endphp
         
         {{-- LEFT SIDEBAR: Filters + Statistics --}}
-        <div class="w-full lg:w-80 lg:shrink-0">
+        <div class="w-full lg:w-80 lg:shrink-0 lg:sticky lg:top-20 lg:h-fit">
             <div class="space-y-1 bg-white border rounded p-3 text-sm mb-4">
                 <p class="font-semibold text-center mb-2">Filter Jurusan</p>
                 <form method="GET" action="" class="space-y-1">
