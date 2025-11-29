@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Stack+Sans+Headline:wght@200..700&display=swap" rel="stylesheet">
+
+    <!-- AOS Animation CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -19,6 +22,10 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Stack Sans Headline', sans-serif;
         }
@@ -29,7 +36,7 @@
 <body class="bg-gray-50 font-sans antialiased">
     
     {{-- Navbar --}}
-    <nav class="fixed w-full bg-white border-b border-gray-200">
+    <nav class="fixed w-full bg-white border-b border-gray-200 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <!-- Logo & Brand -->
@@ -43,11 +50,16 @@
                                 @teacher
                                     Teacher Dashboard
                                     @else
-                                    Sistem Manajemen PKL
+                                    Sistem Manajemen Pintar PKL
                                 @endteacher
                             @endstudent
                         </p>
                     </div>
+                </div>
+
+                {{-- Navbar Items (Landing Page) --}}
+                <div class="hidden md:flex items-center space-x-6">
+                    @yield('navbar-items')
                 </div>
 
                 <!-- Right Side Navigation -->
@@ -73,8 +85,8 @@
                         </form>
                     @else
                         <!-- Guest Navigation -->
-                        <a href="{{ route('login') }}" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition">
-                            <span class="text-sm font-medium">Login</span>
+                        <a href="{{ route('login') }}" class="group relative inline-block text-gray-700 font-medium text-sm transition duration-200 ease-in-out">
+                            Login
                         </a>
                     @endstudent
                 </div>
@@ -83,7 +95,7 @@
     </nav>
 
     {{-- Main Content --}}
-    <main class="pt-20">
+    <main class="pt-16">
         @yield('content')
     </main>
 

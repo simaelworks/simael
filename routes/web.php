@@ -33,6 +33,4 @@ Route::resource('students', StudentController::class);
 Route::resource('squads', SquadController::class);
 Route::resource('invite', InviteSquadController::class);
 
-// Preview
-Route::match(['get', 'post'], '/squads-preview', [SquadController::class, 'preview'])
-    ->name('squads.preview');
+
