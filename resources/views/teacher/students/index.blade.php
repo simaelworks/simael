@@ -2,7 +2,12 @@
 
 @section('content')
 <div class="mt-4 p-4 md:p-6">
-    <h1 class="text-2xl md:text-3xl font-bold mb-6">Siswa/Siswi</h1>
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold">Siswa/Siswi</h1>
+        <button id="openSearchStudent" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition">
+            🔍 Cari Siswa
+        </button>
+    </div>
 
     {{-- Success message after CRUD actions --}}
     @if(session('success'))
@@ -10,6 +15,35 @@
             {{ session('success') }}
         </div>
     @endif
+
+    {{-- Search Modal --}}
+    <div id="searchStudentModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b">
+                <h2 class="text-xl font-semibold">Cari Siswa</h2>
+                <button id="closeSearchStudent" type="button" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="overflow-y-auto flex-1 p-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cari berdasarkan Nama, NISN, Jurusan, atau ID</label>
+                        <input type="text" id="searchStudentInput" placeholder="Ketik nama, NISN, jurusan, atau ID siswa..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div id="searchStudentResults" class="space-y-2 max-h-[50vh] overflow-y-auto">
+                        <p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- {{-- Top bar: Entries selector and create button --}}
     <div class="flex flex-row items-center justify-between mb-4">
@@ -398,6 +432,78 @@
         document.getElementById('stat-pending-without-squad').textContent = pendingWithoutSquad;
         document.getElementById('stat-without-squad').textContent = withoutSquadRows.length;
     }
+
+    // Search Modal Functions
+    const openSearchBtn = document.getElementById('openSearchStudent');
+    const closeSearchBtn = document.getElementById('closeSearchStudent');
+    const searchModal = document.getElementById('searchStudentModal');
+    const searchInput = document.getElementById('searchStudentInput');
+    const searchResults = document.getElementById('searchStudentResults');
+
+    openSearchBtn.addEventListener('click', () => {
+        searchModal.classList.remove('hidden');
+        searchInput.focus();
+    });
+
+    closeSearchBtn.addEventListener('click', () => {
+        searchModal.classList.add('hidden');
+        searchInput.value = '';
+        searchResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>';
+    });
+
+    searchModal.addEventListener('click', (e) => {
+        if (e.target === searchModal) {
+            searchModal.classList.add('hidden');
+            searchInput.value = '';
+            searchResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>';
+        }
+    });
+
+    // Search functionality
+    searchInput.addEventListener('input', async (e) => {
+        const query = e.target.value.trim();
+        
+        if (query.length === 0) {
+            searchResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>';
+            return;
+        }
+
+        try {
+            const response = await fetch(`{{ route('teacher.api.search-students') }}?search=${encodeURIComponent(query)}`);
+            const students = await response.json();
+
+            if (students.length === 0) {
+                searchResults.innerHTML = '<p class="text-gray-500 text-sm">Tidak ada siswa yang ditemukan.</p>';
+                return;
+            }
+
+            searchResults.innerHTML = students.map(student => `
+                <div class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold text-gray-800">${student.name}</p>
+                            <p class="text-sm text-gray-600">ID: ${student.id} | NISN: ${student.nisn}</p>
+                            <p class="text-sm text-gray-600">Jurusan: ${student.major}</p>
+                            <p class="text-sm ${student.squad_id ? 'text-blue-600' : 'text-red-600'}">
+                                Squad: ${student.squad_id ? (student.squad ? student.squad.name : 'Tidak Diketahui') : 'Belum ada'}
+                            </p>
+                        </div>
+                        <div class="flex gap-2">
+                            <a href="/teacher/students/${student.id}" class="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition">
+                                Lihat
+                            </a>
+                            <a href="/teacher/students/${student.id}/edit" class="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition">
+                                Edit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Search error:', error);
+            searchResults.innerHTML = '<p class="text-red-500 text-sm">Terjadi kesalahan saat mencari.</p>';
+        }
+    });
 
     // Load with ALL filter active
     document.addEventListener('DOMContentLoaded', function() {
