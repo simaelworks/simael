@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TeacherAuthController;
+use App\Http\Controllers\ApiController;
 
 Route::prefix('teacher')->name('teacher.')->group(function () {
     Route::middleware('guest:teacher')->group(function () {
@@ -18,5 +19,9 @@ Route::prefix('teacher')->name('teacher.')->group(function () {
         Route::resource('students', App\Http\Controllers\TeacherStudentController::class);
         Route::resource('squads', App\Http\Controllers\TeacherSquadController::class);
         Route::get('squads-preview', [App\Http\Controllers\TeacherSquadController::class, 'preview'])->name('squads.preview');
+
+        // Teacher API endpoints for search
+        Route::get('/api/search-students', [ApiController::class, 'teacherSearchStudents'])->name('api.search-students');
+        Route::get('/api/search-squads', [ApiController::class, 'teacherSearchSquads'])->name('api.search-squads');
     });
 });
