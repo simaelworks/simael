@@ -64,6 +64,8 @@
 
                 <!-- Right Side Navigation - Fixed Width -->
                 <div class="flex items-center space-x-4 flex-shrink-0 w-32 justify-end">
+                    @yield('navbar-right')
+                    @if (empty($__env->yieldContent('navbar-right')))
                     @student
                         <!-- Home Link for Student -->
                         <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition">
@@ -103,11 +105,12 @@
                         </form>
                     @else
                         <!-- Guest Navigation -->
-                        <a href="{{ route('login') }}" class="group relative inline-block text-gray-700 font-medium text-sm transition duration-200 ease-in-out">
-                            Login
+                        <a href="{{ route('home') }}" class="group relative inline-block text-gray-700 font-medium text-sm transition duration-200 ease-in-out">
+                            Home
                         </a>
                     @endteacher
                     @endstudent
+                    @endif
                 </div>
             </div>
         </div>
