@@ -37,10 +37,10 @@
 
     {{-- Navbar --}}
     <nav class="fixed w-full bg-white border-b border-gray-200 z-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="flex justify-between h-16 items-center gap-6">
                 <!-- Logo & Brand -->
-                <div class="flex items-center">
+                <div class="flex items-center flex-shrink-0 w-32">
                     <div>
                         <h1 class="text-xl font-bold text-gray-900">SIMAEL</h1>
                         <p class="text-xs text-gray-500">
@@ -57,13 +57,13 @@
                     </div>
                 </div>
 
-                {{-- Navbar Items (Landing Page) --}}
-                <div class="hidden md:flex items-center space-x-6">
+                {{-- Navbar Items (Landing Page) - Centered --}}
+                <div class="hidden md:flex items-center space-x-6 flex-1 justify-center">
                     @yield('navbar-items')
                 </div>
 
-                <!-- Right Side Navigation -->
-                <div class="flex items-center space-x-4">
+                <!-- Right Side Navigation - Fixed Width -->
+                <div class="flex items-center space-x-4 flex-shrink-0 w-32 justify-end">
                     @student
                         <!-- Home Link for Student -->
                         <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition">
