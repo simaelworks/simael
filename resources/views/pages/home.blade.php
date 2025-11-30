@@ -105,7 +105,7 @@
         <section id="team-developer" class="py-20 bg-white text-gray-800">
             <div class="max-w-4xl mx-auto px-6 font-stacksans">
                 <h2 class="text-4xl font-bold text-center mb-12">Tim Pengembang</h2>
-                <div class="grid md:grid-cols-3 gap-20 justify-items-center">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-20 justify-items-center">
 
                     <!-- Card 1 -->
 
