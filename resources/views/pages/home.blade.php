@@ -27,6 +27,17 @@
         </div>
     @endsection
 
+    @section('navbar-right')
+        <div class="flex items-center gap-2 whitespace-nowrap">
+            <a href="{{ route('login') }}" class="px-3 py-1 bg-yellow-300 text-gray-900 font-semibold rounded text-s hover:bg-yellow-400 transition">
+                Sign In
+            </a>
+            <a href="{{ route('registerPage') }}" class="px-3 py-1 bg-transparent border-2 border-blue-300 text-blue-300 font-semibold text-s rounded hover:bg-blue-300 hover:text-white transition">
+                Sign Up
+            </a>
+        </div>
+    @endsection
+
     <!-- Main Section -->
 
     <div class="bg-gradient-to-br from-blue-800 to-cyan-700 text-white relative">
