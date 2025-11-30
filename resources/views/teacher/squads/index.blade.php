@@ -2,7 +2,12 @@
 
 @section('content')
 <div class="mt-4 p-4 md:p-6">
-    <h1 class="text-2xl md:text-3xl font-bold mb-6">Squad</h1>
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold">Squad</h1>
+        <button id="openSearchSquad" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition">
+            🔍 Cari Squad
+        </button>
+    </div>
 
     {{-- Success message after CRUD actions --}}
     @if(session('success'))
@@ -10,6 +15,35 @@
             {{ session('success') }}
         </div>
     @endif
+
+    {{-- Search Modal --}}
+    <div id="searchSquadModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b">
+                <h2 class="text-xl font-semibold">Cari Squad</h2>
+                <button id="closeSearchSquad" type="button" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="overflow-y-auto flex-1 p-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cari berdasarkan Nama Squad</label>
+                        <input type="text" id="searchSquadInput" placeholder="Ketik nama squad..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div id="searchSquadResults" class="space-y-2 max-h-[50vh] overflow-y-auto">
+                        <p class="text-gray-500 text-sm">Mulai mengetik untuk mencari squad...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {{-- Main layout: Sidebar filters + main squad tables --}}
     <div class="flex flex-col gap-6 lg:flex-row lg:gap-4">
@@ -552,6 +586,79 @@
         document.getElementById('stat-no-company').textContent = noCompany;
         document.getElementById('stat-total').textContent = totalCards;
     }
+
+    // Search Modal Functions for Squads
+    const openSearchSquadBtn = document.getElementById('openSearchSquad');
+    const closeSearchSquadBtn = document.getElementById('closeSearchSquad');
+    const searchSquadModal = document.getElementById('searchSquadModal');
+    const searchSquadInput = document.getElementById('searchSquadInput');
+    const searchSquadResults = document.getElementById('searchSquadResults');
+
+    openSearchSquadBtn.addEventListener('click', () => {
+        searchSquadModal.classList.remove('hidden');
+        searchSquadInput.focus();
+    });
+
+    closeSearchSquadBtn.addEventListener('click', () => {
+        searchSquadModal.classList.add('hidden');
+        searchSquadInput.value = '';
+        searchSquadResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari squad...</p>';
+    });
+
+    searchSquadModal.addEventListener('click', (e) => {
+        if (e.target === searchSquadModal) {
+            searchSquadModal.classList.add('hidden');
+            searchSquadInput.value = '';
+            searchSquadResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari squad...</p>';
+        }
+    });
+
+    // Squad Search functionality
+    searchSquadInput.addEventListener('input', async (e) => {
+        const query = e.target.value.trim();
+        
+        if (query.length === 0) {
+            searchSquadResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari squad...</p>';
+            return;
+        }
+
+        try {
+            const response = await fetch(`{{ route('teacher.api.search-squads') }}?search=${encodeURIComponent(query)}`);
+            const squads = await response.json();
+
+            if (squads.length === 0) {
+                searchSquadResults.innerHTML = '<p class="text-gray-500 text-sm">Tidak ada squad yang ditemukan.</p>';
+                return;
+            }
+
+            searchSquadResults.innerHTML = squads.map(squad => `
+                <div class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-800">${squad.name}</p>
+                            <p class="text-sm text-gray-600">Leader: ${squad.leader ? squad.leader.name : 'N/A'}</p>
+                            <p class="text-sm text-gray-600">Anggota: ${squad.users ? squad.users.length : 0} orang</p>
+                            <p class="text-sm text-gray-600">Perusahaan: ${squad.company_name ? squad.company_name : 'Belum Ada'}</p>
+                            <p class="text-sm ${squad.status === 'diterima' ? 'text-green-600' : squad.status === 'pengajuan' ? 'text-yellow-600' : 'text-blue-600'}">
+                                Status: ${squad.status.charAt(0).toUpperCase() + squad.status.slice(1)}
+                            </p>
+                        </div>
+                        <div class="flex gap-2 flex-shrink-0">
+                            <a href="/teacher/squads/${squad.id}" class="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition">
+                                Lihat
+                            </a>
+                            <a href="/teacher/squads/${squad.id}/edit" class="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition">
+                                Edit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Search error:', error);
+            searchSquadResults.innerHTML = '<p class="text-red-500 text-sm">Terjadi kesalahan saat mencari.</p>';
+        }
+    });
 
     // Load with current filter active
     document.addEventListener('DOMContentLoaded', function() {
