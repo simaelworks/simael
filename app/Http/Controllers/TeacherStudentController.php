@@ -55,7 +55,7 @@ class TeacherStudentController extends Controller
     public function store(\Illuminate\Http\Request $request)
     {
         $validated = $request->validate([
-            'nisn' => 'required|integer|digits_between:8,10|unique:students,nisn,',
+            'nisn' => 'required|string|digits_between:8,10|unique:students,nisn,',
             'name' => 'required|string|max:255',
             'major' => 'required|in:PPLG,TJKT,DKV,BCF',
             'password' => 'required|string|min:8|confirmed',
@@ -83,17 +83,22 @@ class TeacherStudentController extends Controller
     public function update(\Illuminate\Http\Request $request, Student $student)
     {
         $validated = $request->validate([
-            'nisn' => 'required|integer|digits_between:8,10|unique:students,nisn,' . $student->id,
+            'nisn' => 'required|string|digits_between:8,10|unique:students,nisn,' . $student->id,
             'name' => 'required|string|max:255',
             'major' => 'required|in:PPLG,TJKT,DKV,BCF',
             'password' => 'nullable|string|min:8|confirmed',
             'status' => 'required|in:pending,verified',
+            'squad_id' => 'nullable|integer|exists:squads,id',
         ]);
 
         if (empty($validated['password'])) {
             unset($validated['password']);
         } else {
             $validated['password'] = bcrypt($validated['password']);
+        }
+
+        if (empty($validated['squad_id'])) {
+            $validated['squad_id'] = null;
         }
 
         $changes = [];
