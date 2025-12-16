@@ -18,7 +18,7 @@ Route::prefix('teacher')->name('teacher.')->group(function () {
         // Teacher students and squads resource routes
         Route::resource('students', App\Http\Controllers\TeacherStudentController::class);
         Route::resource('squads', App\Http\Controllers\TeacherSquadController::class);
-        Route::get('squads-preview', [App\Http\Controllers\TeacherSquadController::class, 'preview'])->name('squads.preview');
+        Route::match(['get', 'post'], 'squads-preview', [App\Http\Controllers\TeacherSquadController::class, 'preview'])->name('squads.preview');
 
         // Teacher API endpoints for search
         Route::get('/api/search-students', [ApiController::class, 'teacherSearchStudents'])->name('api.search-students');
