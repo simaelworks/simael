@@ -20,7 +20,7 @@
     <div id="searchStudentModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
             <!-- Modal Header -->
-            <div class="flex justify-between items-center p-6 border-b">
+            <div class="flex justify-between items-center p-6 border-b flex-shrink-0">
                 <h2 class="text-xl font-semibold">Cari Siswa</h2>
                 <button id="closeSearchStudent" type="button" class="text-gray-500 hover:text-gray-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,16 +30,14 @@
             </div>
             
             <!-- Modal Content -->
-            <div class="overflow-y-auto flex-1 p-6">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Cari berdasarkan Nama, NISN, Jurusan, atau ID</label>
-                        <input type="text" id="searchStudentInput" placeholder="Ketik nama, NISN, jurusan, atau ID siswa..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    
-                    <div id="searchStudentResults" class="space-y-2 max-h-[50vh] overflow-y-auto">
-                        <p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>
-                    </div>
+            <div class="flex-1 overflow-hidden flex flex-col p-6 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Cari berdasarkan Nama, NISN, Jurusan, atau ID</label>
+                    <input type="text" id="searchStudentInput" placeholder="Ketik nama, NISN, jurusan, atau ID siswa..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div id="searchStudentResults" class="space-y-2 overflow-y-auto flex-1 min-h-0">
+                    <p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>
                 </div>
             </div>
         </div>
@@ -433,6 +431,15 @@
         document.getElementById('stat-without-squad').textContent = withoutSquadRows.length;
     }
 
+    // Debounce function utility
+    function debounce(func, delay) {
+        let timeoutId;
+        return function (...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => func(...args), delay);
+        };
+    }
+
     // Search Modal Functions
     const openSearchBtn = document.getElementById('openSearchStudent');
     const closeSearchBtn = document.getElementById('closeSearchStudent');
@@ -440,34 +447,8 @@
     const searchInput = document.getElementById('searchStudentInput');
     const searchResults = document.getElementById('searchStudentResults');
 
-    openSearchBtn.addEventListener('click', () => {
-        searchModal.classList.remove('hidden');
-        searchInput.focus();
-    });
-
-    closeSearchBtn.addEventListener('click', () => {
-        searchModal.classList.add('hidden');
-        searchInput.value = '';
-        searchResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>';
-    });
-
-    searchModal.addEventListener('click', (e) => {
-        if (e.target === searchModal) {
-            searchModal.classList.add('hidden');
-            searchInput.value = '';
-            searchResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>';
-        }
-    });
-
-    // Search functionality
-    searchInput.addEventListener('input', async (e) => {
-        const query = e.target.value.trim();
-        
-        if (query.length === 0) {
-            searchResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>';
-            return;
-        }
-
+    // Load student results
+    async function loadStudentResults(query) {
         try {
             const response = await fetch(`{{ route('teacher.api.search-students') }}?search=${encodeURIComponent(query)}`);
             const students = await response.json();
@@ -503,6 +484,36 @@
             console.error('Search error:', error);
             searchResults.innerHTML = '<p class="text-red-500 text-sm">Terjadi kesalahan saat mencari.</p>';
         }
+    }
+
+    openSearchBtn.addEventListener('click', () => {
+        searchModal.classList.remove('hidden');
+        searchInput.focus();
+        loadStudentResults('');
+    });
+
+    closeSearchBtn.addEventListener('click', () => {
+        searchModal.classList.add('hidden');
+        searchInput.value = '';
+        searchResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>';
+    });
+
+    searchModal.addEventListener('click', (e) => {
+        if (e.target === searchModal) {
+            searchModal.classList.add('hidden');
+            searchInput.value = '';
+            searchResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari siswa...</p>';
+        }
+    });
+
+    // Search functionality dengan debounce 500ms
+    const debouncedLoadStudentResults = debounce(async (query) => {
+        await loadStudentResults(query);
+    }, 500);
+
+    searchInput.addEventListener('input', async (e) => {
+        const query = e.target.value.trim();
+        debouncedLoadStudentResults(query);
     });
 
     // Load with ALL filter active
