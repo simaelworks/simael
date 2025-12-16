@@ -20,7 +20,7 @@
     <div id="searchSquadModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
             <!-- Modal Header -->
-            <div class="flex justify-between items-center p-6 border-b">
+            <div class="flex justify-between items-center p-6 border-b flex-shrink-0">
                 <h2 class="text-xl font-semibold">Cari Squad</h2>
                 <button id="closeSearchSquad" type="button" class="text-gray-500 hover:text-gray-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,16 +30,14 @@
             </div>
             
             <!-- Modal Content -->
-            <div class="overflow-y-auto flex-1 p-6">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Cari berdasarkan Nama Squad</label>
-                        <input type="text" id="searchSquadInput" placeholder="Ketik nama squad..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    
-                    <div id="searchSquadResults" class="space-y-2 max-h-[50vh] overflow-y-auto">
-                        <p class="text-gray-500 text-sm">Mulai mengetik untuk mencari squad...</p>
-                    </div>
+            <div class="flex-1 overflow-hidden flex flex-col p-6 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Cari berdasarkan Nama Squad atau Jurusan</label>
+                    <input type="text" id="searchSquadInput" placeholder="Ketik nama squad atau jurusan..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div id="searchSquadResults" class="space-y-2 overflow-y-auto flex-1 min-h-0">
+                    <p class="text-gray-500 text-sm">Memuat data squad...</p>
                 </div>
             </div>
         </div>
@@ -594,34 +592,17 @@
     const searchSquadInput = document.getElementById('searchSquadInput');
     const searchSquadResults = document.getElementById('searchSquadResults');
 
-    openSearchSquadBtn.addEventListener('click', () => {
-        searchSquadModal.classList.remove('hidden');
-        searchSquadInput.focus();
-    });
+    // Debounce function utility
+    function debounce(func, delay) {
+        let timeoutId;
+        return function (...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => func(...args), delay);
+        };
+    }
 
-    closeSearchSquadBtn.addEventListener('click', () => {
-        searchSquadModal.classList.add('hidden');
-        searchSquadInput.value = '';
-        searchSquadResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari squad...</p>';
-    });
-
-    searchSquadModal.addEventListener('click', (e) => {
-        if (e.target === searchSquadModal) {
-            searchSquadModal.classList.add('hidden');
-            searchSquadInput.value = '';
-            searchSquadResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari squad...</p>';
-        }
-    });
-
-    // Squad Search functionality
-    searchSquadInput.addEventListener('input', async (e) => {
-        const query = e.target.value.trim();
-        
-        if (query.length === 0) {
-            searchSquadResults.innerHTML = '<p class="text-gray-500 text-sm">Mulai mengetik untuk mencari squad...</p>';
-            return;
-        }
-
+    // Load squad results
+    async function loadSquadResults(query) {
         try {
             const response = await fetch(`{{ route('teacher.api.search-squads') }}?search=${encodeURIComponent(query)}`);
             const squads = await response.json();
@@ -632,11 +613,11 @@
             }
 
             searchSquadResults.innerHTML = squads.map(squad => `
-                <div class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                <div class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer" onclick="window.location.href='/teacher/squads/${squad.id}'">
                     <div class="flex justify-between items-start">
                         <div class="flex-1">
                             <p class="font-semibold text-gray-800">${squad.name}</p>
-                            <p class="text-sm text-gray-600">Leader: ${squad.leader ? squad.leader.name : 'N/A'}</p>
+                            <p class="text-sm text-gray-600">Leader: ${squad.leader ? squad.leader.name : 'N/A'} ${squad.leader ? '| Jurusan: ' + (squad.leader.major ? squad.leader.major.toUpperCase() : 'N/A') : ''}</p>
                             <p class="text-sm text-gray-600">Anggota: ${squad.users ? squad.users.length : 0} orang</p>
                             <p class="text-sm text-gray-600">Perusahaan: ${squad.company_name ? squad.company_name : 'Belum Ada'}</p>
                             <p class="text-sm ${squad.status === 'diterima' ? 'text-green-600' : squad.status === 'pengajuan' ? 'text-yellow-600' : 'text-blue-600'}">
@@ -644,10 +625,10 @@
                             </p>
                         </div>
                         <div class="flex gap-2 flex-shrink-0">
-                            <a href="/teacher/squads/${squad.id}" class="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition">
+                            <a href="/teacher/squads/${squad.id}" class="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition" onclick="event.stopPropagation()">
                                 Lihat
                             </a>
-                            <a href="/teacher/squads/${squad.id}/edit" class="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition">
+                            <a href="/teacher/squads/${squad.id}/edit" class="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition" onclick="event.stopPropagation()">
                                 Edit
                             </a>
                         </div>
@@ -658,6 +639,36 @@
             console.error('Search error:', error);
             searchSquadResults.innerHTML = '<p class="text-red-500 text-sm">Terjadi kesalahan saat mencari.</p>';
         }
+    }
+
+    openSearchSquadBtn.addEventListener('click', () => {
+        searchSquadModal.classList.remove('hidden');
+        searchSquadInput.focus();
+        loadSquadResults('');
+    });
+
+    closeSearchSquadBtn.addEventListener('click', () => {
+        searchSquadModal.classList.add('hidden');
+        searchSquadInput.value = '';
+        searchSquadResults.innerHTML = '<p class="text-gray-500 text-sm">Memuat data squad...</p>';
+    });
+
+    searchSquadModal.addEventListener('click', (e) => {
+        if (e.target === searchSquadModal) {
+            searchSquadModal.classList.add('hidden');
+            searchSquadInput.value = '';
+            searchSquadResults.innerHTML = '<p class="text-gray-500 text-sm">Memuat data squad...</p>';
+        }
+    });
+
+    // Squad Search filtering dengan debounce 500ms
+    const debouncedLoadSquadResults = debounce(async (query) => {
+        await loadSquadResults(query);
+    }, 500);
+
+    searchSquadInput.addEventListener('input', async (e) => {
+        const query = e.target.value.trim();
+        debouncedLoadSquadResults(query);
     });
 
     // Load with current filter active
