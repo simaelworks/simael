@@ -29,10 +29,10 @@
 
     @section('navbar-right')
         <div class="flex items-center gap-2 whitespace-nowrap">
-            <a href="{{ route('login') }}" class="px-3 py-1 bg-yellow-300 text-gray-900 font-semibold rounded text-s hover:bg-yellow-400 transition">
+            <a href="{{ route('login') }}" class="px-3 py-1 bg-yellow-300 text-gray-900 font-semibold rounded text-s hover:bg-yellow-400 transition text-center">
                 Sign In
             </a>
-            <a href="{{ route('registerPage') }}" class="px-3 py-1 bg-transparent border-2 border-blue-300 text-blue-300 font-semibold text-s rounded hover:bg-blue-300 hover:text-white transition">
+            <a href="{{ route('registerPage') }}" class="px-3 py-1 bg-transparent border-2 border-blue-300 text-blue-300 font-semibold text-s rounded hover:bg-blue-300 hover:text-white transition text-center">
                 Sign Up
             </a>
         </div>
@@ -55,10 +55,10 @@
                     </p>
 
                     <div class="mt-6 flex items-center space-x-4">
-                        <a href="{{ route('login') }}" class="px-6 py-3 bg-yellow-300 text-gray-900 font-semibold rounded-lg shadow hover:bg-gray-200 transition">
+                        <a href="{{ route('login') }}" class="px-6 py-3 bg-yellow-300 text-gray-900 font-semibold rounded-lg shadow hover:bg-gray-200 transition text-center">
                             Login Untuk Murid
                         </a>
-                        <a href="{{ route('teacher.login') }}" class="px-6 py-3 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg shadow hover:bg-yellow-300 hover:text-gray-900 transition">
+                        <a href="{{ route('teacher.login') }}" class="px-6 py-3 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg shadow hover:bg-yellow-300 hover:text-gray-900 transition text-center">
                             Login Untuk Guru
                         </a>
                     </div>
@@ -66,7 +66,7 @@
 
                 <div data-aos="fade-left" class="flex justify-center">
                     <img src="{{ asset('assets/img/simael-logo.webp') }}"
-                        class="w-96 md:w-auto max-w-sm drop-shadow-2xl rounded-xl
+                        class="w-48 md:w-96 md:w-auto max-w-sm drop-shadow-2xl rounded-xl
                         rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-500 ease-in-out">
                 </div>
             </div>
@@ -116,7 +116,7 @@
         <section id="team-developer" class="py-20 bg-white text-gray-800">
             <div class="max-w-4xl mx-auto px-6 font-stacksans">
                 <h2 class="text-4xl font-bold text-center mb-12">Tim Pengembang</h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-20 justify-items-center">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-20 justify-items-center">
 
                     <!-- Card 1 -->
 
