@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="min-h-screen flex fle-col items-center justify-center p-6">
+<div class="flex fle-col items-center justify-center p-6">
 
       <div class="grid lg:grid-cols-2 items-center gap-8 max-w-6xl max-lg:max-w-lg w-full">
         <form class="lg:max-w-md w-full" action="{{ route('register') }}" method="post">
@@ -73,6 +73,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
                   </svg>
                 </button>
+              </div>
             </div>
             <div class="flex items-center">
               <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 shrink-0 border-gray-300 rounded" required />
@@ -90,13 +91,13 @@
           <p class="text-sm text-slate-600 mt-6">Sudah punya akun? <a href="{{ route('loginPage') }}" class="text-blue-600 font-semibold hover:underline ml-1">Login disini</a></p>
         </form>
 
-        <div class="h-full">
-          <img src="https://readymadeui.com/login-image.webp" class="w-full h-full object-contain aspect-628/516" alt="login img" />
+        <div class="hidden lg:flex items-center justify-center min-h-[500px]">
+          <img src="https://readymadeui.com/login-image.webp" class="w-full h-auto object-contain aspect-628/516" alt="login img" />
         </div>
       </div>
     </div>
 
-<<script>
+<script>
 function togglePassword(inputId, eyeOpenId, eyeClosedId) {
     const passwordInput = document.getElementById(inputId);
     const eyeOpen = document.getElementById(eyeOpenId);

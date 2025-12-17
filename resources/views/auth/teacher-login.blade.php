@@ -58,7 +58,7 @@
                 </button>
             </div>
         </form>
-        <div class="hidden lg:block">
+        <div class="hidden lg:flex items-center justify-center min-h-[500px]">
             <img src="https://readymadeui.com/login-image.webp" alt="Login Illustration" class="w-full h-auto">
         </div>
     </div>

@@ -82,8 +82,8 @@
           <p class="text-sm text-slate-600 mt-6">Belum punya akun? <a href="{{ route('registerPage') }}" class="text-blue-600 font-semibold hover:underline ml-1">Buat disini</a></p>
         </form>
 
-        <div class="h-full">
-          <img src="https://readymadeui.com/login-image.webp" class="w-full h-full object-contain aspect-628/516" alt="login img" />
+        <div class="hidden lg:flex items-center justify-center min-h-[500px]">
+          <img src="https://readymadeui.com/login-image.webp" class="w-full h-auto object-contain aspect-628/516" alt="login img" />
         </div>
       </div>
     </div>
