@@ -64,10 +64,10 @@
                     </div>
                 </div>
 
-                <div data-aos="fade-left" class="flex justify-center">
+                <div data-aos="fade-in" class="flex justify-center">
                     <img src="{{ asset('assets/img/simael-logo.webp') }}"
                         class="w-48 md:w-96 md:w-auto max-w-sm drop-shadow-2xl rounded-xl
-                        rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-500 ease-in-out">
+                        rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-700 ease-in-out">
                 </div>
             </div>
         </section>
