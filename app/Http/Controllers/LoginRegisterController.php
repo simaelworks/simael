@@ -6,6 +6,7 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class LoginRegisterController extends Controller
@@ -28,6 +29,16 @@ class LoginRegisterController extends Controller
 
     public function register(Request $request)
     {
+        // Get client IP
+        $clientIp = $request->ip();
+        
+        // Check rate limit - 1 registration per 2 minutes per IP
+        $cacheKey = 'register_attempt_' . $clientIp;
+        
+        if (Cache::has($cacheKey)) {
+            return back()->with('failed', 'Anda hanya bisa mendaftar sekali setiap 2 menit. Mohon coba lagi nanti.');
+        }
+
         $validatedData = $request->validate([
             'name' => 'required|string',
             'nisn' => 'required|string|digits:10',
@@ -53,6 +64,9 @@ class LoginRegisterController extends Controller
             'password' => Hash::make($validatedData['password']),
             'status' => 'pending',
         ]);
+
+        // Set cache for 2 minutes (120 seconds)
+        Cache::put($cacheKey, true, 120);
 
         return redirect()->route('login')->with('success', 'Pendaftaran Berhasil!');
     }
