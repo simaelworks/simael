@@ -9,48 +9,41 @@
         <!-- Combined Card Container -->
         <div class="grid lg:grid-cols-2 gap-0 bg-white rounded-2xl shadow-2xl overflow-hidden">
             <!-- Left Side - Register Form -->
-            <form class="p-6 lg:p-8" action="{{ route('register') }}" method="post">
+            <form class="p-6 lg:p-8" action="{{ route('register') }}" method="post" id="registerForm">
                 @csrf
+                <input type="hidden" name="recaptcha_token" id="recaptchaToken">
+
                 <h1 class="text-2xl font-bold text-gray-900 mb-1">Daftar</h1>
                 <p class="text-gray-600 text-xs mb-5">Buat akun untuk memulai perjalanan anda</p>
                 
                 <div class="space-y-3">
                     <div>
-                        <label class="block text-gray-700 text-xs font-semibold mb-1">Nama Lengkap</label>
+                        <label for="name" class="block text-gray-700 text-xs font-semibold mb-1">Nama Lengkap</label>
                         @if ($errors->any())
-                            <input name="name" type="text" class="w-full px-3 py-2 text-sm border-2 border-red-500 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                            <input id="name" name="name" type="text" autocomplete="name" class="w-full px-3 py-2 text-sm border-2 border-red-500 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                            <div class="alert alert-danger">
+                                @foreach ($errors->all() as $error)
+                                    <p class="text-sm mt-1 text-red-500">{{ $error }}</p>
+                                @endforeach
+                            </div>
                         @else
                             @if (session()->has('failed'))
-                                <input name="name" type="text" class="w-full px-3 py-2 text-sm border-2 border-red-500 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                                <input id="name" name="name" type="text" autocomplete="name" class="w-full px-3 py-2 text-sm border-2 border-red-500 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                                <p class="text-sm mt-1 text-red-500">{{ session('failed') }}</p>
                             @else
-                                <input name="name" type="text" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                                <input id="name" name="name" type="text" autocomplete="name" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
                             @endif
                         @endif
                     </div>
 
-      <div class="grid lg:grid-cols-2 items-center gap-8 max-w-6xl max-lg:max-w-lg w-full">
-        <form class="lg:max-w-md w-full" action="{{ route('register') }}" method="post" id="registerForm">
-            @csrf
-            <input type="hidden" name="recaptcha_token" id="recaptchaToken">
-
-          <h1 class="text-slate-900 text-3xl font-semibold mb-8">Buat akun Murid</h1>
-          <div class="space-y-6">
-            <div>
-              <label for="name" class="text-slate-900 text-sm mb-2 block">Nama</label>
-                @if ($errors->any())
-                    <input id="name" name="name" type="text" autocomplete="name" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
-                    <div class="alert alert-danger">
-                        @foreach ($errors->all() as $error)
-                            <p class="text-sm mt-1 text-red-500">{{ $error }}</p>
-                        @endforeach
                     <div>
-                        <label class="block text-gray-700 text-xs font-semibold mb-1">NISN</label>
-                        <input name="nisn" type="text" inputmode="numeric" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan NISN (10 digit)" value="{{ old('nisn') }}" required/>
+                        <label for="nisn" class="block text-gray-700 text-xs font-semibold mb-1">NISN</label>
+                        <input id="nisn" name="nisn" type="text" inputmode="numeric" autocomplete="off" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan NISN (10 digit)" value="{{ old('nisn') }}" required/>
                     </div>
 
                     <div>
-                        <label class="block text-gray-700 text-xs font-semibold mb-1">Jurusan</label>
-                        <select name="major" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors">
+                        <label for="major" class="block text-gray-700 text-xs font-semibold mb-1">Jurusan</label>
+                        <select id="major" name="major" autocomplete="off" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors">
                             <option value="PPLG">PPLG</option>
                             <option value="TJKT">TJKT</option>
                             <option value="DKV">DKV</option>
@@ -58,58 +51,10 @@
                         </select>
                     </div>
 
-                        <input id="name" name="name" type="text" autocomplete="name" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
-                        <p class="text-sm mt-1 text-red-500">{{ session('failed') }}</p>
-
-                    @else
-                        <input id="name" name="name" type="text" autocomplete="name" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
-                    @endif
-                @endif
-            </div>
-            <div>
-              <label for="nisn" class="text-slate-900 text-sm mb-2 block">NISN</label>
-              <input id="nisn" name="nisn" type="text" inputmode="numeric" autocomplete="off" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan NISN (10 digit)"  value="{{ old('nisn') }}" required/>
-            </div>
-            <div>
-              <label for="major" class="text-slate-900 text-sm mb-2 block">Jurusan</label>
-              <select id="major" name="major" autocomplete="off" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all">
-                    <option value="PPLG">PPLG</option>
-                    <option value="TJKT">TJKT</option>
-                    <option value="DKV">DKV</option>
-                    <option value="BCF">BCF</option>
-              </select>
-            </div>
-            <div>
-              <label for="password" class="text-slate-900 text-sm mb-2 block">Password</label>
-              <div class="relative">
-                <input id="password" name="password" type="password" autocomplete="new-password" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 pr-12 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan password" required/>
-                <button type="button" onclick="togglePassword('password', 'eye-open-1', 'eye-closed-1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
-                  <svg id="eye-open-1" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                  <svg id="eye-closed-1" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div>
-              <label for="confirm-password" class="text-slate-900 text-sm mb-2 block">Konfirmasi Password</label>
-              <div class="relative">
-                <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 pr-12 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan ulang password" required/>
-                <button type="button" onclick="togglePassword('confirm-password', 'eye-open-2', 'eye-closed-2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
-                  <svg id="eye-open-2" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                  <svg id="eye-closed-2" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
-                  </svg>
                     <div>
-                        <label class="block text-gray-700 text-xs font-semibold mb-1">Password</label>
+                        <label for="password" class="block text-gray-700 text-xs font-semibold mb-1">Password</label>
                         <div class="relative">
-                            <input id="password" name="password" type="password" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan password" required/>
+                            <input id="password" name="password" type="password" autocomplete="new-password" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan password" required/>
                             <button type="button" onclick="togglePassword('password', 'eye-open-1', 'eye-closed-1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
                                 <svg id="eye-open-1" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -123,9 +68,9 @@
                     </div>
 
                     <div>
-                        <label class="block text-gray-700 text-xs font-semibold mb-1">Konfirmasi Password</label>
+                        <label for="confirm-password" class="block text-gray-700 text-xs font-semibold mb-1">Konfirmasi Password</label>
                         <div class="relative">
-                            <input id="confirm-password" name="confirm-password" type="password" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan ulang password" required/>
+                            <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan ulang password" required/>
                             <button type="button" onclick="togglePassword('confirm-password', 'eye-open-2', 'eye-closed-2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
                                 <svg id="eye-open-2" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -174,6 +119,7 @@
     </div>
 </div>
 
+<!-- Google reCAPTCHA v3 Script -->
 <script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
 
 <script>
