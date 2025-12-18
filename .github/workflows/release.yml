@@ -1,0 +1,71 @@
+name: Manual Tag Release & Commit
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Wajib agar bot bisa push commit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main # Pastikan kita berada di branch main untuk commit balik
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate and Update CHANGELOG.md
+        run: |
+          # Generate changelog dan gabungkan ke file yang sudah ada
+          npx conventional-changelog -p conventionalcommits -n changelog-config.cjs -i CHANGELOG.md -r 0 > CHANGELOG.md
+
+          # Generate latest release
+          npx conventional-changelog -p conventionalcommits -n changelog-config.cjs -r 1 > LATEST_RELEASE.md
+
+      - name: Commit and Push Release
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add CHANGELOG.md
+          # Mengambil nama tag yang baru saja di-push untuk pesan commit
+          VERSION=${GITHUB_REF#refs/tags/}
+          git commit -m "Release $VERSION [skip ci]" || echo "No changes to commit"
+          git push origin main
+
+      - name: Sync to Release Branch
+        run: |
+          # 1. Cek apakah branch 'release' sudah ada di remote
+          if git ls-remote --heads origin release | grep -q 'refs/heads/release'; then
+            echo "Branch release ditemukan, memproses sync..."
+            git fetch origin release
+            git checkout release
+          else
+            echo "Branch release tidak ditemukan, membuat baru..."
+            git checkout -b release
+          fi
+
+          # 2. Sync menggunakan rebase (atau merge jika ingin history tetap bercabang)
+          # Di sini kita menggunakan merge agar history tetap aman bagi tim
+          git merge main --ff-only || git merge main --strategy-option=theirs -m "[release] Sync main to release [skip ci]"
+
+          # 3. Push ke branch release
+          git push origin release
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: LATEST_RELEASE.md
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

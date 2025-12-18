@@ -18,6 +18,9 @@ Simael adalah aplikasi web yang dirancang untuk mempermudah proses pembuatan dan
 
 Aplikasi ini digunakan secara internal oleh sekolah, namun dapat di-host agar dapat diakses murid dari luar lingkungan sekolah dengan tetap memperhatikan aspek keamanan.
 
+
+**Project dikelola dan dipelihara oleh [Maintainer SIMAEL](MAINTAINER.md)**
+
 ---
 
 ## Fitur Utama
@@ -176,6 +179,6 @@ Lisensi Project ini menggunakan [MIT License](https://github.com/simaelworks/sim
 
 ## Kontribusi
 
-Kontribusi sangat diperbolehkan. [Maintainer SIMAEL]() membutuhkan kontribusi kalian agar project ini terus stabil.
+Kontribusi sangat diperbolehkan. [Maintainer SIMAEL](MAINTAINER.md) membutuhkan kontribusi kalian agar project ini terus stabil.
 
 Silahkan buka [Pull Request](https://github.com/simaelworks/simael/pulls) untuk mengirim kontribusi!
