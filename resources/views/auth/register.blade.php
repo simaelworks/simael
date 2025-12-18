@@ -7,15 +7,16 @@
 <div class="flex fle-col items-center justify-center p-6">
 
       <div class="grid lg:grid-cols-2 items-center gap-8 max-w-6xl max-lg:max-w-lg w-full">
-        <form class="lg:max-w-md w-full" action="{{ route('register') }}" method="post">
+        <form class="lg:max-w-md w-full" action="{{ route('register') }}" method="post" id="registerForm">
             @csrf
+            <input type="hidden" name="recaptcha_token" id="recaptchaToken">
 
           <h1 class="text-slate-900 text-3xl font-semibold mb-8">Buat akun Murid</h1>
           <div class="space-y-6">
             <div>
-              <label class="text-slate-900 text-sm mb-2 block">Nama</label>
+              <label for="name" class="text-slate-900 text-sm mb-2 block">Nama</label>
                 @if ($errors->any())
-                    <input name="name" type="text" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                    <input id="name" name="name" type="text" autocomplete="name" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
                     <div class="alert alert-danger">
                         @foreach ($errors->all() as $error)
                             <p class="text-sm mt-1 text-red-500">{{ $error }}</p>
@@ -24,21 +25,21 @@
                 @else
                     @if (session()->has('failed'))
 
-                        <input name="name" type="text" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                        <input id="name" name="name" type="text" autocomplete="name" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
                         <p class="text-sm mt-1 text-red-500">{{ session('failed') }}</p>
 
                     @else
-                        <input name="name" type="text" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                        <input id="name" name="name" type="text" autocomplete="name" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
                     @endif
                 @endif
             </div>
             <div>
-              <label class="text-slate-900 text-sm mb-2 block">NISN</label>
-              <input name="nisn" type="text" inputmode="numeric" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan NISN (10 digit)"  value="{{ old('nisn') }}" required/>
+              <label for="nisn" class="text-slate-900 text-sm mb-2 block">NISN</label>
+              <input id="nisn" name="nisn" type="text" inputmode="numeric" autocomplete="off" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan NISN (10 digit)"  value="{{ old('nisn') }}" required/>
             </div>
             <div>
-              <label class="text-slate-900 text-sm mb-2 block">Jurusan</label>
-              <select name="major" id="" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all">
+              <label for="major" class="text-slate-900 text-sm mb-2 block">Jurusan</label>
+              <select id="major" name="major" autocomplete="off" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all">
                     <option value="PPLG">PPLG</option>
                     <option value="TJKT">TJKT</option>
                     <option value="DKV">DKV</option>
@@ -46,9 +47,9 @@
               </select>
             </div>
             <div>
-              <label class="text-slate-900 text-sm mb-2 block">Password</label>
+              <label for="password" class="text-slate-900 text-sm mb-2 block">Password</label>
               <div class="relative">
-                <input id="password" name="password" type="password" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 pr-12 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan password" required/>
+                <input id="password" name="password" type="password" autocomplete="new-password" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 pr-12 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan password" required/>
                 <button type="button" onclick="togglePassword('password', 'eye-open-1', 'eye-closed-1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
                   <svg id="eye-open-1" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -61,9 +62,9 @@
               </div>
             </div>
             <div>
-              <label class="text-slate-900 text-sm mb-2 block">Konfirmasi Password</label>
+              <label for="confirm-password" class="text-slate-900 text-sm mb-2 block">Konfirmasi Password</label>
               <div class="relative">
-                <input id="confirm-password" name="confirm-password" type="password" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 pr-12 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan ulang password" required/>
+                <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 pr-12 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan ulang password" required/>
                 <button type="button" onclick="togglePassword('confirm-password', 'eye-open-2', 'eye-closed-2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
                   <svg id="eye-open-2" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -97,6 +98,8 @@
       </div>
     </div>
 
+<script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
+
 <script>
 function togglePassword(inputId, eyeOpenId, eyeClosedId) {
     const passwordInput = document.getElementById(inputId);
@@ -113,6 +116,18 @@ function togglePassword(inputId, eyeOpenId, eyeClosedId) {
         eyeClosed.classList.add('hidden');
     }
 }
+
+// Handle reCAPTCHA
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    grecaptcha.ready(function() {
+        grecaptcha.execute('{{ env("RECAPTCHA_SITE_KEY") }}', {action: 'register'}).then(function(token) {
+            document.getElementById('recaptchaToken').value = token;
+            document.getElementById('registerForm').submit();
+        });
+    });
+});
 </script>
 
 @endsection

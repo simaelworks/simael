@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 
 class LoginRegisterController extends Controller
 {
@@ -37,6 +38,32 @@ class LoginRegisterController extends Controller
         
         if (Cache::has($cacheKey)) {
             return back()->with('failed', 'Anda hanya bisa mendaftar sekali setiap 2 menit. Mohon coba lagi nanti.');
+        }
+
+        // Validate reCAPTCHA
+        $recaptchaToken = $request->input('recaptcha_token');
+        
+        if (!$recaptchaToken) {
+            return back()->with('failed', 'reCAPTCHA validation failed. Mohon coba lagi.');
+        }
+
+        // Verify reCAPTCHA with Google
+        try {
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => env('RECAPTCHA_SECRET_KEY'),
+                'response' => $recaptchaToken,
+            ]);
+
+            $result = $response->json();
+
+            // reCAPTCHA v3 returns a score between 0.0 and 1.0
+            // 1.0 is very likely a legitimate interaction, 0.0 is very likely a bot
+            // We use 0.5 as threshold - adjust as needed
+            if (!$result['success'] || $result['score'] < 0.5) {
+                return back()->with('failed', 'Verifikasi CAPTCHA gagal. Anda mungkin adalah bot atau aktivitas mencurigakan terdeteksi.');
+            }
+        } catch (\Exception $e) {
+            return back()->with('failed', 'Error saat verifikasi CAPTCHA. Mohon coba lagi.');
         }
 
         $validatedData = $request->validate([
