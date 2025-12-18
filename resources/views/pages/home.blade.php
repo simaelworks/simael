@@ -40,10 +40,10 @@
 
     <!-- Main Section -->
 
-    <div class="bg-gradient-to-br from-blue-800 to-cyan-700 text-white relative">
+    <div class="bg-gradient-to-br from-blue-900 via-blue-600 to-blue-400 text-white relative">
 
-        <section id="home" class="pt-32 pb-20 text-white">
-            <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center font-stacksans">
+        <section id="home" class="pt-16 pb-16 text-white">
+            <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center font-stacksans">
 
                 <div data-aos="fade-right">
                     <h2 class="text-5xl font-extrabold leading-tight ">
