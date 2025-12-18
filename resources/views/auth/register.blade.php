@@ -4,98 +4,112 @@
 
 @section('content')
 
-<div class="flex fle-col items-center justify-center p-6">
-
-      <div class="grid lg:grid-cols-2 items-center gap-8 max-w-6xl max-lg:max-w-lg w-full">
-        <form class="lg:max-w-md w-full" action="{{ route('register') }}" method="post">
-            @csrf
-
-          <h1 class="text-slate-900 text-3xl font-semibold mb-8">Buat akun Murid</h1>
-          <div class="space-y-6">
-            <div>
-              <label class="text-slate-900 text-sm mb-2 block">Nama</label>
-                @if ($errors->any())
-                    <input name="name" type="text" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
-                    <div class="alert alert-danger">
-                        @foreach ($errors->all() as $error)
-                            <p class="text-sm mt-1 text-red-500">{{ $error }}</p>
-                        @endforeach
+<div class="min-h-screen bg-gradient-to-br from-blue-700 to-blue-400 flex items-center justify-center p-4">
+    <div class="w-full max-w-5xl">
+        <!-- Combined Card Container -->
+        <div class="grid lg:grid-cols-2 gap-0 bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <!-- Left Side - Register Form -->
+            <form class="p-6 lg:p-8" action="{{ route('register') }}" method="post">
+                @csrf
+                <h1 class="text-2xl font-bold text-gray-900 mb-1">Daftar</h1>
+                <p class="text-gray-600 text-xs mb-5">Buat akun untuk memulai perjalanan anda</p>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-gray-700 text-xs font-semibold mb-1">Nama Lengkap</label>
+                        @if ($errors->any())
+                            <input name="name" type="text" class="w-full px-3 py-2 text-sm border-2 border-red-500 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                        @else
+                            @if (session()->has('failed'))
+                                <input name="name" type="text" class="w-full px-3 py-2 text-sm border-2 border-red-500 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                            @else
+                                <input name="name" type="text" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
+                            @endif
+                        @endif
                     </div>
-                @else
-                    @if (session()->has('failed'))
 
-                        <input name="name" type="text" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border  border-red-500 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
-                        <p class="text-sm mt-1 text-red-500">{{ session('failed') }}</p>
+                    <div>
+                        <label class="block text-gray-700 text-xs font-semibold mb-1">NISN</label>
+                        <input name="nisn" type="text" inputmode="numeric" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan NISN (10 digit)" value="{{ old('nisn') }}" required/>
+                    </div>
 
-                    @else
-                        <input name="name" type="text" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required/>
-                    @endif
-                @endif
-            </div>
-            <div>
-              <label class="text-slate-900 text-sm mb-2 block">NISN</label>
-              <input name="nisn" type="text" inputmode="numeric" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan NISN (10 digit)"  value="{{ old('nisn') }}" required/>
-            </div>
-            <div>
-              <label class="text-slate-900 text-sm mb-2 block">Jurusan</label>
-              <select name="major" id="" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all">
-                    <option value="PPLG">PPLG</option>
-                    <option value="TJKT">TJKT</option>
-                    <option value="DKV">DKV</option>
-                    <option value="BCF">BCF</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-slate-900 text-sm mb-2 block">Password</label>
-              <div class="relative">
-                <input id="password" name="password" type="password" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 pr-12 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan password" required/>
-                <button type="button" onclick="togglePassword('password', 'eye-open-1', 'eye-closed-1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
-                  <svg id="eye-open-1" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                  <svg id="eye-closed-1" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
-                  </svg>
+                    <div>
+                        <label class="block text-gray-700 text-xs font-semibold mb-1">Jurusan</label>
+                        <select name="major" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors">
+                            <option value="PPLG">PPLG</option>
+                            <option value="TJKT">TJKT</option>
+                            <option value="DKV">DKV</option>
+                            <option value="BCF">BCF</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 text-xs font-semibold mb-1">Password</label>
+                        <div class="relative">
+                            <input id="password" name="password" type="password" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan password" required/>
+                            <button type="button" onclick="togglePassword('password', 'eye-open-1', 'eye-closed-1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                <svg id="eye-open-1" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                <svg id="eye-closed-1" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 text-xs font-semibold mb-1">Konfirmasi Password</label>
+                        <div class="relative">
+                            <input id="confirm-password" name="confirm-password" type="password" class="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition-colors" placeholder="Masukkan ulang password" required/>
+                            <button type="button" onclick="togglePassword('confirm-password', 'eye-open-2', 'eye-closed-2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                <svg id="eye-open-2" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                <svg id="eye-closed-2" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <input id="remember-me" name="remember-me" type="checkbox" class="w-3 h-3 rounded border-gray-300 mt-0.5" required/>
+                        <label for="remember-me" class="ml-2 text-xs text-gray-600">
+                            Saya menerima <a href="javascript:void(0);" class="text-blue-600 font-semibold hover:underline">Terms and Conditions</a>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full mt-4 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2 text-sm rounded-lg transition-colors">
+                    Daftar
                 </button>
-              </div>
-            </div>
-            <div>
-              <label class="text-slate-900 text-sm mb-2 block">Konfirmasi Password</label>
-              <div class="relative">
-                <input id="confirm-password" name="confirm-password" type="password" class="bg-gray-100 w-full text-slate-900 text-sm px-4 py-3 pr-12 focus:bg-transparent border border-gray-100 focus:border-black outline-none transition-all" placeholder="Masukkan ulang password" required/>
-                <button type="button" onclick="togglePassword('confirm-password', 'eye-open-2', 'eye-closed-2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
-                  <svg id="eye-open-2" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                  <svg id="eye-closed-2" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 shrink-0 border-gray-300 rounded" required />
-              <label for="remember-me" class="ml-3 block text-sm text-slate-600">
-                Saya menerima <a href="javascript:void(0);" class="text-blue-600 font-semibold hover:underline ml-1">Terms and Conditions</a>
-              </label>
-            </div>
-          </div>
 
-          <div class="mt-6">
-            <button type="submit" class="py-3 px-6 text-sm text-white tracking-wide bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer">
-              Buat
-            </button>
-          </div>
-          <p class="text-sm text-slate-600 mt-6">Sudah punya akun? <a href="{{ route('loginPage') }}" class="text-blue-600 font-semibold hover:underline ml-1">Login disini</a></p>
-        </form>
+                <p class="text-center text-xs text-gray-600 mt-4">
+                    Sudah punya akun? <a href="{{ route('loginPage') }}" class="text-blue-600 font-semibold hover:underline">Login disini</a>
+                </p>
+            </form>
 
-        <div class="hidden lg:flex items-center justify-center min-h-[500px]">
-          <img src="https://readymadeui.com/login-image.webp" class="w-full h-auto object-contain aspect-628/516" alt="login img" />
+            <!-- Right Side - Welcome Message -->
+            <div class="hidden lg:flex items-center justify-center bg-gradient-to-br from-yellow-300 to-orange-400 p-8">
+                <div class="text-center text-white">
+                    <div class="mb-6">
+                        <svg class="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-4">Halo Teman!</h2>
+                    <p class="text-lg font-semibold mb-2">Mari Bergabung dengan Kami</p>
+                    <p class="text-sm opacity-90">
+                        Masukkan detail pribadi anda dan mulai perjalanan bersama SIMAEL - Platform PKL yang lebih mudah
+                    </p>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
 <script>
 function togglePassword(inputId, eyeOpenId, eyeClosedId) {
